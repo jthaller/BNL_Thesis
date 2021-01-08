@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.11.23)  8 DEC 2020 15:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.11.23)  8 JAN 2021 16:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -619,35 +619,18 @@ LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
 (Font)              for symbol `textbackslash' on input line 9.
 
-[1
+) [1
 
 
 ]
-<Chapters/Figures/calcium_levels_1-1.PNG, id=30, 282.0939pt x 162.8484pt>
-File: Chapters/Figures/calcium_levels_1-1.PNG Graphic file (type png)
-<use Chapters/Figures/calcium_levels_1-1.PNG>
-Package pdftex.def Info: Chapters/Figures/calcium_levels_1-1.PNG  used on input
- line 34.
-(pdftex.def)             Requested size: 375.80542pt x 216.96832pt.
- [2 <./Chapters/Figures/calcium_levels_1-1.png>]
-File: Chapters/Figures/calcium_levels_1-1.PNG Graphic file (type png)
-<use Chapters/Figures/calcium_levels_1-1.PNG>
-Package pdftex.def Info: Chapters/Figures/calcium_levels_1-1.PNG  used on input
- line 53.
-(pdftex.def)             Requested size: 187.89912pt x 108.4767pt.
-) [3]
 Chapter 2.
-(./Chapters/Chapter2.tex) [4
+(./Chapters/Chapter2.tex) [2
 
 ]
 Appendix A.
-(./Chapters/Appendix.tex) (./MainDraft.bbl [5
+(./Chapters/Appendix.tex) (./MainDraft.bbl [3
 
-]
-
-Package natbib Warning: Empty `thebibliography' environment on input line 15.
-
-) [6
+]) [4
 
 ] (./MainDraft.aux)
 
@@ -655,26 +638,24 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 17005 strings out of 493879
- 295666 string characters out of 6166973
- 350652 words of memory out of 5000000
- 20982 multiletter control sequences out of 15000+600000
- 546893 words of font info for 77 fonts, out of 8000000 for 9000
+ 16972 strings out of 493879
+ 295197 string characters out of 6166973
+ 349793 words of memory out of 5000000
+ 20962 multiletter control sequences out of 15000+600000
+ 541778 words of font info for 58 fonts, out of 8000000 for 9000
  101 hyphenation exceptions out of 8191
- 52i,8n,71p,935b,317s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 52i,6n,71p,682b,317s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/tex
-live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2019/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2019/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2019/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmsl12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
-b><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/tex
-live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on MainDraft.pdf (12 pages, 147965 bytes).
+live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2019/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2019/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2019/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmti12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmtt12.pfb>
+Output written on MainDraft.pdf (10 pages, 80033 bytes).
 PDF statistics:
- 86 PDF objects out of 1000 (max. 8388607)
- 59 compressed objects within 1 object stream
+ 65 PDF objects out of 1000 (max. 8388607)
+ 45 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

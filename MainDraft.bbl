@@ -1,4 +1,4 @@
-\begin{thebibliography}{0}
+\begin{thebibliography}{2}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname bibnamefont\endcsname\relax
   \def\bibnamefont#1{#1}\fi
@@ -11,5 +11,25 @@
 \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
 \providecommand{\bibinfo}[2]{#2}
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\citenamefont{Timoshenko et~al.}(2018)\citenamefont{Timoshenko,
+  Anspoks, Cintins, Kuzmin, Purans, and Frenkel}}]{timoshenko2018neural}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Timoshenko}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Anspoks}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Cintins}},
+  \bibinfo{author}{\bibfnamefont{A.}~\bibnamefont{Kuzmin}},
+  \bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Purans}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{A.~I.} \bibnamefont{Frenkel}},
+  \bibinfo{journal}{Physical review letters} \textbf{\bibinfo{volume}{120}},
+  \bibinfo{pages}{225502} (\bibinfo{year}{2018}).
+
+\bibitem[{\citenamefont{Timoshenko et~al.}(2017)\citenamefont{Timoshenko, Lu,
+  Lin, and Frenkel}}]{Timoshenko2017}
+\bibinfo{author}{\bibfnamefont{J.}~\bibnamefont{Timoshenko}},
+  \bibinfo{author}{\bibfnamefont{D.}~\bibnamefont{Lu}},
+  \bibinfo{author}{\bibfnamefont{Y.}~\bibnamefont{Lin}}, \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{A.~I.} \bibnamefont{Frenkel}},
+  \bibinfo{journal}{The Journal of Physical Chemistry Letters}
+  \textbf{\bibinfo{volume}{8}}, \bibinfo{pages}{5091} (\bibinfo{year}{2017}).
 
 \end{thebibliography}
