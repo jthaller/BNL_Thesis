@@ -21,12 +21,21 @@
 \usepackage[numbers]{natbib}
 \usepackage{pdfpages}
 \usepackage{bm}
+
 \usepackage{wrapfig}				% enables the use of \wrapfig, for figures with text wrapped around them
 %\usepackage{lipsum}			% gives access to \lipsum, which dumps some latin text into your document as filler if you want to check formatting
 
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
 
-
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true, %set true if you want colored links
+	linktoc=all,     %set to all if you want both sections and subsections linked
+	allcolors = black %get rid of weird auto link highlighting
+}
+\usepackage{sidecap}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[section]{placeins}
 
 % Here we set the page dimensions to match the standard thesis format.  These values should not be changed.
 %%% SET LENTGH AND WIDTH %%%

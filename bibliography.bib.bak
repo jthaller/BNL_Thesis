@@ -10,6 +10,7 @@
   pages     = {5091--5098},
   volume    = {8},
   doi       = {10.1021/acs.jpclett.7b02364},
+  file      = {:Papers/Frenkel2017_SML_XANES.pdf:PDF},
   publisher = {American Chemical Society ({ACS})},
 }
 
@@ -23,6 +24,17 @@
   volume    = {120},
   file      = {:Papers/Frenkel2018_NN_EXAFS.pdf:PDF},
   publisher = {APS},
+}
+
+@Article{ng2011sparse,
+  author  = {Ng, Andrew and others},
+  journal = {CS294A Lecture notes},
+  title   = {Sparse autoencoder},
+  year    = {2011},
+  number  = {2011},
+  pages   = {1--19},
+  volume  = {72},
+  file    = {:Papers/sparseAutoencoder.pdf:PDF},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

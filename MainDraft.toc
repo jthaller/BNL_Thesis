@@ -1,9 +1,10 @@
-\contentsline {chapter}{Abstract}{i}%
-\contentsline {chapter}{Executive Summary}{ii}%
-\contentsline {chapter}{Acknowledgments}{iii}%
-\contentsline {chapter}{\numberline {1}Introduction}{1}%
-\contentsline {section}{\numberline {1.1}Traditional XANES}{1}%
-\contentsline {section}{\numberline {1.2}Machine Learning in Science}{1}%
-\contentsline {chapter}{\numberline {2}Machine Learning Approach}{2}%
-\contentsline {chapter}{\numberline {3}Results}{3}%
-\contentsline {chapter}{\numberline {A}An appendix}{4}%
+\contentsline {chapter}{Abstract}{i}{chapter*.1}%
+\contentsline {chapter}{Executive Summary}{ii}{chapter*.2}%
+\contentsline {chapter}{Acknowledgments}{iii}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Traditional XANES}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Machine Learning in Science}{1}{section.1.2}%
+\contentsline {chapter}{\numberline {2}Machine Learning Approach}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Autoencoders}{2}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Results}{3}{chapter.3}%
+\contentsline {chapter}{\numberline {A}An appendix}{4}{appendix.A}%
