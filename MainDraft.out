@@ -2,9 +2,10 @@
 \BOOKMARK [0][-]{chapter*.2}{Executive Summary}{}% 2
 \BOOKMARK [0][-]{chapter*.3}{Acknowledgments}{}% 3
 \BOOKMARK [0][-]{chapter.1}{Introduction}{}% 4
-\BOOKMARK [1][-]{section.1.1}{Traditional XANES}{chapter.1}% 5
-\BOOKMARK [1][-]{section.1.2}{Machine Learning in Science}{chapter.1}% 6
-\BOOKMARK [0][-]{chapter.2}{Machine Learning Approach}{}% 7
-\BOOKMARK [1][-]{section.2.1}{Autoencoders}{chapter.2}% 8
-\BOOKMARK [0][-]{chapter.3}{Results}{}% 9
-\BOOKMARK [0][-]{appendix.A}{An appendix}{}% 10
+\BOOKMARK [1][-]{section.1.1}{X-ray Absorption Spectroscopy}{chapter.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.1}{EXAFS}{section.1.1}% 6
+\BOOKMARK [2][-]{subsection.1.1.2}{XAFS}{section.1.1}% 7
+\BOOKMARK [0][-]{chapter.2}{XAFS In Depth}{}% 8
+\BOOKMARK [0][-]{chapter.3}{Machine Learning}{}% 9
+\BOOKMARK [1][-]{section.3.1}{Autoencoders if they become useful}{chapter.3}% 10
+\BOOKMARK [0][-]{appendix.A}{An appendix}{}% 11
