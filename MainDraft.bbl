@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{8}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname bibnamefont\endcsname\relax
   \def\bibnamefont#1{#1}\fi
@@ -11,6 +11,32 @@
 \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
 \providecommand{\bibinfo}[2]{#2}
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{\citenamefont{Gardenghi et~al.}(2012)}]{gardenghi2012synchrotron}
+\bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Gardenghi}}
+  \bibnamefont{et~al.}, Ph.D. thesis, \bibinfo{school}{Montana State
+  University-Bozeman, College of Letters \& Science} (\bibinfo{year}{2012}).
+
+\bibitem[{\citenamefont{Elder et~al.}(1947)\citenamefont{Elder, Gurewitsch,
+  Langmuir, and Pollock}}]{firstSynchrotronRadPaper}
+\bibinfo{author}{\bibfnamefont{F.~R.} \bibnamefont{Elder}},
+  \bibinfo{author}{\bibfnamefont{A.~M.} \bibnamefont{Gurewitsch}},
+  \bibinfo{author}{\bibfnamefont{R.~V.} \bibnamefont{Langmuir}},
+  \bibnamefont{and} \bibinfo{author}{\bibfnamefont{H.~C.}
+  \bibnamefont{Pollock}}, \bibinfo{journal}{Phys. Rev.}
+  \textbf{\bibinfo{volume}{71}}, \bibinfo{pages}{829} (\bibinfo{year}{1947}),
+  \urlprefix\url{https://link.aps.org/doi/10.1103/PhysRev.71.829.5}.
+
+\bibitem[{\citenamefont{Rehr and Albers}(2000)}]{rehrXAFS2000review}
+\bibinfo{author}{\bibfnamefont{J.~J.} \bibnamefont{Rehr}} \bibnamefont{and}
+  \bibinfo{author}{\bibfnamefont{R.~C.} \bibnamefont{Albers}},
+  \bibinfo{journal}{Reviews of modern physics} \textbf{\bibinfo{volume}{72}},
+  \bibinfo{pages}{621} (\bibinfo{year}{2000}).
+
+\bibitem[{\citenamefont{Newville}(2014)}]{newville2014fundamentals}
+\bibinfo{author}{\bibfnamefont{M.}~\bibnamefont{Newville}},
+  \bibinfo{journal}{Reviews in Mineralogy and Geochemistry}
+  \textbf{\bibinfo{volume}{78}}, \bibinfo{pages}{33} (\bibinfo{year}{2014}).
 
 \bibitem[{\citenamefont{Timoshenko et~al.}(2018)\citenamefont{Timoshenko,
   Anspoks, Cintins, Kuzmin, Purans, and Frenkel}}]{timoshenko2018neural}

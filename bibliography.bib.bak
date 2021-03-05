@@ -37,4 +37,64 @@
   file    = {:Papers/sparseAutoencoder.pdf:PDF},
 }
 
+@Article{Bhowick2019,
+  author        = {Debjani Bhowick and Deepak K. Gupta and Saumen Maiti and Uma Shankar},
+  title         = {Stacked autoencoders based machine learning for noise reduction and signal reconstruction in geophysical data},
+  year          = {2019},
+  month         = jul,
+  abstract      = {Autoencoders are neural network formulations where the input and output of the network are identical and the goal is to identify the hidden representation in the provided datasets. Generally, autoencoders project the data nonlinearly onto a lower dimensional hidden space, where the important features get highlighted and interpretation of the data becomes easier. Recent studies have shown that even in the presence of noise in the input data, autoencoders can be trained to reconstruct the noisefree component of the data from the reduced-dimensional hidden space. In this paper, we explore the application of autoencoders within the scope of denoising geophysical datasets using a data-driven methodology. The autoencoder formulation is discussed, and a stacked variant of deep autoencoders is proposed. The proposed method involves locally training the weights first using basic autoencoders, each comprising a single hidden layer. Using these initialized weights as starting points in the optimization model, the full autoencoder network is then trained in the second step. The applicability of denoising autoencoders has been demonstrated on a basic mathematical example and several geophysical examples. For all the cases, autoencoders are found to significantly reduce the noise in the input data.},
+  archiveprefix = {arXiv},
+  eprint        = {1907.03278},
+  file          = {:Bhowick2019 - Stacked Autoencoders Based Machine Learning for Noise Reduction and Signal Reconstruction in Geophysical Data.pdf:PDF},
+  keywords      = {eess.SP, physics.geo-ph},
+  primaryclass  = {eess.SP},
+}
+
+@PhdThesis{gardenghi2012synchrotron,
+  author = {Gardenghi, David Jeremiah and others},
+  school = {Montana State University-Bozeman, College of Letters \& Science},
+  title  = {Synchrotron radiation-based spectroscopic investigation of the electronic and geometric structures of iron-sulfur clusters, particles, and minerals},
+  year   = {2012},
+  file   = {Good summary of EXAFS and XANES:Papers/GardenghiD0512.pdf:PDF},
+}
+
+@Article{firstSynchrotronRadPaper,
+  author    = {Elder, F. R. and Gurewitsch, A. M. and Langmuir, R. V. and Pollock, H. C.},
+  journal   = {Phys. Rev.},
+  title     = {Radiation from Electrons in a Synchrotron},
+  year      = {1947},
+  month     = {Jun},
+  pages     = {829--830},
+  volume    = {71},
+  doi       = {10.1103/PhysRev.71.829.5},
+  file      = {:Papers/synchrotron_radiation_source.pdf:PDF},
+  issue     = {11},
+  numpages  = {0},
+  publisher = {American Physical Society},
+  url       = {https://link.aps.org/doi/10.1103/PhysRev.71.829.5},
+}
+
+@Article{rehrXAFS2000review,
+  author    = {Rehr, John J and Albers, Robert C},
+  journal   = {Reviews of modern physics},
+  title     = {Theoretical approaches to x-ray absorption fine structure},
+  year      = {2000},
+  number    = {3},
+  pages     = {621},
+  volume    = {72},
+  file      = {:Papers/XAFS/rehr2000.pdf:PDF},
+  publisher = {APS},
+}
+
+@Article{newville2014fundamentals,
+  author    = {Newville, Matthew},
+  journal   = {Reviews in Mineralogy and Geochemistry},
+  title     = {Fundamentals of XAFS},
+  year      = {2014},
+  number    = {1},
+  pages     = {33--74},
+  volume    = {78},
+  publisher = {Mineralogical Society of America},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

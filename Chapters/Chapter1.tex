@@ -5,13 +5,48 @@ The introduction is one of the most important pieces of your thesis.  Here is a 
 In addition to setting your work into context, a second good idea for your introduction is to give a short outline for what the rest of your thesis will discuss.  This is often done in the closing paragraph(s) of the introduction with sentences like ``In the following chapters \ldots " and ``Chapter 2 discusses \ldots"  Tremendous detail is not required in this outline, but rather just a brief road map for the rest of the document.
 
 \section{X-ray Absorption Spectroscopy}
-\emph{I want to describe the problem we're trying to solve in this section. So I want to motivate the problem by describing XAFS a little so I can describe the limitations of XANES and why this project is useful. More in-depth explanations can be placed in chapter 2}
+\todo[color=green!40, inline]{I want to describe the problem we're trying to solve in this section. So I want to motivate the problem by describing XAFS a little so I can describe the limitations of XANES and why this project is useful. More in-depth explanations can be placed in chapter 2}
+
+X-ray absorption spectroscopy measures the absorption of high-energy photons by a sample as a function of energy \cite{gardenghi2012synchrotron}. The attenuation, or change in transmitted light intensity as a result of inelastic processes is characterized by the Beer-Lambert Law (eq: \ref{BeerLambert}) For an incident beam of intensity $I_0$, the transmitted intensity after interacting with an attenuation/absorption \todo[fancyline, color=blue!40]{pick one} coefficient of $ \mu $ and a sample of thickness $ x $ is:
+
+
+\begin{equation}
+    \label{BeerLambert}
+    I = I_0 e^{-\mu x}
+\end{equation}
+
+\subsection{Synchrotron Radiation}
+\todo[color=orange!60,inline]{I'm not sure where this will end up going, but somewhere I'll have to write about the origin of synchrotron radiation}
+
+Synchrotron radiation was first observed by General Electric in Schenectity, New York \cite{firstSynchrotronRadPaper}. First thought of as a side effect particle accelerator experiments, it has since grown to be an incredibly useful source of high-energy electromagnetic radiation. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure with great stability, and the incoming photons are highly polarized, either linearly or circularly depending on where the measuremnt lies with respect to the plane of the synchrotron.
+
+\subsection{XAFS}
+X-ray Absorption Fine-Structure spectroscopy, or XAFS, refers to the study of absorption spectra created from high-intensity x-ray interactions. As the energy of the incident radiation is increased, the photon's energy will eventually match the binding energy of a core-level electron and an "edge" will be observed. The location of these edges on highly dependent on the chemical and physical structure, as well as the electronic and vibrational state of the material, creating characteristic absorption oscillations.
+
+(Here's a good source to cite a bunch: the 2000 review of XAFS
+\cite{rehrXAFS2000review})
+\cite{newville2014fundamentals}
+
+absorption edges like fingerprints to identify elements. in 1920 Frische and Hertz observed peak shape, and 40 years later it was learned that this shape can be used to probe the short-range order.1971 e.a. Sterne expalin this effect. Fermi's golden rule. The inelastic interactions of the photon are related to characteristic energies. When the photon energies match the energy difference from the core-electron state to the first unoccupied level, the photon can be fully absorbed (before that only partially absorbed.)
+
+
+\begin{equation}
+    \label{Victoreen}
+    \mu(E) = aE^{-3} + bE^{-4}
+\end{equation}
+
+\begin{equation}
+    \label{FermisGoldenRule}
+    % Fermi's GOlden Rule for a one e- approximation
+    \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - Ef)  
+\end{equation}
 
 \subsection{EXAFS}
 Extended X-ray Absorption Fine Structure (EXAFS)
 
-\subsection{XAFS}
-X-ray Absorption Fine-Structure spectroscopy, or XAFS, refers to the study of absorption spectra created from high-intensity x-ray interactions.
+
+\subsection{XANES}
+
+\section{Machine Learning?}
 
 Probably want to talk about these papers in this section \cite{timoshenko2018neural} \cite{Timoshenko2017}.
-
