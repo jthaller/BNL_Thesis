@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{10}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname bibnamefont\endcsname\relax
   \def\bibnamefont#1{#1}\fi
@@ -16,6 +16,16 @@
 \bibinfo{author}{\bibfnamefont{D.~J.} \bibnamefont{Gardenghi}}
   \bibnamefont{et~al.}, Ph.D. thesis, \bibinfo{school}{Montana State
   University-Bozeman, College of Letters \& Science} (\bibinfo{year}{2012}).
+
+\bibitem[{\citenamefont{Fricke}(1920)}]{fricke1920}
+\bibinfo{author}{\bibfnamefont{H.}~\bibnamefont{Fricke}},
+  \bibinfo{journal}{Physical Review} \textbf{\bibinfo{volume}{16}},
+  \bibinfo{pages}{202} (\bibinfo{year}{1920}).
+
+\bibitem[{\citenamefont{Hertz}(1920)}]{hertz1920ueber}
+\bibinfo{author}{\bibfnamefont{G.}~\bibnamefont{Hertz}},
+  \bibinfo{journal}{Zeitschrift fuer Physik} \textbf{\bibinfo{volume}{3}},
+  \bibinfo{pages}{19} (\bibinfo{year}{1920}).
 
 \bibitem[{\citenamefont{Elder et~al.}(1947)\citenamefont{Elder, Gurewitsch,
   Langmuir, and Pollock}}]{firstSynchrotronRadPaper}

@@ -163,8 +163,6 @@ INPUT c:/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 INPUT c:/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 INPUT c:/texlive/2019/texmf-dist/tex/generic/oberdiek/uniquecounter.sty
 INPUT c:/texlive/2019/texmf-dist/tex/generic/oberdiek/uniquecounter.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/sidecap/sidecap.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/sidecap/sidecap.sty
 INPUT c:/texlive/2019/texmf-dist/tex/latex/todonotes/todonotes.sty
 INPUT c:/texlive/2019/texmf-dist/tex/latex/todonotes/todonotes.sty
 INPUT c:/texlive/2019/texmf-dist/tex/latex/xkeyval/xkeyval.sty
@@ -271,8 +269,6 @@ INPUT c:/texlive/2019/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/ti
 INPUT c:/texlive/2019/texmf-dist/tex/generic/pgf/libraries/pgflibraryfadings.code.tex
 INPUT c:/texlive/2019/texmf-dist/tex/generic/pgf/libraries/pgflibraryfadings.code.tex
 OUTPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.pdf
-INPUT c:/texlive/2019/texmf-dist/tex/latex/placeins/placeins.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/placeins/placeins.sty
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.aux
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.aux
 OUTPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.aux
@@ -301,11 +297,6 @@ INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.out
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.out
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.out
 OUTPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/MainDraft.out
-INPUT c:/texlive/2019/texmf-dist/tex/latex/ragged2e/ragged2e.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/ragged2e/ragged2e.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/ragged2e/ragged2e.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/ms/everysel.sty
-INPUT c:/texlive/2019/texmf-dist/tex/latex/ms/everysel.sty
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT c:/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map
@@ -357,10 +348,10 @@ INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter1.tex
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
+INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsl12.tfm
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter2.tex
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter2.tex
-INPUT c:/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter3.tex
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter3.tex
 INPUT c:/Users/jerem/Documents/Grad_School/BNL_Thesis/Chapters/Chapter4.tex
