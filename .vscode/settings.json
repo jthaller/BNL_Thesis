@@ -1,0 +1,26 @@
+{
+    "grammarly.overrides": [
+        {
+            "files": [
+                "**/Chapters/Chapter1.tex"
+            ],
+            "config": {
+                "audience": "knowledgeable",
+                "dialect": "american",
+                "domain": "academic",
+                "emotions": [
+                    "neutral",
+                    "confident",
+                    "friendly",
+                    "analytical"
+                ],
+                "goals": [
+                    "inform",
+                    "describe",
+                    "convince",
+                    "tellStory"
+                ]
+            }
+        }
+    ]
+}
