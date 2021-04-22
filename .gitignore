@@ -1,5 +1,6 @@
 Papers/
 Feff_code/
+.vscode/settings.json
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

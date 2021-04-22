@@ -21,6 +21,23 @@
                     "tellStory"
                 ]
             }
+        },
+        {
+            "files": [
+                "**/Chapters/Chapter2.tex"
+            ],
+            "config": {
+                "audience": "knowledgeable",
+                "dialect": "american",
+                "domain": "academic",
+                "emotions": [
+                    "neutral",
+                    "confident"
+                ],
+                "goals": [
+                    "describe"
+                ]
+            }
         }
     ]
 }
