@@ -54,11 +54,11 @@
 \begin{titlepage}
 \begin{center}
 
+{\Large(Temporary Title)}
 % \vspace* creates some vertical white space on the page to make the title page look more pleasing.  \vspace would do much the same thing, but would not insert the white space if we were at the top of a fresh page.  As this is the start of the document we're obviously at the beginning of a page, so the asterisk is necessary to ensure we still put in two cm of white space.
 \vspace*{2cm}
 
-{\huge Temporary Title: \\ Investigation of Bond Strain Effects on XANES Spectra by Supervised Machine
-	Learning} % \huge sets the font size.  Other options include things like \large, \Large, \small, \tiny, etc.
+{\huge Investigation of Bond Strain Effects\\on XANES Spectra by \\Supervised Machine Learning} % \huge sets the font size.  Other options include things like \large, \Large, \small, \tiny, etc.
 
 \vspace{2cm}
 
@@ -66,27 +66,44 @@
 
 \vspace{2cm}
 
-\begin{multicols}{2}
-	Professor Anatoly Frenkel, Advisor \hfill \\
-	Brookhaven National Laboratory \hfill \\
-	\columnbreak
-	Professor Wolfgang Schmahl, Advisor \\
-	Ludwig-Maximilians-Universität München
-\end{multicols}
+%% Centered version
+% \begin{multicols}{2}
+% 	Professor Anatoly Frenkel, Advisor \hfill \\
+% 	Brookhaven National Laboratory \hfill \\
+% 	Chemistry Division \hfill \\
+% 	\columnbreak
+% 	Professor Wolfgang Schmahl, Advisor \\
+% 	Ludwig-Maximilians-Universität München \\
+% 	Fakultät Geowissenschaft
+% \end{multicols}
 
+\noindent\begin{tabular}[t]{@{}l}
+	Professor Anatoly Frenkel, Advisor\\
+	Brookhaven National Laboratory\\
+	Chemistry Division \\
+	New York, USA
+\end{tabular}
+\hfill
+\begin{tabular}[t]{l@{}}
+% \begin{tabular}[t]{r@{}}
+	Professor Wolfgang Schmahl, Advisor \\
+	Ludwig-Maximilians-Universität\\
+	Fakultät Geowissenschaft \\
+	München, Germany
+\end{tabular}
 
 % \vfill creates an arbitrary amount of vertical white space as necessary to fill the page
 \vfill
 
-A Master thesis submitted to the Faculty\\
-of Earth- and Environmental Sciences\\ 
-of Ludwig-Maximilians-Universität München\\
+A Master thesis submitted to the Faculty
+of Earth- and Environmental Sciences\\
+of Ludwig-Maximilians-Universität München
 in the framework of MaMaSELF
 
 \vspace*{3cm}
 
-Brookhaven National Labs\\
-Brookhaven, New York\\
+% Brookhaven National Labs\\
+% Brookhaven, New York\\
 \today % you might choose to set a permanent date, but \today will put in today's date
 \end{center}
 \end{titlepage}
@@ -144,14 +161,14 @@ Brookhaven, New York\\
 
 \bibliography{bibliography}
 
-% \backmatter
-\pagebreak
-% \include{Chapters/signaturePage}
-\textit{I declare that I prepared and wrote this thesis work independently and with no other means
-than those referenced in the text.}
-\\
-\\
-\\
-\parbox{2in}{\rule{2in}{0.4pt}\\ Jeremy K. Thaller\\Faculty Advisor}\hfill\parbox{2in}{\rule{1in}{0.4pt}\\ Date\\\mbox{}}
+% % \backmatter
+% \pagebreak
+% % \include{Chapters/signaturePage}
+% \textit{I declare that I prepared and wrote this thesis work independently and with no other means
+% than those referenced in the text.}
+% \\
+% \\
+% \\
+% \parbox{2in}{\rule{2in}{0.4pt}\\ Jeremy K. Thaller\\Faculty Advisor}\hfill\parbox{2in}{\rule{1in}{0.4pt}\\ Date\\\mbox{}}
 
 \end{document}

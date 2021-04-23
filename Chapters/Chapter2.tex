@@ -54,32 +54,73 @@ Running the 91 simulations (one for each of the distorted structures) takes half
 
 \section{Generating Disorder via Probability Distribution Averaging}
 
-Disorder in a system can be characterized by the gaussain width, sigma, of the partial radial distribution function. The idea of our statistical averaging method emulates/simulates this width by weighting the simulated XANES spectra accordingly. For example, figure \ref{fig:gaussian-weighting-hist} depicts a histogram with $ \sigma=0.1 $~\AA. Each histogram bin represents a simulated XANES spectrum with a different isotropic displacement. For example, the bin at $ \Delta\rho=0.0 $~\AA~represents the simulated XANES spectrum with no distortion, and the bin at $ \Delta\rho=-0.2 $~\AA~represents the simulated XANES spectrum with all the atomic coordinates shifted isotropically inwards towards the center absorber by $ 0.2 $~\AA. The height of each bin, $ f(\Delta\rho) $ represents the relative contribution of each simulated XANES spectrum towards the resulting weighted spectrum. For visual clarity, figure \ref{fig:gaussian-weighting-hist} depicts only 40 bins; the actual weighting includes 91 bins ranging from $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. \todo[color=pink!40]{Already mentioned earlier. Choose one.}
+Disorder in a system can be characterized by the Gaussian width, sigma, of the partial radial distribution function. The idea of our statistical averaging method emulates/simulates this width by weighting the simulated XANES spectra accordingly. For example, figure \ref{fig:gaussian-weighting-hist} depicts a histogram with $ \sigma=0.1 $~\AA. Each histogram bin represents a simulated XANES spectrum with a different isotropic displacement. For example, the bin at $ \Delta\rho=0.0 $~\AA~represents the simulated XANES spectrum with no distortion, and the bin at $ \Delta\rho=-0.2 $~\AA~represents the simulated XANES spectrum with all the atomic coordinates shifted isotropically inwards towards the center absorber by $ 0.2 $~\AA. The height of each bin, $ f(\Delta\rho) $, represents the relative contribution of each simulated XANES spectrum towards the resulting weighted spectrum. For visual clarity, figure \ref{fig:gaussian-weighting-hist} depicts only 40 bins; the actual weighting includes 91 bins ranging from $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. \todo[color=pink!40]{Already mentioned earlier. Choose one.}
 
 % figure created in playground.ipynb
-\begin{figure}[!htb]
+% !htb
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/gaussian-weighting-hist.png}
-	\caption[Simulated Spectrum Gaussian Weighting]{TEMPORARY CAPTION}
+	\caption[Simulated Spectrum Gaussian Weighting]{A Gaussian distribution probability density function can be used to calculate the relative weight of each FEFF generated XANES spectrum towards one simulated, disordered spectrum. Each bin (red bar) represents a FEFF generated spectrum with the x-axis being the istropic shift of the atomic positions and the y-axis being the relative weight factor.}
 	\label{fig:gaussian-weighting-hist}
 \end{figure}
 
-To calculate the gaussian averaged XANES spectrum as described:
+To calculate averaged XANES spectrum, $ \left\langle \mu(E) \right\rangle $, using the histogram weighting of the gaussian in figure \ref{fig:gaussian-weighting-hist}:
+
 \begin{equation}
 	\label{eqn:gaussian-averaging}
 	\left\langle \mu(E) \right\rangle  = \frac{1}{S} \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma^2=0.01\right) \mu(E \mid \Delta\rho)
 \end{equation}
 
-In the above equantion (\ref{eqn:gaussian-averaging}), $ S $ represents a standardization factor to negate the effect of the changing height of the gaussian as a function of the variance, $ \sigma^2 $. In this way, only the relative heights of each bin matter for producing the averaged XANES spectrum.
+\noindent
+In the above equation $ \Delta\rho $ is the isotropic, radial displacement of each atom from their original positions and $ \mu(E \mid \Delta\rho) $ is the simulated FEFF spectrum for the given $ \Delta\rho $ configuration. Furthermore, (\ref{eqn:gaussian-averaging}), $ S $ represents a standardization factor to negate the effect of the changing height of the Gaussian as a function of the variance, $ \sigma^2 $. In this way, only the relative heights of each bin matter for producing the averaged XANES spectrum. The standardization factor, $ S $, can then be defined as:
+
+\begin{equation}
+	\label{eqn:gaussian-standardization}
+	S = \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma^2=0.01\right)
+\end{equation}
+
+\noindent
+In both equations \ref{eqn:gaussian-averaging} and \ref{eqn:gaussian-standardization}, the function $ g $ is just the typical Gaussian distribution probability density function: 
 
 \begin{equation}
 	\label{eqn:gaussian}
 	g(x) = \frac{1}{{\sigma \sqrt {2\pi } }}e^{{{ - \left( {x - \mu } \right)^2 } \mathord{\left/ {\vphantom {{ - \left( {x - \mu } \right)^2 } {2\sigma ^2 }}} \right. \kern-\nulldelimiterspace} {2\sigma ^2 }}}
 \end{equation}
 
+The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance, but to simulate even more conditions, we can instead use the multivariate skew-normal distribution \cite{skewnorm_Azzalini_1999}.
 
+\begin{equation}
+	\label{eqn:skew-norm}
+	f(x)=2\phi (x)\Phi (\alpha x)
+\end{equation}
 
-\begin{figure}[!htb]
+\noindent
+Where
+\begin{equation}
+	\label{eqn:skew-norm-pdf}
+	\phi (x)={\frac  {1}{{\sqrt  {2\pi }}}}e^{{-{\frac  {x^{2}}{2}}}}
+\end{equation}
+
+\noindent
+and
+\begin{equation}
+	\label{eqn:skew-norm-cdf}
+	\Phi (x)=\int _{{-\infty }}^{{x}}\phi (t)\ dt={\frac  {1}{2}}\left[1+\operatorname {erf}\left({\frac  {x}{{\sqrt  {2}}}}\right)\right]
+\end{equation}
+
+\noindent
+and erf is Gauss' error-function
+
+\begin{equation}
+	\label{eqn:skew-norm-cdf-erf}
+	{\displaystyle \operatorname {erf} \left(z\right)={\frac {2}{\sqrt {\pi }}}\int _{0}^{z}e^{-t^{2}}\,dt}
+\end{equation}
+
+% https://github.com/scipy/scipy/blob/master/scipy/stats/_continuous_distns.py#L6083
+Equation \ref{eqn:skew-norm} allows for 
+
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/skewnorm_options.png}
 	\caption[Simulated Disordered Spectrum Weightings]{TEMPORARY CAPTION}
