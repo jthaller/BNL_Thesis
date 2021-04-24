@@ -88,42 +88,47 @@ In both equations \ref{eqn:gaussian-averaging} and \ref{eqn:gaussian-standardiza
 	g(x) = \frac{1}{{\sigma \sqrt {2\pi } }}e^{{{ - \left( {x - \mu } \right)^2 } \mathord{\left/ {\vphantom {{ - \left( {x - \mu } \right)^2 } {2\sigma ^2 }}} \right. \kern-\nulldelimiterspace} {2\sigma ^2 }}}
 \end{equation}
 
-The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance, but to simulate even more conditions, we can instead use the multivariate skew-normal distribution \cite{skewnorm_Azzalini_1999}.
+The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance, but to simulate even more conditions, we can instead use the multivariate skew-normal distribution (eq \ref{eqn:skew-norm}) \cite{skewnorm_Azzalini_1999, 2020SciPy-NMeth}
 
 \begin{equation}
 	\label{eqn:skew-norm}
 	f(x)=2\phi (x)\Phi (\alpha x)
 \end{equation}
-
+ 
 \noindent
-Where
+where $ \phi(x) $ is the Gaussian PDF:
 \begin{equation}
 	\label{eqn:skew-norm-pdf}
 	\phi (x)={\frac  {1}{{\sqrt  {2\pi }}}}e^{{-{\frac  {x^{2}}{2}}}}
 \end{equation}
 
 \noindent
-and
+and $ \Phi (x) $ is the Gaussian CDF:
 \begin{equation}
 	\label{eqn:skew-norm-cdf}
-	\Phi (x)=\int _{{-\infty }}^{{x}}\phi (t)\ dt={\frac  {1}{2}}\left[1+\operatorname {erf}\left({\frac  {x}{{\sqrt  {2}}}}\right)\right]
+	\Phi (x)=\int _{{-\infty }}^{{x}}\phi (t)\ dt
 \end{equation}
+
+%------------WIKIPEDIA EQUATION VERSION -------------
+% \begin{equation}
+% 	\label{eqn:skew-norm-cdf}
+% 	\Phi (x)=\int _{{-\infty }}^{{x}}\phi (t)\ dt={\frac  {1}{2}}\left[1+\operatorname {erf}\left({\frac  {x}{{\sqrt  {2}}}}\right)\right]
+% \end{equation}
+% \noindent
+% and erf is Gauss' error-function
+
+% \begin{equation}
+% 	\label{eqn:skew-norm-cdf-erf}
+% 	{\displaystyle \operatorname {erf} \left(z\right)={\frac {2}{\sqrt {\pi }}}\int _{0}^{z}e^{-t^{2}}\,dt}
+% \end{equation}
 
 \noindent
-and erf is Gauss' error-function
-
-\begin{equation}
-	\label{eqn:skew-norm-cdf-erf}
-	{\displaystyle \operatorname {erf} \left(z\right)={\frac {2}{\sqrt {\pi }}}\int _{0}^{z}e^{-t^{2}}\,dt}
-\end{equation}
-
-% https://github.com/scipy/scipy/blob/master/scipy/stats/_continuous_distns.py#L6083
-Equation \ref{eqn:skew-norm} allows for 
+Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has the nice properties of producing a right-skewed distribution when positive and a left-skewed distibution when negative. When $ \alpha=0 $ the distribution simply produces a the typical Gaussian distribution (eq. \ref{eqn:gaussian}). By using equation \ref{eqn:skew-norm}, we can vary $ \mu, \sigma,  $ and $ \alpha $ to vary the first four moments of the function: mean, standard deviation, skew, and kurtosis. Eighteen possible skew-norm weighting functions are plotted in Figure \ref{fig:skew-norm-options}. 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/skewnorm_options.png}
-	\caption[Simulated Disordered Spectrum Weightings]{TEMPORARY CAPTION}
+	\caption[Simulated Disordered Spectrum Weightings]{Eighteen skew-norm functions are plotting with all possible permutations of $ \sigma=\{.08, .145\} $, $ \mu=\{-.1, 0, .1\} $, and $ \alpha=\{-5,0,5\} $.}
 	\label{fig:skew-norm-options}
 \end{figure}
 
