@@ -69,7 +69,7 @@ To calculate averaged XANES spectrum, $ \left\langle \mu(E) \right\rangle $, usi
 
 \begin{equation}
 	\label{eqn:gaussian-averaging}
-	\left\langle \mu(E) \right\rangle  = \frac{1}{S} \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma^2=0.01\right) \mu(E \mid \Delta\rho)
+	\left\langle \mu(E) \right\rangle  = \frac{1}{S} \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma=0.1\right) \mu(E \mid \Delta\rho)
 \end{equation}
 
 \noindent
@@ -77,7 +77,7 @@ In the above equation $ \Delta\rho $ is the isotropic, radial displacement of ea
 
 \begin{equation}
 	\label{eqn:gaussian-standardization}
-	S = \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma^2=0.01\right)
+	S = \sum_{\Delta\rho=-.45}^{+.45} g\left(\Delta \rho \mid \mu=0, \sigma=0.01\right)
 \end{equation}
 
 \noindent
@@ -128,17 +128,28 @@ Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/skewnorm_options.png}
-	\caption[Simulated Disordered Spectrum Weightings]{Eighteen skew-norm functions are plotting with all possible permutations of $ \sigma=\{.08, .145\} $, $ \mu=\{-.1, 0, .1\} $, and $ \alpha=\{-5,0,5\} $.}
+	\caption[Simulated Disordered Spectrum Weightings]{Eighteen skew-norm distributions plotted with all possible permutations of $ \sigma=\{.08, .145\} $, $ \mu=\{-.1, 0, .1\} $, and $ \alpha=\{-5,0,5\} $. Each represents a possible way to produce a simulated, disordered spectrum from many FEFF-simulated, distorted spectra} 
 	\label{fig:skew-norm-options}
 \end{figure}
 
+The disorder of the skew-norm generated, disordered spectrum is characterized by the mean-squared displacement of each atom from its original position ($ \Delta\rho $ ), weighted in the same manner as the spectra.\todo[inline, color=blue!40]{Instead of characterizing the disordered spectrum by the standard deviation of the gaussian used to create it}Mathemtically, the equation to calculate the weighted mean squared displacement, $ MSD $,  is:
+
+\begin{equation}
+	\label{eqn:weighted-MSD}
+	MSD  = \frac{1}{S} \sum_{\Delta\rho=-.45}^{+.45} f\left(\Delta \rho \mid \mu, \sigma^2, \alpha \right) 
+\end{equation}
+
+\noindent
+where $ f(x) $ is the skew-norm function in equation \ref{eqn:skew-norm}, and the MSD of each individual FEFF spectrum is equal to the isotropic distortion, $ \Delta\rho $.  
 
 \section{Simulation vs. Experimental Data}
+
+To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experiental data.\todo[color=pink!40]{Can someone give me citations for these?} 
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.7\linewidth]{Chapters/Figures/bulk_8nm_disorder_experimental_theory_comparison.png}
-	\caption[Simulation vs. Experimental]{TEMPORARY CAPTION}
+	\caption[Simulation vs. Experimental]{Comparing the bulk foil (blue) measurement to the 8~nm disordered nanoparticle (orange) measurement is an analog to comparing the simulated, non disordered FEFF spectrum (green) to the simulated disordered spectrum (red). The simulated disordered spectrum was weighted according to the gaussian $ N(0, 0.145)  $.}
 	\label{fig:avg-experimental-vs-simulation}
 \end{figure}
 
@@ -146,7 +157,7 @@ Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.7\linewidth]{Chapters/Figures/Bulk_55atom_experimental_theory_comparison.png}
-	\caption[Simulation vs. Experimental 2]{TEMPORARY CAPTION}
+	\caption[Simulation vs. Experimental 2]{Comparing the bulk foil (red) measurement to the 55 atom nanoparticle (green) measurement is an analog to comparing the 13 atom simulated spectrum (blue) to the 55 atom simulated spectrum (orange).}
 	\label{fig:avg-experimental-vs-simulation2}
 \end{figure}
 
