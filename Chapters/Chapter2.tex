@@ -6,7 +6,7 @@
 % \section{Theoretical XANES Calculations}
 % -------------------------------------------------------------
 
-Neural networks rely on a large quantity of training data in order to be able to able to make any predictions. Specifically, to teach our neural network to predict the mean squared displacement (MSD)\todo[color=yellow!40]{Of just Au NPs? Can we generalize this to the sigma of the PRDF?}, we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Rather than spend countless hours generating this training data experimentally or simulating each possible disordered structure individually, we have generated this training data via clever statistical averaging of simulation data from simple, non-disordered structures. In this chapter, we explain this statistical process in-depth --from creating the dataset for initial simulations to finally creating the neural network training data.
+Neural networks rely on a large quantity of training data in order to be able to able to make any predictions. Specifically, to teach our neural network to predict the mean squared displacement (MSD)\todo[color=yellow!40]{Of just Au NPs? Can we generalize this to the sigma of the PRDF?}, we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Rather than spend countless hours generating this training data experimentally or simulating each possible disordered structure individually, we have generated this training data via clever statistical averaging of simulation data from simple, non-disordered structures. In this chapter, we explain the aforemention statistical weighting process in-depth --from creating the dataset for initial simulations to finally creating the neural network training data.
 \todo[inline, color=green!40]{Maybe give a brief outline of the process so you can understand the point of the sections as a walk-through before the very end}
 
 \section{Generating Distortion Not Disorder}
@@ -42,7 +42,7 @@ Each FEFF input file is run with the following parameters:
 ~
 \end{minipage}
 
-Running the 91 simulations (one for each of the distorted structures) takes half an hour \todo[inline, color=blue!40]{I mention it because I want to make a point of how much computationally faster doing this XANES averaging process is}. The resulting XANES spectra are plotted in figure 
+Running the 91 simulations (one for each of the distorted structures) takes half an hour \todo[inline, color=blue!40]{I mention it because I want to make a point of how much computationally faster doing this XANES averaging process is}. The resulting XANES spectra are plotted in figure \ref{fig:feff-results}.
 
 \begin{figure}[h]
 	\centering
@@ -61,7 +61,7 @@ Disorder in a system can be characterized by the Gaussian width, sigma, of the p
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/gaussian-weighting-hist.png}
-	\caption[Simulated Spectrum Gaussian Weighting]{A Gaussian distribution probability density function can be used to calculate the relative weight of each FEFF generated XANES spectrum towards one simulated, disordered spectrum. Each bin (red bar) represents a FEFF generated spectrum with the x-axis being the istropic shift of the atomic positions and the y-axis being the relative weight factor.}
+	\caption[Simulated Spectrum Gaussian Weighting]{A Gaussian distribution probability density function can be used to calculate the relative weight of each FEFF generated XANES spectrum towards one simulated, disordered spectrum. Each bin (red bar) represents a FEFF generated spectrum; the x-axis is the isotropic shift of the atomic positions, and the y-axis being the relative weight factor.}
 	\label{fig:gaussian-weighting-hist}
 \end{figure}
 
@@ -88,7 +88,7 @@ In both equations \ref{eqn:gaussian-averaging} and \ref{eqn:gaussian-standardiza
 	g(x) = \frac{1}{{\sigma \sqrt {2\pi } }}e^{{{ - \left( {x - \mu } \right)^2 } \mathord{\left/ {\vphantom {{ - \left( {x - \mu } \right)^2 } {2\sigma ^2 }}} \right. \kern-\nulldelimiterspace} {2\sigma ^2 }}}
 \end{equation}
 
-The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance, but to simulate even more conditions, we can instead use the multivariate skew-normal distribution (eq \ref{eqn:skew-norm}) \cite{skewnorm_Azzalini_1999, 2020SciPy-NMeth}
+The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different degrees disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance, but to simulate even more conditions, we can instead use the multivariate skew-normal distribution (eq \ref{eqn:skew-norm}) \cite{skewnorm_Azzalini_1999, 2020SciPy-NMeth}
 
 \begin{equation}
 	\label{eqn:skew-norm}
@@ -123,7 +123,7 @@ and $ \Phi (x) $ is the Gaussian CDF:
 % \end{equation}
 
 \noindent
-Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has the nice properties of producing a right-skewed distribution when positive and a left-skewed distibution when negative. When $ \alpha=0 $ the distribution simply produces a the typical Gaussian distribution (eq. \ref{eqn:gaussian}). By using equation \ref{eqn:skew-norm}, we can vary $ \mu, \sigma,  $ and $ \alpha $ to vary the first four moments of the function: mean, standard deviation, skew, and kurtosis. Eighteen possible skew-norm weighting functions are plotted in Figure \ref{fig:skew-norm-options}. 
+Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has the nice properties of producing a right-skewed distribution when positive and a left-skewed distibution when negative. When $ \alpha=0 $ the distribution simply produces a the typical Gaussian distribution (eq. \ref{eqn:gaussian}). By using equation \ref{eqn:skew-norm}, we can vary $ \mu, \sigma,  $ and $ \alpha $ to vary the first four moments of the function: mean, standard deviation, skew, and kurtosis. Eighteen possible skew-norm weighting functions are plotted in Figure \ref{fig:skew-norm-options}. To train the neural network, 1000 such weightings are used.
 
 \begin{figure}[h!]
 	\centering
@@ -132,7 +132,7 @@ Equation \ref{eqn:skew-norm} includes the shape parameter, $ \alpha $, which has
 	\label{fig:skew-norm-options}
 \end{figure}
 
-The disorder of the skew-norm generated, disordered spectrum is characterized by the mean-squared displacement of each atom from its original position ($ \Delta\rho $ ), weighted in the same manner as the spectra.\todo[inline, color=blue!40]{Instead of characterizing the disordered spectrum by the standard deviation of the gaussian used to create it}Mathemtically, the equation to calculate the weighted mean squared displacement, $ MSD $,  is:
+The disorder of the skew-norm generated, disordered spectrum is characterized by the mean-squared displacement of each atom from its original position ($ \Delta\rho $ ), weighted in the same manner as the spectra.\todo[inline, color=blue!40]{Instead of characterizing the disordered spectrum by the standard deviation of the gaussian used to create it}Mathemtically, the equation to calculate the weighted mean squared displacement, $ MSD $, is:
 
 \begin{equation}
 	\label{eqn:weighted-MSD}
@@ -144,15 +144,29 @@ where $ f(x) $ is the skew-norm function in equation \ref{eqn:skew-norm}, and th
 
 \section{Simulation vs. Experimental Data}
 
-To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experiental data.\todo[color=pink!40]{Can someone give me citations for these?} 
+To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data.\todo[color=pink!40]{Can someone give me citations for these?} In figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $ , and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated, disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the Bulk. These weightings correspond to a $ MSD $ value that matches the measured $ \sigma^2 $ values for the experimental data.  
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.7\linewidth]{Chapters/Figures/bulk_8nm_disorder_experimental_theory_comparison.png}
-	\caption[Simulation vs. Experimental]{Comparing the bulk foil (blue) measurement to the 8~nm disordered nanoparticle (orange) measurement is an analog to comparing the simulated, non disordered FEFF spectrum (green) to the simulated disordered spectrum (red). The simulated disordered spectrum was weighted according to the gaussian $ N(0, 0.145)  $.}
+	\includegraphics[width=.75\linewidth]{Chapters/Figures/updated_bulk_8nm_disorder_experimental_theory_comparison.png}
+	\caption[Simulation vs. Experimental]{Comparing the bulk foil (red) measurement to the 8~nm disordered nanoparticle (green) measurement is an analog to comparing the simulated, non disordered FEFF spectrum (orange) to the simulated disordered spectrum (blue).}
 	\label{fig:avg-experimental-vs-simulation}
 \end{figure}
 
+In Figure \ref{fig:avg-experimental-vs-simulation}, the bulk Au foil spectrum is above the 8~nm nanoparticle spectrum (more absorption) until the peak around 11937~eV, where the NP absorption becomes higher. The two criss-cross again over the next two peaks, changing which material has the higher absorbance in an energy range. This change is more easily seen in figure \ref{fig:avg-experimential-vs-simulation-difference}, which plots the difference between the the bulk material and the nanoparticle absorption for both the experimental measurements and the simulations. The experimental and simulation difference-spectra follow the same trend with the exception of the peak around 11947~eV.
+% The two spectrum switch again at the peak around 11943~eV so the bulk foil's absorption nlevel is higher again. Beyond this peak, the two
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\linewidth]{Chapters/Figures/experimental_vs_simulation_delta.png}
+	\caption[Bulk-nanoparticle difference: Simulation vs. Experimental data]{The difference between the nanoparticle spectrum and the bulk spectrum are plotted for the same data as in Figure \ref{fig:avg-experimental-vs-simulation}. It is easier to see where the bulk and the nanoparticle absorption crisscross by plotting the difference.}
+	\label{fig:avg-experimential-vs-simulation-difference}
+\end{figure}
+
+Figures \ref{fig:avg-experimental-vs-simulation} and \ref{fig:avg-experimential-vs-simulation-difference} aren't meant to be perfect comparisons of simulations vs. experimental data. For one, the the experimental data compars a bulk spectrum to a nanoparticle. By constrast, both the simulation spectra are of the same size 55 atom cluster. Still, much of the disorder trends are coded in the simulation approach. 
+
+To test if the size information is also coded in our simulations we compare different size simulations to experimental data in figure \ref{fig:avg-experimental-vs-simulation2}. As expected, more atoms in the simulation produces more bulk-like spectrum characterstics such as larger amplitude peaks.
 
 \begin{figure}[h]
 	\centering
