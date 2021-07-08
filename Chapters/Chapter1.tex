@@ -4,6 +4,9 @@
 \\
 In addition to setting your work into context, a second good idea for your introduction is to give a short outline for what the rest of your thesis will discuss.  This is often done in the closing paragraph(s) of the introduction with sentences like ``In the following chapters \ldots " and ``Chapter 2 discusses \ldots"  Tremendous detail is not required in this outline, but rather just a brief road map for the rest of the document.}
 
+% synchrtron radiation section is the intro
+Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green!50]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure. Importantly, the incoming photons are highly polarized, either linearly or circularly, depending on where the measurement system lies with respect to the plane of the synchrotron. The advent of a technique to manufacture such a high-quality source of x-rays allowed for new, advanced methods of x-ray absorption spectroscopy, and the two fields were developed in parallel.
+
 \section{X-ray Absorption Spectroscopy}
 \todo[color=green!40, inline]{I want to describe the problem we're trying to solve in this section. So I want to motivate the problem by describing XAFS a little so I can describe the limitations of XANES and why this project is useful. More in-depth explanations can be placed in chapter 2}
 
@@ -17,25 +20,37 @@ coefficient of $ \mu $ and a sample of thickness $ x $ is:
 
 Above the absorption edge, the condensced state has characteristic absorption jumps where the incident photon's energy matches the binding energy of a core electron. At this energy, nearly all the photon's energy is absorbed by the core electron, resulting in the characteristic absorption-edges first observed in 1920 \cite{fricke1920, hertz1920ueber}.
 
-\subsection{Synchrotron Radiation}
-\todo[color=orange!60, inline]{I'm not sure where this will end up going, but somewhere I'll have to write about the origin of synchrotron radiation}
 
-Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green!50]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure, and the incoming photons are highly polarized, either linearly or circularly depending on where the measurement system lies with respect to the plane of the synchrotron. \todo[color=yellow!40]{wordy}
 
 \subsection{XAFS}
-X-ray Absorption Fine-Structure (XAFS) spectroscopy refers to the study of absorption spectra created from high-intensity x-ray interactions. As the energy of the incident radiation is increased, the photon's energy will eventually match the binding energy of a core-level electron. As a result, an "edge" in the spectrum will be observed. The location of these edges depends on the chemical and physical structure, as well as the electronic and vibrational state of the material, creating characteristic absorption oscillations.
+X-ray Absorption Fine-Structure (XAFS) spectroscopy refers to the study of absorption spectra created from high-intensity x-ray interactions. As the energy of the incident radiation increases, the photon's energy will eventually match the binding energy of a core-level electron. As a result, an ``edge'' in the spectrum will be observed. The location of these edges depends on the chemical and physical structure, as well as the electronic and vibrational states of the material. Absorption edges are like fingerprints used to identify elements, distinguish oxidation states, and even probe short-range order from the characteristic peaks and oscillations in the spectrum. XAFS spectroscopy can be performed on virtually any stable element since all atoms contain core-level electrons. Although a high-quality source of x-rays such as synchrotron radiation is required for the analysis, the ubiquity and utility of XAFS spectroscopy has made it an indispensable technique in fields such as materials biology, chemistry, and materials science \cite{rehrXAFS2000review} \cite{newville2014fundamentals}.
 
-(Here's a good source to cite a bunch: the 2000 review of XAFS
-\cite{rehrXAFS2000review})
-\cite{newville2014fundamentals}
+% \textit{absorption edges like fingerprints to identify elements. in 1920 Frische and Hertz observed peak shape, and 40 years later it was learned that this shape can be used to probe the short-range order.1971 e.a. Sterne expalin this effect. Fermi's golden rule. The inelastic interactions of the photon are related to characteristic energies. When the photon energies match the energy difference from the core-electron state to the first unoccupied level, the photon can be fully absorbed (before that only partially absorbed.)}
+The XAFS equation is 
+\begin{equation}
+    \label{XAFS}
+    \chi = \dfrac{ \mu(E)- \mu_{0}(E)  }{  \mu_{0}(E) - \mu_{ b  }(E)  } 
+\end{equation}
 
-\textit{absorption edges like fingerprints to identify elements. in 1920 Frische and Hertz observed peak shape, and 40 years later it was learned that this shape can be used to probe the short-range order.1971 e.a. Sterne expalin this effect. Fermi's golden rule. The inelastic interactions of the photon are related to characteristic energies. When the photon energies match the energy difference from the core-electron state to the first unoccupied level, the photon can be fully absorbed (before that only partially absorbed.)}
-
+\noindent where $\mu$ is the measured absorption, $ \mu_0 $  is the ``atomic'' absorption due to .... specific electrons, and $ \mu_b $ 
+is the absorption of other processes \cite{klementev2000xafs}, typically approximated with the Victoreen polynomial (\ref{Victoreen}).
 
 \begin{equation}
     \label{Victoreen}
-    \mu(E) = aE^{-3} + bE^{-4}
+    \mu_b(E) = aE^{-3} + bE^{-4}
 \end{equation}
+
+\noindent The coefficients $ \alpha $ and $ \beta $ can be found via a simple regression on a sprectrum measured at pre-edge energies \cite{klementev2000xafs}. 
+
+The XAFS spectrum is typically divided into two regions of study: the area near the first absorption peak ---XANES, and the area after ---EXAFS. XANES is strongly sensitive to formal oxidation state and coordination
+chemistry (e.g., octahedral, tetrahedral coordination) of the absorbing atom, while the EXAFS
+can be used to determine the distances, coordination number, and species of the neighbors of
+the absorbing atom.
+% "The most difficult procedure in extracting of XAFS from the measured absorption is the construction of μ0 since
+% one cannot definitely distinguish the environmental-born part of absorption from the atomic-like one. \cite{klementev2000xafs}"
+
+\subsection{EXAFS}
+Beyond the edge of the absorption spectrum lies the Extended X-ray Absorption Fine Structure (EXAFS) region. The spectal shape of this domain is determined by the multiple scattering of the photoelectron, interference of the incoming and outgoing waves of the photon, and electronic energy level splitting of the local structure. The oscillations in the EXAFS region are extremely sensitive to local bond lengths, coordination numbers, and atomic species of the surrounding elements.
 
 \begin{equation}
     \label{FermisGoldenRule}
@@ -43,11 +58,10 @@ X-ray Absorption Fine-Structure (XAFS) spectroscopy refers to the study of absor
     \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - Ef)  
 \end{equation}
 
-\subsection{EXAFS}
-Extended X-ray Absorption Fine Structure (EXAFS)
-
+problems with exafs: gaussian assumption. It's a first order approximation because of this. MD or RMC or NN are better alternatives
 
 \subsection{XANES}
+While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivilent. With the recent expolision in population of machine learning in science, a modern topic of research is to develop a model capable of 
 
 \section{Disorder in XAFS}
 
