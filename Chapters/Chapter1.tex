@@ -1,15 +1,13 @@
 % INTRODUCTION
 
-\todo[inline,color=yellow!40]{The introduction is one of the most important pieces of your thesis.  Here is a place for you to introduce the problem(s) on which you have worked and place them in the larger context of your field. You should aim to ensure that this section is completely understandable to virtually anyone - and certainly anyone with a sophomore-level grasp of physics.  Presumably, this will include references to the literature.
-\\
-In addition to setting your work into context, a second good idea for your introduction is to give a short outline for what the rest of your thesis will discuss.  This is often done in the closing paragraph(s) of the introduction with sentences like ``In the following chapters \ldots " and ``Chapter 2 discusses \ldots"  Tremendous detail is not required in this outline, but rather just a brief road map for the rest of the document.}
+% \todo[inline,color=yellow!40]{The introduction is one of the most important pieces of your thesis.  Here is a place for you to introduce the problem(s) on which you have worked and place them in the larger context of your field. You should aim to ensure that this section is completely understandable to virtually anyone - and certainly anyone with a sophomore-level grasp of physics.  Presumably, this will include references to the literature.
+% \\
+% In addition to setting your work into context, a second good idea for your introduction is to give a short outline for what the rest of your thesis will discuss.  This is often done in the closing paragraph(s) of the introduction with sentences like ``In the following chapters \ldots " and ``Chapter 2 discusses \ldots"  Tremendous detail is not required in this outline, but rather just a brief road map for the rest of the document.}
 
 % synchrtron radiation section is the intro
-Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green!50]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure. Importantly, the incoming photons are highly polarized, either linearly or circularly, depending on where the measurement system lies with respect to the plane of the synchrotron. The advent of a technique to manufacture such a high-quality source of x-rays allowed for new, advanced methods of x-ray absorption spectroscopy, and the two fields were developed in parallel.
+Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green!50]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure. Importantly, the incoming photons are highly polarized, either linearly or circularly, depending on where the measurement system lies with respect to the plane of the synchrotron. The advent of a technique to manufacture such a high-quality source of x-rays allowed for new, advanced methods of x-ray absorption spectroscopy, and the two fields were developed in parallel. 
 
 \section{X-ray Absorption Spectroscopy}
-\todo[color=green!40, inline]{I want to describe the problem we're trying to solve in this section. So I want to motivate the problem by describing XAFS a little so I can describe the limitations of XANES and why this project is useful. More in-depth explanations can be placed in chapter 2}
-
 X-ray absorption spectroscopy measures the absorption of high-energy photons by a sample as a function of energy \cite{gardenghi2012synchrotron}. The attenuation, or change in transmitted light intensity as a result of inelastic processes, is characterized by the Beer-Lambert Law (\ref{BeerLambert}). For an incident beam of intensity $I_0$, the transmitted intensity after interacting with an \todo[color=blue!40]{pick one} attenuation/absorption 
 coefficient of $ \mu $ and a sample of thickness $ x $ is: 
 
@@ -20,6 +18,14 @@ coefficient of $ \mu $ and a sample of thickness $ x $ is:
 
 Above the absorption edge, the condensced state has characteristic absorption jumps where the incident photon's energy matches the binding energy of a core electron. At this energy, nearly all the photon's energy is absorbed by the core electron, resulting in the characteristic absorption-edges first observed in 1920 \cite{fricke1920, hertz1920ueber}.
 
+In experimental setups, particular energy photons are selected from the broad spectrum of synchrotron radiation via a pair of monochromaters. The primary monochromater is a crystal with interplanar spacing, $ d $, chosen specify to satisfy the Bragg equation \ref{Bragg}, relecting photons of wavelngth, $ \lambda $ at angle $ \theta $.  
+
+\begin{equation}
+    \label{Bragg}
+    n\lambda = 2d\sin(\theta)
+\end{equation}
+
+The secondary monochromater removes higher order harmonics that satisfy the Bragg equation $ (2\lambda, 3\lambda etc.). $ Different wavelngths of light can be selected by changing the angle. In the XAFS setup, two ionization chambers are used to measure the incident and transmitted light intensity. For any study, the absoprion spectrum for a reference sample is also measured to calibrate the energy scale.
 
 
 \subsection{XAFS}
@@ -42,15 +48,28 @@ is the absorption of other processes \cite{klementev2000xafs}, typically approxi
 
 \noindent The coefficients $ \alpha $ and $ \beta $ can be found via a simple regression on a sprectrum measured at pre-edge energies \cite{klementev2000xafs}. 
 
-The XAFS spectrum is typically divided into two regions of study: the area near the first absorption peak ---XANES, and the area after ---EXAFS. XANES is strongly sensitive to formal oxidation state and coordination
-chemistry (e.g., octahedral, tetrahedral coordination) of the absorbing atom, while the EXAFS
-can be used to determine the distances, coordination number, and species of the neighbors of
-the absorbing atom.
+The XAFS spectrum is typically divided into two regions of study: the area near the first absorption peak ---XANES, and the area after ---EXAFS. XANES has a strong sensitivity to the oxidation state and coordination
+chemistry of the absorbing atom, while the EXAFS
+can be used to determine the bond lengths, coordination numbers, and atomic species of the absorbing atom's neighbors.
 % "The most difficult procedure in extracting of XAFS from the measured absorption is the construction of μ0 since
 % one cannot definitely distinguish the environmental-born part of absorption from the atomic-like one. \cite{klementev2000xafs}"
 
 \subsection{EXAFS}
-Beyond the edge of the absorption spectrum lies the Extended X-ray Absorption Fine Structure (EXAFS) region. The spectal shape of this domain is determined by the multiple scattering of the photoelectron, interference of the incoming and outgoing waves of the photon, and electronic energy level splitting of the local structure. The oscillations in the EXAFS region are extremely sensitive to local bond lengths, coordination numbers, and atomic species of the surrounding elements.
+Beyond the edge of the absorption spectrum lies the Extended X-ray Absorption Fine Structure (EXAFS) region. The spectral shape of this domain is determined by the multiple scattering of the photoelectron, interference of the incoming and outgoing waves of the photon, and electronic energy level splitting of the local structure. The oscillations in the EXAFS region are extremely sensitive to local bond lengths, coordination numbers, and atomic species of the surrounding elements.
+
+
+\subsubsection{EXAFS Data Reduction}
+To prepare the absorption data for fitting (data reduction), several steps must be performed. First the pre-edge background must be removed using the Victoreen formula (\ref{Victoreen}) or an alternative polynomial. Next, the atomic background, $ \mu_0(E) $  is removed and the absorption measured absorption is normalized accordingly. This is a non-trivial process, as the absorption coefficient is not that of a single, isolated atomic absorber, but instead of an atom and its surrounding neighbors. High order spline fittings must be used to remove the low frequency, immeasureable oscillations due to photoelectron scattering with nearby valence electrons. For EXAFS Fitting, the EXAFS function is often the transformed into k-space, and Fourier transformed into a radial distribution-like function via \cite{exafsbook}.
+
+\begin{equation}
+    \label{rdf-exafs}
+    \widetilde{\chi}(r) = \frac{1}{2\pi} \int_{0}^{\infty }  k^n \chi(k) e^{2ikr} dk
+\end{equation}
+
+Alternatively, one can convert the wave to R-space, which is what Artemis and Athena, two of the most common EXAFS fitting software, do.
+
+\subsubsection{The EXAFS Equation}
+With the data reduction complete, a multi-parameter fitting can be performed via the EXAFS equation. This equation is an approximation based principally on Fermi's golden rule (\ref{FermisGoldenRule}).
 
 \begin{equation}
     \label{FermisGoldenRule}
@@ -58,10 +77,19 @@ Beyond the edge of the absorption spectrum lies the Extended X-ray Absorption Fi
     \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - Ef)  
 \end{equation}
 
-problems with exafs: gaussian assumption. It's a first order approximation because of this. MD or RMC or NN are better alternatives
+At energies above the core electron binding energy, the excess energy is transferred to the photoelectron, which may then undergo multiple scattering with the surrounding atoms. The final wavefunction of the photoselectron is then the superposition of the outgoing photoelectron and the scattered 
+
+\begin{equation}
+    \label{ExafsFormula}
+    \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)e^{-2\sigma_j^2k^2}e^{-\tfrac{2r_j}{\lambda(k)}}\sin(2kr_j + \phi_{ij}(k))
+\end{equation}
+
+
+
+While popular, the EXAFS equation is still a first order approximation with its own assumptions and limitations. For example, the fitted disorder parameter, the Debeye-Waller factor, explicitely assumes a Gaussian distribution of nearest-neighbor bond length distances. Other, more accurate but computationally intensive alternatives, such as molecular dynamics, reverse monte carlo simulations, and neural networks are increasing in popularity.
 
 \subsection{XANES}
-While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivilent. With the recent expolision in population of machine learning in science, a modern topic of research is to develop a model capable of 
+While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivalent. With the recent explosion in popularity of machine learning in science, a modern topic of research is to determining how much information is encoded in the XANES region.
 
 \section{Disorder in XAFS}
 
