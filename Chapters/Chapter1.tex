@@ -5,10 +5,10 @@
 % In addition to setting your work into context, a second good idea for your introduction is to give a short outline for what the rest of your thesis will discuss.  This is often done in the closing paragraph(s) of the introduction with sentences like ``In the following chapters \ldots " and ``Chapter 2 discusses \ldots"  Tremendous detail is not required in this outline, but rather just a brief road map for the rest of the document.}
 
 % synchrtron radiation section is the intro
-Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays)\todo[color=green!50]{frequency range?} and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure. Importantly, the incoming photons are highly polarized, either linearly or circularly, depending on where the measurement system lies with respect to the plane of the synchrotron. The advent of a technique to manufacture such a high-quality source of x-rays allowed for new, advanced methods of x-ray absorption spectroscopy, and the two fields were developed in parallel. 
+Synchrotron radiation was first observed by General Electric in Schenectady, New York \cite{firstSynchrotronRadPaper}. Initially just a side effect of particle accelerator experiments, it has since grown to be an important and powerful source of high-energy electromagnetic radiation for structural determination. Compared to lab-scale x-ray generation for diffraction experiments, arguably the most important benefit of synchrotron radiation is its high brilliance. Synchrotron radiation creates a highly collimated beam of photons characterized by small divergence and spatial coherence. Additionally, synchrotron radiation is tunable across a wide spectrum (microwaves to hard X-rays) and capable of high flux, useful for short time-scale-dependent experiments or weak scatterers. Synchrotron radiation can be produced in a pulsed structure. Importantly, the incoming photons are highly polarized, either linearly or circularly, depending on where the measurement system lies with respect to the plane of the synchrotron. The advent of a technique to manufacture such a high-quality source of x-rays allowed for new, advanced methods of x-ray absorption spectroscopy, and the two fields were developed in parallel. 
 
 \section{X-ray Absorption Spectroscopy}
-X-ray absorption spectroscopy measures the absorption of high-energy photons by a sample as a function of energy \cite{gardenghi2012synchrotron}. The attenuation, or change in transmitted light intensity as a result of inelastic processes, is characterized by the Beer-Lambert Law (\ref{BeerLambert}). For an incident beam of intensity $I_0$, the transmitted intensity after interacting with an \todo[color=blue!40]{pick one} attenuation/absorption 
+X-ray absorption spectroscopy measures the absorption of high-energy photons by a sample as a function of energy \cite{gardenghi2012synchrotron}. The attenuation, or change in transmitted light intensity as a result of inelastic processes, is characterized by the Beer-Lambert Law (\ref{BeerLambert}). For an incident beam of intensity $I_0$, the transmitted intensity after interacting with an attenuation
 coefficient of $ \mu $ and a sample of thickness $ x $ is: 
 
 \begin{equation}
@@ -16,7 +16,7 @@ coefficient of $ \mu $ and a sample of thickness $ x $ is:
     I = I_0 e^{-\mu x}
 \end{equation}
 
-Above the absorption edge, the condensced state has characteristic absorption jumps where the incident photon's energy matches the binding energy of a core electron. At this energy, nearly all the photon's energy is absorbed by the core electron, resulting in the characteristic absorption-edges first observed in 1920 \cite{fricke1920, hertz1920ueber}.
+Above the absorption edge, the condensed state has characteristic absorption jumps where the incident photon's energy matches the binding energy of a core electron. At this energy, nearly all the photon's energy is absorbed by the core electron, resulting in the characteristic absorption-edges first observed in 1920 \cite{fricke1920, hertz1920ueber}.
 
 In experimental setups, particular energy photons are selected from the broad spectrum of synchrotron radiation via a pair of monochromaters. The primary monochromater is a crystal with interplanar spacing, $ d $, chosen specify to satisfy the Bragg equation \ref{Bragg}, relecting photons of wavelngth, $ \lambda $ at angle $ \theta $.  
 
@@ -59,7 +59,7 @@ Beyond the edge of the absorption spectrum lies the Extended X-ray Absorption Fi
 
 
 \subsubsection{EXAFS Data Reduction}
-To prepare the absorption data for fitting (data reduction), several steps must be performed. First the pre-edge background must be removed using the Victoreen formula (\ref{Victoreen}) or an alternative polynomial. Next, the atomic background, $ \mu_0(E) $  is removed and the absorption measured absorption is normalized accordingly. This is a non-trivial process, as the absorption coefficient is not that of a single, isolated atomic absorber, but instead of an atom and its surrounding neighbors. High order spline fittings must be used to remove the low frequency, immeasureable oscillations due to photoelectron scattering with nearby valence electrons. For EXAFS Fitting, the EXAFS function is often the transformed into k-space, and Fourier transformed into a radial distribution-like function via \cite{exafsbook}.
+To prepare the absorption data for fitting (data reduction), several steps must be performed. First the pre-edge background must be removed using the Victoreen formula (\ref{Victoreen}) or an alternative polynomial. Next, the atomic background, $ \mu_0(E) $  is removed and the absorption measured absorption is normalized accordingly. This is a non-trivial process, as the absorption coefficient is not that of a single, isolated atomic absorber; instead, it represents that of an atom and its surrounding neighbors. High order spline fittings must be used to remove the low frequency, immeasurable oscillations due to photoelectron scattering with nearby valence electrons. For EXAFS Fitting, the EXAFS function is often transformed into k-space, and Fourier transformed into a radial distribution-like function via (\ref{red-exafs}) \cite{exafsbook}.
 
 \begin{equation}
     \label{rdf-exafs}
@@ -69,7 +69,7 @@ To prepare the absorption data for fitting (data reduction), several steps must 
 Alternatively, one can convert the wave to R-space, which is what Artemis and Athena, two of the most common EXAFS fitting software, do.
 
 \subsubsection{The EXAFS Equation}
-With the data reduction complete, a multi-parameter fitting can be performed via the EXAFS equation. This equation is an approximation based principally on Fermi's golden rule (\ref{FermisGoldenRule}).
+With the data reduction complete, a multi-parameter fitting can be performed via the EXAFS equation. This equation is an approximation based principally on the many-body Fermi golden rule (\ref{FermisGoldenRule}).
 
 \begin{equation}
     \label{FermisGoldenRule}
@@ -77,16 +77,23 @@ With the data reduction complete, a multi-parameter fitting can be performed via
     \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - Ef)  
 \end{equation}
 
-At energies above the core electron binding energy, the excess energy is transferred to the photoelectron, which may then undergo multiple scattering with the surrounding atoms. The final wavefunction of the photoselectron is then the superposition of the outgoing photoelectron and the scattered 
+\noindent Fermi's golden rule describes the probability of a transition in state occurring. Here (\ref{FermisGoldenRule}), $ \mu(E) $ is the absorption coefficient, $ f $ and $ i $ are the final and initial states of the photoelectron, respectively. $ H_{int} $ is the matter-light interaction operator, and the delta function ensures conservation of energy. The summation over all enegy values approximates the many-bodied problem as a single particle theory. 
+
+At energies above the core electron binding energy, excess energy is transferred to the photoelectron, which may then undergo multiple scattering with the surrounding atoms. The final wavefunction of the photoelectron is the superposition of the outgoing photoelectron and the scattered wave. EXAFS only takes into account the local region around the absorber at a distance $ r_j $  from the backscattering atom.
+
+\begin{equation}
+    \label{superposition_Exafs}
+    \chi(k) \approx F_j(k) \dfrac{\sin[2kr_j + \phi_{ij}(k)]}{2r_j^2}
+\end{equation}
+
+The above equation (\ref{superposition_Exafs}) describes the EXAFS signal for only one backscattering atom. For a system with many atoms, one must sum over all the backscattered waves. To account for the inevitable variation in bond lengths, the Debye-Waller factor $ \sigma_j $ is introduced; this describes the standard deviation in bond-length of the sample.\footnote{Note, this differs from the Debye-Waller factor used for x-ray absorption, which describes the broadening of a diffraction peak due to variations in inter-planar spacing \cite{DW-diffraction}}. The lifetime of the photoelectron's excited state is taken into account by introducing an exponential term to account for the mean-free-path, $ e^{-2r_j/\lambda} $. Combining all this information with an amplitude correction factor of $ S_0 $, we arrive at the EXAFS equation (\ref{ExafsFormula}. 
 
 \begin{equation}
     \label{ExafsFormula}
-    \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)e^{-2\sigma_j^2k^2}e^{-\tfrac{2r_j}{\lambda(k)}}\sin(2kr_j + \phi_{ij}(k))
+    \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)e^{-2\sigma_j^2k^2}e^{-\tfrac{2r_j}{\lambda(k)}}\sin[2kr_j + \phi_{ij}(k)]
 \end{equation}
 
-
-
-While popular, the EXAFS equation is still a first order approximation with its own assumptions and limitations. For example, the fitted disorder parameter, the Debeye-Waller factor, explicitely assumes a Gaussian distribution of nearest-neighbor bond length distances. Other, more accurate but computationally intensive alternatives, such as molecular dynamics, reverse monte carlo simulations, and neural networks are increasing in popularity.
+Although popular, the EXAFS equation is still a first-order approximation with assumptions and limitations. For example, the fitted disorder parameter, the Debye-Waller factor, explicitly assumes a Gaussian distribution of nearest-neighbor bond length distances. Other more accurate but computationally intensive alternatives are increasing in popularity, including molecular dynamics, reverse Monte Carlo simulations, and neural networks.
 
 \subsection{XANES}
 While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivalent. With the recent explosion in popularity of machine learning in science, a modern topic of research is to determining how much information is encoded in the XANES region.
