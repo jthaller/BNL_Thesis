@@ -93,10 +93,14 @@ The above equation (\ref{superposition_Exafs}) describes the EXAFS signal for on
     \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)e^{-2\sigma_j^2k^2}e^{-\tfrac{2r_j}{\lambda(k)}}\sin[2kr_j + \phi_{ij}(k)]
 \end{equation}
 
-Although popular, the EXAFS equation is still a first-order approximation with assumptions and limitations. For example, the fitted disorder parameter, the Debye-Waller factor, explicitly assumes a Gaussian distribution of nearest-neighbor bond length distances. Other more accurate but computationally intensive alternatives are increasing in popularity, including molecular dynamics, reverse Monte Carlo simulations, and neural networks.
+Although popular, the EXAFS equation is still a first-order approximation with assumptions and limitations. For example, the fitted disorder parameter, the Debye-Waller factor, explicitly assumes a Gaussian distribution of nearest-neighbor bond length distances. Other more accurate but computationally intensive alternatives are increasing in popularity. Such alternatives include molecular dynamics, reverse Monte Carlo simulations, and neural networks.
 
 \subsection{XANES}
-While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivalent. With the recent explosion in popularity of machine learning in science, a modern topic of research is to determining how much information is encoded in the XANES region.
+The XANES region, or the near-edge region, contains the chemical and electronic structural information of the sample. XANES also has the advantage of a higher signal-to-noise ratio than the subtle interference-determined oscillations found in EXAFS. While there is an ``EXAFS Equation,'' there is no ``XANES Equation'' equivalent; however, this does not mean that there is no structural information encoded in the XANES, only that the theory is underdeveloped. Mainly, the strong errors in potential and many-body effects limit the development of a ``XANES equation.'' 
+
+With the recent explosion in the popularity of machine learning, the investigation of the XANES latent space has become a topic of modern research is. In other words, how much information is encoded in XANES?
+
+Recent work at Brookhaven National Lab \cite{Timoshenko2017} has shown that structural descriptors can be learned from the XANES spectrum. Specifically, their method enables the decoding of XANES spectra to obtain the coordination number of bi-metallic nanoparticles. In this 2017 paper, the group trained an artificial neural network (ANN) to recognize a relationship between the nanoparticle structure and the XANES spectrum. Once trained, the ANN is used to ``invert'' an unknown spectrum to obtain the corresponding descriptors  of the catalyst structure. 
 
 \section{Disorder in XAFS}
 
