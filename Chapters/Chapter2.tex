@@ -6,11 +6,11 @@
 % \section{Theoretical XANES Calculations}
 % -------------------------------------------------------------
 
-Before making any predictions, neural networks must first be trained on a large quantity of data. Specifically, to teach our neural network to predict the mean squared displacement (MSD)\todo[color=yellow!40]{Of just Au NPs? Can we generalize this to the sigma of the PRDF?}, we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Gathering such a large quanity of high-quality experimental data would be impractically time-intensitive and expensive. Rather, simulations provide a practical alternative, though even simulating each possible disordered structure individually, would be extremely time-intensive. Instead, we run many XANES simulations of  simple, non-disordered structures and generate the neural network training data or disordered spectra via clever statistical averaging. In this chapter, we explain this statistical weighting process in-depth, beginning with the creation of simple, non-disordered spectra for the FEFF input files and culminating in the creation of many possible disordered spectra with known MSD.
-\todo[inline, color=green!40]{Maybe give a brief outline of the process so you can understand the point of the sections as a walk-through before the very end}
+Before making any predictions, neural networks must first be trained on a large quantity of data. Specifically, to teach our neural network to predict the mean squared displacement (MSD)\textit{Of just Au NPs? Can we generalize this to the sigma of the PRDF?}, we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Gathering such a large quantity of high-quality experimental data would be impractically time-intensitive and expensive. Rather, simulations provide a practical alternative, though even simulating each possible disordered structure individually, would be extremely time-intensive. Instead, we run many XANES simulations of simple, non-disordered structures and generate the neural network training data or disordered spectra via clever statistical averaging. In this chapter, we explain this statistical weighting process in-depth, beginning with the creation of simple, non-disordered spectra for the FEFF input files and culminating in the creation of many possible disordered spectra with known MSD.
+\textit{Maybe give a brief outline of the process so you can understand the point of the sections as a walk-through before the very end}
 
 \section{Generating Distortion Not Disorder}
-Instead of creating structures with a range of \textit{disorder}, we instead begin by generating structures with a range of \textit{distortion}. Wheres \textit{disorder} refers to a statisical average of atomic displacement from their original position, characterized by MSD and the width $ \sigma^2 $ of a partial radial distribution function, \textit{distortion} refers only to an isotropic expansion or contraction of the subject. Equivalently, we define distortion as a radial shift in all atomic positions away from (or towards) the center atomic absorber.
+Instead of creating structures with a range of \textit{disorder}, we instead begin by generating structures with a range of \textit{distortion}. Wheres \textit{disorder} refers to a statistical average of atomic displacement from their original position, characterized by MSD and the width $ \sigma^2 $ of a partial radial distribution function, \textit{distortion} refers only to isotropic expansion or contraction of the subject. Equivalently, we define distortion as a radial shift in all atomic positions away from (or towards) the center atomic absorber.
 
 % Figure created in distortion-visualizations.ipynb 
 \begin{figure}[h]
@@ -21,7 +21,7 @@ Instead of creating structures with a range of \textit{disorder}, we instead beg
 \end{figure}
 
 A 2-dimensional projection of this isotropic distorion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure used consists of the first four shells (55 atoms) with a lattice constant of 
-4.0782~\AA~to match that of bulk Au.\todo[color=green!40]{Citation? Wolfram Element Data?} In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller \todo[color=blue!40]{citations?}; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the crystal structure is correct. 
+4.0782~\AA~to match that of bulk Au.\textit{Citation? Wolfram Element Data?} In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller \textit{citations?}; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the crystal structure is correct. 
 
 We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $ (0,0,0) $, but all other atomic coordinates are in a shifted location on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift has all coordinates shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber.
 
@@ -48,7 +48,7 @@ Running the 91 simulations (one for each of the distorted structure) takes appro
 	\centering
     \makebox[\textwidth][c]{
 	\includegraphics[width=1.1\linewidth]{Chapters/Figures/newplot.png}}
-	\caption[FEFF Simulations Results]{\todo[color=purple!30, inline]{TEMPORARY - way too much info. I'll select a few.} Each spectrum represents the FEFF simulation results for a different distorted structure. For each spectrum, the crystal structure and center absorber remain constant, the only parameter that varies is the euclidean distance from the center to the other coordinates.}
+	\caption[FEFF Simulations Results]{\textit{TEMPORARY - way too much info. I'll select a few. }Each spectrum represents the FEFF simulation results for a different distorted structure. For each spectrum, the crystal structure and center absorber remain constant, the only parameter that varies is the euclidean distance from the center to the other coordinates.}
 	\label{fig:feff-results}
 \end{figure}
 
@@ -131,7 +131,7 @@ Equation (\ref{eqn:skew-norm}) includes the shape parameter, $ \alpha $, which h
 	\label{fig:skew-norm-options}
 \end{figure}
 
-The disorder of the skew-norm generated, disordered spectrum is characterized by the mean squared displacement of each atom from its original position ($ \Delta\rho $ ), weighted in the same manner as the spectra.\todo[inline, color=blue!40]{Instead of characterizing the disordered spectrum by the standard deviation of the gaussian used to create it}The weighted mean squared displacement, $ MSD $, is calculated via equation (\ref{eqn:weighted-MSD}):
+The disorder of the skew-norm generated, disordered spectrum is characterized by the mean squared displacement of each atom from its original position ($ \Delta\rho $ ), weighted in the same manner as the spectra. \textit{Instead of characterizing the disordered spectrum by the standard deviation of the gaussian used to create it.} The weighted mean squared displacement, $ MSD $, is calculated via equation (\ref{eqn:weighted-MSD}):
 
 \begin{equation}
 	\label{eqn:weighted-MSD}
@@ -143,7 +143,7 @@ Here, $ f(x) $ is the skew-norm function from equation (\ref{eqn:skew-norm}), an
 
 \section{Simulation vs. Experimental Data}
 
-To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data.\todo[color=pink!40]{Can someone give me citations for these?} In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated, disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
+To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data. \textit{Can someone give me citations for these?} In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated, disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
 
 \begin{figure}[h]
 	\centering

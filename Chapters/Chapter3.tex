@@ -1,83 +1,331 @@
 %Chapter 3
-An explanation of Machine Learning and Neural Networks in general
+In order to predict disorder from XANES spectra, we rely on machine learning, a technique capable of building highly non-linear models from a large collection of data. Due to the integral part of machine learning, specifically deep learning, this chapter serves as a basis for defining, first, how neural netorks fundementally work, and then the specific implimentations used in the project.
 
-\section{Autoencoders if they become useful}
-Talk about how autoencoders work. Give a nice broad explanation and really go into the math. Include some nice diagrams
+First we clarify the terms machine learning (ML), deep learning, and artificial intelligence (AI). Machine learning refers to the statistical technique of fitting a model to a large collection of data. These models can either be regressors or classifiers, the former being able to predict a continuous range of values and the latter being a discrete predictor. Neural networks are one example of a machine learning model that tends to be computationally intensive. They are useful for creating highly non-linear models capable of making difficult predictions and solving difficult tasks. Neural networks were inspired by biological processing systems, and the graphical representation includes common terms such as ``nodes'' and ``connections.'' The field of ML involving ANNs with many layers is referred to as deep learning \cite{schmidhuber2015deep}. AI is a subfield of deep learning where a neural network is trained to generate human-like responses, such as a chatbot or a virtual assistant. 
 
-Here's \cite{ng2011sparse} a good source to read and model off of. Here \cite{Bhowick2019} is another paper that might be interesting to read. It's about getting noise-free data from the original data using an autoencoder. Neat idea, and could actually be very relevant because they're using geophysical data.
+With these definitions, to predict disorder from XANES we utilize deep learning to train a regression-based neural network. The following sections will walk through the mathematical process of training a simple neural network. In practice, sophisticated APIs such as Google's TensorFlow or Facebook's PyTorch handle the mathematical backend; however, one should fundamentally understand what these frameworks are doing.
+% \cite{tensorflow2015-whitepaper} 
+% \cite{pytorch-paper}
 
-\section{Feed-forward and Backpropagation}
+\section{Feedforward and Backpropagation in ANNs}
 
-In order to implement a neural network, a solid understanding of linear algebra is needed for the forward pass, whereas backpropagation principally requires vector calculus. Neither action is particularly mathematically complicated; however, there are so many moving parts it is easy to get lost in the sea of similar-sounding partial derivatives. Here, for my benefit, I'm going to walk through the math, as well as the full process of implementing the two function for an affine neural network with 2 hidden layers.
+Understanding how a neural network makes a prediction requires a solid grasp of linear algebra. The process where a NN passes information from the input to the subsequent layers to make a prediction is called the feedforward process. The name comes from the operation where each layer of the NN passes information to the next layer until the reaching output layer. The process of updating the weights of the NN is called backpropagation and relies principally on vector calculus. Neither action is particularly mathematically complicated; however, there are so many parts that it is easy to get lost in the sea of similar-sounding partial derivatives. In this next section, we explicitly walk through the math for the feedforward process of a fully connected (affine) neural network.
 
-% ## Feed Forward and Einstein Notation
+\subsection{Feedforward}
+Consider the neural network in figure \ref{fig:simpleNN} with an input layer of three nodes, a single hidden layer with five nodes, and an output layer with two nodes. The input layer (zeroth layer) has a cardinality of $ \mu=3 $ and is represented in Einstein notation\footnote{Recall that in Einstein notation repeated indices are implicitly summed over.} as a row vector $ x_\mu $. Each edge in the graph represents a weight that is multiplied with the connected node on the left. Each node in the input layer is multiplied by the weight of the connected edge and added together. This operation for all input nodes and weights can thus be represented as a dot product between the input layer row vector and a weight matrix. The hidden layer (first layer) has a cardinality of $ \nu=5 $. Thus, the resulting dot product is $ x_\mu W_\nu^{\mu(1)} $ where $ W_\nu^{\mu(1)} $ represents the matrix of weights to create the first layer. While this result has the correct dimensionality for the hidden layer, there are still two operations reuired to produce the actual values for the nodes $ h_\nu^{(1)} $. First, a small trainable parameter, $ b_\nu $  is added to every value from the previous calculation. The values in this row vector are called biases and are introduced to prevent overfitting ---i.e. the phenomenon where a model predicts the training data well, but is unable to generalize and predict un-seen data. Biases are a regularization parameter. Regularization techniques are discussed below. An example is provided in Figure \ref{fig:overfitting}. The final operation applied to produce the first hidden layer's values is known as an activation function. Without an activation function, a neural network would be unable to learn non-linear features. There are several types of activation functions, the three most common being sigmoid, tanh, and ReLu.
 
-There are enough capital sigmas in the world. I haven't seen anyone use Einstein notation to represent the forward passes of a neural network. Perhaps this is because in practice one usually uses an activation function between each layer.
 
-For a one layer (affine) neural network, the forward propagation is calculated as follows using Einstein notation:
+\subsubsection{Sigmoid and Tanh}
+The sigmoid activation function is defined as the following:
+\begin{equation}
+    \label{sigmoid}
+    \sigma (x) = \frac{1}{1 + e^{-x}}
+\end{equation}
 
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN.png}
-%     \caption[Neural Network Example]{Figure first made by me for my website}
-% \end{figure}
+The sigmoid activation function maps the input between zero and one. Hence, sigmoid activation functions are often used in the final layer to output a probability. The sigmoid approaches 1 and -1 around $ x=4 $ and $ x=-4 $ respectively, meaning that the sigmoid activation function is only useful within that limited range. One issue with both these activation functions is the potential for creating a vanishing gradient. The gradient of either of these functions appoaches zero for values above 4. This hurts the ability for the NN to learn how to meaningfully update its trainable parameters. The importance of calculating gradiets will be discussed in next section in the context of backpropagation. 
 
-Recall that repeated indices are implicitly summed over. Explicitly, for one component of the hidden layer:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Chapters/Figures/sigmoids.png}
+    \caption[Activation-Functions]{Plotted are three common activation functions: sigmoid, tanh, and ReLu.}
+    \label{fig:ActivationFunctions}
+\end{figure}
+
+\subsubsection{ReLU}
+The \textbf{Re}ctified \textbf{L}inear \textbf{U}nit activation function, or ReLU has become an important staple of machine learning. The activation function, $ f(x) $, is defined as the following:
+\begin{equation}
+f(x)=
+\begin{cases}
+    0 & \text{if } x <= 0 \\
+    x & \text{if } x > 0
+\end{cases}
+\end{equation}
+
+\noindent ReLU is important because it provides a much greater range in values. Whereas the sigmoid and tanh activation functions saturate around 4, ReLU never saturates for linear values. Additionally, ReLU is simple to calculate and tends to help neural networks converge quickly. Arguably thier most major benefit is the reduced likelihood of creating a vanishing gradient. Further, because ReLU returns 0 for any negative value fed foward into the node, many ReLU activation functions in a given layer help lead to sparser layers, reducing the overall complexity of the model and helping prevent overfitting.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\linewidth]{Chapters/Figures/overfitting.png}
+    \caption[Overfitting]{The green curve represents a model that is overfitting the data in a binary classification problem. Although it makes perfect predictions for the training data in this figure, the model will not generalize well. Introducing biases and including dropout layers in neural networks are strategies to prevent overfitting.}
+    \label{fig:overfitting}
+\end{figure}
+
+
+With the input nodes dotted with the weights, the baises added, and then the activation function calcuated for each node, we arrive at the final final for the first hidden layer. Mathematically, $ h_\nu^{(1)} = \sigma\left( x_\mu W_\nu ^\mu + b_\nu \right) $. This process is now repeated, only with the starting layer $ h_\nu^{(1)} $ and the output
+$ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right)$ is the final output of the neural network. The equations for each step as well as the dimensionality of each layer can be found in Figure \ref{fig:simpleNN}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN.png}
+    \caption[Neural Network Example]{Figure first made by me for my website}
+    \label{fig:simpleNN}
+\end{figure}
+
+\subsection{Loss Metrics and Regularization}
+It is necessary to evaluate the quality of every prediction the neural network makes in order to update the netork parameters. The measure of the error in one prediction is referred to as the \textit{cost}, and the summed total of all the errors in predictions is called the \textit{loss}. For regression problems, the two most common cost functions are the mean squared error and the mean absolute error. These are also referred to as the L2 and L1 losses, respectively, and defined as:
 
 \begin{align}
-    h_j &= \sigma(w_{1j}x_1 + w_{2j}x_2 + w_{3j}x_3 + w_{4j}x_4 + w_{5j}x_5 + b_j) \\
-        &= \sigma\Big(\sum_{i=1}^{i=5}w_{ij}x_{i} + b_j\Big)
+    \label{eqn:lossFunctions}
+    \text{L1 Loss} \frac{1}{n}&= \sum \left( \hat{y} - y \right) \\
+    \text{L2 Loss} \frac{1}{n}&= \sum \left( \hat{y} - y \right)^2
 \end{align}
 
-The process can be repeated ad-nauseam for networks with more layers.
+\noindent where $ n $ is the number of training sampels. The equation for updating the weights under L2 regularization is as follows:
+\begin{equation}
+    W := (1-\alpha \lambda)W - \frac{\partial J}{\partial W}  
+\end{equation}
+
+\noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero since your multiplying the weights by a number $<1$. For L2, the equation for the total cost (loss) is:
+
+\begin{equation}
+\text{L2 cost} = \sum (y_i - y)^2 + \lambda * \sum (W)^2
+\end{equation}
+
+L1 regularization is just the same as above, but with an absolute value for the regularization term instead of a square. L1 is known as LASSO (least absolute shrinkage and selection operator), because it shrinks the less important features' coefficients to zero. This is because for small values $abs(w)$ is a much stiffer penalty than $w^2$. Thus, L1 is thus a good choice when you have a ton of features.
+
+% \noindent Explicitly, for one component of the hidden layer:
+
+% \begin{align}
+%     h_j &= \sigma(w_{1j}x_1 + w_{2j}x_2 + w_{3j}x_3 + w_{4j}x_4 + w_{5j}x_5 + b_j) \\
+%         &= \sigma\Big(\sum_{i=1}^{i=5}w_{ij}x_{i} + b_j\Big)
+% \end{align}
+
+
+\noindent The process can be repeated ad-nauseam for networks with more layers.
 
 \subsection{Backpropagation}
-First, I will show the partial derivative chain rules, and then do it again, more explicitly with defined functions. For now, say your functional is:
+Backpropagation is the process of updating all the trainable parameters of the machine learning model, including weights, biases, and any other trainable parameters. The partial derivative require repeated use of the chain rule. Representing the above neural network as a functional yields the equation:
+
+% \begin{equation}
+%     \hat{y} = \sigma\left( g \left( f() \right) \right)
+% \end{equation}
+% \noindent This would be a network with inputs $(x, y)$, two hidden layers ($ f $  and $ g $ ), and an output with activation function sigma. Let's say the loss is the RMS loss. Thus,
 
 \begin{equation}
-    \hat{y} = \sigma\left(g\left(f(x,y)\right)\right)
+    \label{eqn:functional}
+    \hat{y} = \sigma \left( h_\nu ^{(1)} \left( x_\nu \right) \right)
 \end{equation}
 
-This would be a network with inputs $(x,y)$, two hidden layer ($ f $  and $ g $ ), and an output with activation function sigma. Lets say the loss is the RMS loss. Thus,
-
-\begin{equation}
-    L = \frac{1}{m} \sum (\hat{y} - y)^2
-\end{equation}
-
-To see how much we need to shift the weights, we need to find the gradients for each layer. For the first partial derivative, we have:
+\noindent where the the output layer $ \hat{y} $ is a function of the hidden layer, $ h_\nu ^{(1)} $ which in turn is a function of the input layer $ x_\mu $. Consider the L2 loss (\ref{eqn:lossFunctions}). Note that the loss function is a function of the previous functional (\ref{eqn:functional}). To see how much to shift the weights, calcuate the gradients for each layer. The first partial derivative is trivial:
 
 \begin{equation}
     \frac{\partial L}{\partial L} = 1
 \end{equation}
 
-Trivial. Time for the next layer.
+\noindent For the next layer (the output layer):
 
 \begin{equation}
 \frac{\partial \hat{y}}{\partial L} = \frac{\partial L}{\partial L}\frac{\partial \hat{y}}{\partial L}
 \end{equation}
 
 
-It's a little silly to write it this way, but I'm trying to demonstrate a pattern. Next layer:
+\noindent For the next nested-function (the sigmoid):
 
 \begin{equation}
 \frac{\partial L}{\partial \sigma} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
 \end{equation}
 
-Next layer:
 
+\noindent The next layer is the hidden layer before the activation function. For simplicity it will be referred to as $ g $ where $ g = x_\mu W_\nu ^\mu + b_\nu $.  
 
 \begin{equation}
     \frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
 \end{equation}
 
-Next layer:
 
-\begin{equation}
-    \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial f}
-\end{equation}
+\noindent Next layer is the input layer, $ X_\mu $ has no trainable parameters, so the process for this network architecture is complete. If there were more hidden layers, the chaining rule would simply continue by multiplying the gradient calculated in the previous step by the gradient of the next layer with respect to the previous layer (towards the input layer).
 
-The pattern should be clear. You multiply the gradient calculated in the previous layer by the partial the next layer w.r.t the previous layer.
+% \begin{equation}
+%     \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial f}
+% \end{equation}
+
+
+\noindent The pattern should be clear. You multiply the gradient calculated in the previous layer by the partial the next layer w.r.t the previous layer.
 
 \subsection{Concrete Example}
+
+Finally, we will repeat the process above as explicitley as possible. Consider again the functional $ \hat{y} $ in equation (\ref{eqn:functional}). 
+
+\begin{align}
+\hat{y} &= \sigma \left( f(x) \right) \\
+z &= f(x) = W \cdot x + b \\
+\sigma &= \frac{1}{1+e^{-z}}
+\end{align}
+
+The sigmoid function is applied element-wise to the values calculated in $f(x)$. I tried to indicate this by using z. As before:
+
+\begin{align}
+Loss = L = \frac{1}{m}\sum(\hat{y} - y)^2 \\
+\frac{\partial L}{\partial L} = 1
+\end{align}
+
+What we want to know how to shift the weights of the functions. We want to know $\frac{\partial L}{\partial W}$, but it'll take some work to get there. Now, explicitly,
+
+\begin{equation}
+\frac{\partial L}{\partial \hat{y}} = 2(\hat{y} - y )
+\end{equation}
+
+So,
+
+\begin{equation}
+\frac{\partial L}{\partial \hat{y}} = \frac{\partial L}{\partial L}\frac{\partial L}{\partial \hat{y}} \\
+= 1 \cdot 2(\hat{y} - y )
+\end{equation}
+
+\begin{equation}
+\frac{\partial L}{\partial \sigma} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
+\end{equation}
+
+We already found the first part, but how about the second term in the chain? Well,
+
+\begin{equation}
+    \frac{\partial \hat{y}}{\partial \sigma} = 1 \\
+    \implies \frac{\partial L}{\partial \sigma} =  \frac    {\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}  {\partial \sigma} \\
+    = 2(\hat{y} - y ) \cdot 1
+\end{equation}
+
+Okay, now, let's go a layer deeper.
+
+\begin{equation}
+\frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f}
+\end{equation}
+
+So how about this next chain?
+
+\begin{equation}
+\frac{\partial \sigma}{\partial f} = \sigma(z)(1 - \sigma(z))
+\end{equation}
+
+where z is the value of f(x). So,
+
+\begin{equation}
+\frac{\partial L}{\partial f} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z))
+\end{equation}
+
+Now we're up to the good part. The parameters we want to "wiggle" to change our network are the weights and biases (W and b). So,
+
+\begin{equation}
+\frac{\partial L}{\partial W} = \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f} \frac{\partial f}{\partial W}
+\end{equation}
+
+This last chain
+
+\begin{equation}
+\frac{\partial f}{\partial W} = x
+\end{equation}
+
+So,
+
+\begin{equation}
+\frac{\partial L}{\partial W} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z)) \cdot x
+\end{equation}
+
+And also,
+
+\begin{equation}
+\frac{\partial L}{\partial W} = \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f} \frac{\partial f}{\partial b}
+\end{equation}
+
+\begin{equation}
+\frac{\partial f}{\partial b} = 1
+\end{equation}
+
+\begin{equation}
+\frac{\partial L}{\partial b} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z)) \cdot 1
+\end{equation}
+
+This was just the process for a neural network with one hidden layer and a sigmoid activation function, but one can see how you could continue the process if you had more than one hidden layer. For example, after $\frac{\partial L}{\partial f}$ you would chain $\frac{\partial f}{\partial g}$ where g is the next hidden layer (f and g are swapped here with how I wrote it in the first part). If there were an activation function for this layer, which there often is, instead of $\frac{\partial f}{\partial g}$, you would have to chain another $\frac{\partial f}{\partial \sigma}$ first.
+
+
+\section{Optimizers}
+\subsubsection{Adaptive moment Estimator}
+Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum).
+
+\subsubsection{RMS Propagation}
+RMS prop is another varient of SGD to improve convergence speed. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
+
+\begin{align}
+    \label{eqn:RMS_Prop}
+    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta L \cdot \nabla_\theta L) \\
+    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta L}{\sqrt{S_{k+1}} + \epsilon}
+\end{align}
+
+\subsubsection{Stochastic Gradient Descent with Momentum}
+Compared to regular SGD, this can greatly reduce time to convergence. The general idea is add a fraction of the previous update to the current update. The exponential moving average is an averaging of points within a period that puts greater weight on more recent points (a simple moving average treats each point as equally significant). Here, V is the EMA.
+
+\begin{align}
+    % \label{eq:SGD}
+    & V_1 = \beta V_0 + \left(1 - \beta \right) S_1 \\
+    & V_2 = \beta V_1 + \left(1 - \beta \right) S_2 \\
+    & ...
+\end{align}
+
+\noindent where S is the sequence. EMA's are common in market forecasting, so often S is price at time t.
+$ \beta $ is defined from [0,1], and usually a value around 0.90 is used. The continuous update for SGD with momentum, using Andrew Ng's notation, is as follows:
+
+\begin{align}
+    V_1 &= \beta V_0  + \left( 1 - \beta \right) \nabla_w L \left( W, X, y \right)\\
+    w &= W - \alpha V_1
+\end{align}
+
+
+Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is the gradient of the loss function with respect to the weights. SGD with momentum tends to work better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through a ravine in the right direction, where SGD tends to oscillate back and forth on in the short way. In my course's notation:
+
+% \begin{lstlisting}
+%     V[k+1] = \beta v[k] + \nabla_\theta L( \theta [k])
+%     \alpha [k+1] = \theta [k] - \alpha * v [k+1]
+% \end{lstlisting}
+
+\section{Batch normalization}
+
+Batch normalization is a way to make your network more robust to covariance shift\footnote{Covariate shift is a type of dataset shift where the distribution of training data differs from that of testing, or in this context, batch to batch.}. For example, if you train your cat vs. not cat identifier with only images of black cats, your network won't make good predictions when it comes to orange cats.
+
+The idea is to normalize each hidden layer, similar to how you normalize the input dataset. However, whereas with normalization of training data centers the dataset around a mean of zero and STD of 1, the mean and variance of the batch normalization are trainable/learnable parameters.
+
+Normalize input data i like:
+
+
+\begin{equation}
+    Z_{norm}^{(i)} = \frac{x_i-\mu}{\sqrt{\sigma^2-\epsilon}}
+\end{equation}
+
+
+Normalize the values for hidden layer l like:
+
+\begin{equation}
+\widetilde{Z}_i = \gamma Z_{norm}^{(i)} - \beta
+\end{equation}
+
+You can see that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, you get the first equation, i.e. you're normalizing the hidden layer in the same way as the input layer. You generally don't want to do this, however, because if you're normalizing everything to be centered around zero, your activation function will mostly focused on the linear regime of the sigmoid.
+
+The structure of implementing batch normalization looks something like this:
+
+$$\text{first pass:} x \cdot \theta^T \rightarrow z$$
+$$\text{batch normalize:} z \rightarrow \widetilde{z}$$ 
+$$\text{apply activation function:} g(\widetilde{z}) = a$$
+$$\text{second pass:} a \cdot \theta^T$$     
+etc.
+
+Note, this is for one mini batch, so $x$ is the $i^{th}$ mini-batch. Normalizing the hidden layers for each batch means that later hidden layers don't have to adapt as much to the earlier hidden layers. This means that the later layers can do a better job tuning themselves a little more independently of the other layers, and it speeds up the learning process. Note, because you're scaling each mini-batch $(z \rightarrow \widetilde{z})$, you add a little bit of noise, which is a little bit of regularization. But don't use batch-norm as a form of regularization. That's not its purpose.
+
+\section{How to Train a Neural Network}
+Here the process for building a NN for cifar10Permalink
+You need to start with a simple model first. Pick some hype hyperparameters to see if you can overfit it (say, make the training set 1 - 10 images). If you can overfit it, then it means your code is working and your architecture makes sense. Next you can up the images to say 1000 and run a broad hyperparameter search. Afterwords, run maybe 20 epochs and see how the training and validation loss are moving. If they both are going down, your architecture looks good. If not, start over.
+
+Once it looks like your training loss is continuing to decrease but your validation loss plateaus, it’s time to start introducing regularization (say nn.Dropout(.5)) and data augmentation. This way you won’t continue to overfit the data and can keep dropping the validation loss.
+
+I haven’t done it yet with the cifar10 set, but I suspect that you should build up a more complex architecture without regularization and make sure you can overfit it to death before tuning hyperparameters and introducing regularization.
+
+If you start with a complex model with data augmentation and regularization you’ll never be able to tune the hyperparameters and find a good solution.
+
+It’s best to put dropout layers after a ReLU activation and before an affine (nn.Linear()) layer
+
+
+% \section{Autoencoders if they become useful}
+% Talk about how autoencoders work. Give a nice broad explanation and really go into the math. Include some nice diagrams
+
+% Here's \cite{ng2011sparse} a good source to read and model off of. Here \cite{Bhowick2019} is another paper that might be interesting to read. It's about getting noise-free data from the original data using an autoencoder. Neat idea, and could actually be very relevant because they're using geophysical data.
+
 
 

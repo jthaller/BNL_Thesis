@@ -34,9 +34,33 @@
 	allcolors = black %get rid of weird auto link highlighting
 }
 % \usepackage{sidecap}
-\usepackage[colorinlistoftodos]{todonotes}
+% \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{fancyvrb} %useful for codeblocks not being split
 \usepackage{multicol}
+
+% for code blocks -------
+% \usepackage{listings}
+% \usepackage{color}
+% \definecolor{dkgreen}{rgb}{0,0.6,0}
+% \definecolor{gray}{rgb}{0.5,0.5,0.5}
+% \definecolor{mauve}{rgb}{0.58,0,0.82}
+% \lstset{frame=tb,
+%   language=Python,
+%   aboveskip=3mm,
+%   belowskip=3mm,
+%   showstringspaces=false,
+%   columns=flexible,
+%   basicstyle={\small\ttfamily},
+%   numbers=none,
+%   numberstyle=\tiny\color{gray},
+%   keywordstyle=\color{blue},
+%   commentstyle=\color{dkgreen},
+%   stringstyle=\color{mauve},
+%   breaklines=true,
+%   breakatwhitespace=true,
+%   tabsize=3
+% }
+% -------
 
 % Here we set the page dimensions to match the standard thesis format.  These values should not be changed.
 %%% SET LENTGH AND WIDTH %%%
@@ -54,7 +78,6 @@
 \begin{titlepage}
 \begin{center}
 
-{\Large(Temporary Title)}
 % \vspace* creates some vertical white space on the page to make the title page look more pleasing.  \vspace would do much the same thing, but would not insert the white space if we were at the top of a fresh page.  As this is the start of the document we're obviously at the beginning of a page, so the asterisk is necessary to ensure we still put in two cm of white space.
 \vspace*{2cm}
 
