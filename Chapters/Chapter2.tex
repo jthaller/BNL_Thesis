@@ -6,10 +6,9 @@
 % \section{Theoretical XANES Calculations}
 % -------------------------------------------------------------
 
-Before making any predictions, neural networks must first be trained on a large quantity of data. Specifically, to teach our neural network to predict the mean squared displacement (MSD)\textit{Of just Au NPs? Can we generalize this to the sigma of the PRDF?}, we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Gathering such a large quantity of high-quality experimental data would be impractically time-intensitive and expensive. Rather, simulations provide a practical alternative, though even simulating each possible disordered structure individually, would be extremely time-intensive. Instead, we run many XANES simulations of simple, non-disordered structures and generate the neural network training data or disordered spectra via clever statistical averaging. In this chapter, we explain this statistical weighting process in-depth, beginning with the creation of simple, non-disordered spectra for the FEFF input files and culminating in the creation of many possible disordered spectra with known MSD.
-\textit{Maybe give a brief outline of the process so you can understand the point of the sections as a walk-through before the very end}
+Before making any predictions, neural networks must first be trained on a large quantity of data. Specifically, to teach our neural network to predict the mean squared displacement (MSD), we must first generate a large quantity of training data comprised of XANES spectra, each labeled with a known MSD. Gathering such a large quantity of high-quality experimental data would be impractically time-intensitive and expensive. Rather, simulations provide a practical alternative, though even simulating each possible disordered structure individually, would be extremely time-intensive. This process is discussed in section \ref{sec:traditional-disorder}. First, a discussion on the development of a new method for simulating disordered nanoparticles is presented in sections \ref{sec:start-disorder}--\ref{sec:end-disorder}. The new process utilizes the statistical averaging of non-disordered structures. Instead of simulating hundreds of defined, disordered structures, we run many XANES simulations of simple, non-disordered structures and generate the disordered spectra via clever statistical averaging. In this chapter, we explain this statistical weighting process in-depth, beginning with the creation of simple, non-disordered spectra for the FEFF input files and culminating in the creation of many possible disordered spectra with known MSDs. The efficacy and limitations of this approach are discussed in section \ref{sec:pa-feff-vs-gaussian-feff}.
 
-\section{Generating Distortion Not Disorder}
+\section{Generating Distortion Not Disorder} \label{sec:start-disorder}
 Instead of creating structures with a range of \textit{disorder}, we instead begin by generating structures with a range of \textit{distortion}. Wheres \textit{disorder} refers to a statistical average of atomic displacement from their original position, characterized by MSD and the width $ \sigma^2 $ of a partial radial distribution function, \textit{distortion} refers only to isotropic expansion or contraction of the subject. Equivalently, we define distortion as a radial shift in all atomic positions away from (or towards) the center atomic absorber.
 
 % Figure created in distortion-visualizations.ipynb 
@@ -141,7 +140,7 @@ The disorder of the skew-norm generated, disordered spectrum is characterized by
 \noindent
 Here, $ f(x) $ is the skew-norm function from equation (\ref{eqn:skew-norm}), and the $ MSD $  of each individual FEFF spectrum is equal to the isotropic distortion, $ \Delta\rho $.  
 
-\section{Simulation vs. Experimental Data}
+\section{Simulation vs. Experimental Data} \label{sec:end-disorder}
 
 To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data. \textit{Can someone give me citations for these?} In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated, disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
 
@@ -176,7 +175,7 @@ To test if the size information is also coded in our simulations, we compare dif
 
 I NEED A PLOT COMPARING THIS METHOD TO PARTICLE AVERAGED METHOD HERE.
 
-\section{Particle-Averaged FEFF Simulated Disordered Structures}
+\section{Particle-Averaged FEFF Simulated Disordered Structures} \label{sec:pa-feff-vs-gaussian-feff}
 
 \begin{figure}[h]
 	\centering
@@ -185,3 +184,5 @@ I NEED A PLOT COMPARING THIS METHOD TO PARTICLE AVERAGED METHOD HERE.
 	\label{fig:avg-experimental-vs-simulation2}
 \end{figure}
 
+\section{Traditional Particle-Averaged Simulations} 
+\label{sec:traditional-disorder}

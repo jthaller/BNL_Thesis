@@ -1,3 +1,62 @@
 % Look!  An Appendix!
 
-Appendices are a good idea for almost any thesis.  Your main thesis body will likely contain perhaps 40-60 pages of text and figures.  You may well write a larger document than this, but chances are that some of the information contained therein, while important, does \emph{not} merit a place in the main body of the document.  This sort of content - peripheral clarifying details, computer code, information of use to future students but not critical to understanding your work \ldots - should be allocated to one or several appendices.  
+% Appendices are a good idea for almost any thesis.  Your main thesis body will likely contain perhaps 40-60 pages of text and figures.  You may well write a larger document than this, but chances are that some of the information contained therein, while important, does \emph{not} merit a place in the main body of the document.  This sort of content - peripheral clarifying details, computer code, information of use to future students but not critical to understanding your work \ldots - should be allocated to one or several appendices.  
+
+\section{distortionator.py}
+Given \texttt{feff.inp} file, generate many \texttt{feff.inp} files --- each with a structure slightly shifted radially outwards (or inwards) from the original structure. File structure is organized as the following: 
+
+\begin{minipage}{\linewidth}
+~ \\
+\begin{Verbatim}[samepage=true]
+    BNL
+    │   distortionator.py
+    │   gaussianator.py
+    │       
+    └───DATA
+    │   │       
+    │   │
+    │   └───Original_Structure
+    │   │   │   feff.inp
+    │   │       
+    │   └───minus_pt_0001
+    │   │   │   feff.inp
+    │   │       
+    │   └───plus_pt_0001
+    │   │   │   feff.inp
+    │   │
+    │   ....        
+\end{Verbatim}
+~
+\end{minipage}
+
+\section{gaussianator.py}
+Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the $\Delta \rho$ shifted crystrals) and generates many gaussian averaged XANES spectra. One file per different standard deviation of the gaussian. The File structure is organized as follows: 
+
+\begin{minipage}{\linewidth}
+~ \\
+\begin{Verbatim}[samepage=true]
+    BNL
+    │   distortionator.py
+    │   gaussianator.py   
+    │
+    └───DATA
+    │   │ 
+    │   └───Averaged_Spectra
+    │       │       
+    │       │   sigma_0001.csv
+    │       │   sigma_0002.csv
+    │       │   ...      
+\end{Verbatim}
+~
+\end{minipage}
+    
+
+\section{create-g(r).ipynb}
+
+This ipython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers, and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
+
+\section{nn.ipynb}
+The neural network, a Jupyter notebook.
+
+\section{nn-buddy.py}
+The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of dataloading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample.

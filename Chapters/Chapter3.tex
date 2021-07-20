@@ -67,8 +67,8 @@ It is necessary to evaluate the quality of every prediction the neural network m
 
 \begin{align}
     \label{eqn:lossFunctions}
-    \text{L1 Loss} \frac{1}{n}&= \sum \left( \hat{y} - y \right) \\
-    \text{L2 Loss} \frac{1}{n}&= \sum \left( \hat{y} - y \right)^2
+    \text{L1 Loss} &= \frac{1}{n} \sum \left( \hat{y} - y \right) \\
+    \text{L2 Loss} &= \frac{1}{n} \sum \left( \hat{y} - y \right)^2
 \end{align}
 
 \noindent where $ n $ is the number of training sampels. The equation for updating the weights under L2 regularization is as follows:
@@ -79,7 +79,7 @@ It is necessary to evaluate the quality of every prediction the neural network m
 \noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero since your multiplying the weights by a number $<1$. For L2, the equation for the total cost (loss) is:
 
 \begin{equation}
-\text{L2 cost} = \sum (y_i - y)^2 + \lambda * \sum (W)^2
+\text{L2 cost} = \sum (y_i - y)^2 + \lambda \sum (W)^2
 \end{equation}
 
 L1 regularization is just the same as above, but with an absolute value for the regularization term instead of a square. L1 is known as LASSO (least absolute shrinkage and selection operator), because it shrinks the less important features' coefficients to zero. This is because for small values $abs(w)$ is a much stiffer penalty than $w^2$. Thus, L1 is thus a good choice when you have a ton of features.
@@ -134,50 +134,47 @@ Backpropagation is the process of updating all the trainable parameters of the m
 \end{equation}
 
 
-\noindent Next layer is the input layer, $ X_\mu $ has no trainable parameters, so the process for this network architecture is complete. If there were more hidden layers, the chaining rule would simply continue by multiplying the gradient calculated in the previous step by the gradient of the next layer with respect to the previous layer (towards the input layer).
+\noindent Next layer is the input layer, $ X_\mu $ has no trainable parameters, so the process for this network architecture is complete. If there were more hidden layers, the chaining rule would continue by multiplying the gradient calculated in the previous step by the gradient of the next layer with respect to the previous layer (towards the input layer). 
 
 % \begin{equation}
 %     \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial f}
 % \end{equation}
 
-
-\noindent The pattern should be clear. You multiply the gradient calculated in the previous layer by the partial the next layer w.r.t the previous layer.
-
 \subsection{Concrete Example}
 
-Finally, we will repeat the process above as explicitley as possible. Consider again the functional $ \hat{y} $ in equation (\ref{eqn:functional}). 
+Finally, we will repeat the backpropogation process of updating the weights for the previous example as explicitly as possible. Consider again the functional $ \hat{y} $ in equation (\ref{eqn:functional}) and the L2 loss in equation (\ref{eqn:lossFunctions}), rewritten here as $ L $ . To determine how do shift the weights in the function, want to know $\frac{\partial L}{\partial W}$, where $ W  $ is short for $ W_\kappa ^{\nu (2)} $, the weight matrix connected to the second layer (the output layer). 
 
 \begin{align}
-\hat{y} &= \sigma \left( f(x) \right) \\
-z &= f(x) = W \cdot x + b \\
-\sigma &= \frac{1}{1+e^{-z}}
+L = \frac{1}{m}\sum(\hat{y} - y)^2 \\
 \end{align}
 
-The sigmoid function is applied element-wise to the values calculated in $f(x)$. I tried to indicate this by using z. As before:
+\noindent As before, the first partial derivative is trivial
 
-\begin{align}
-Loss = L = \frac{1}{m}\sum(\hat{y} - y)^2 \\
-\frac{\partial L}{\partial L} = 1
-\end{align}
+\begin{equation}
+    \frac{\partial L}{\partial L} = 1
+\end{equation}
 
-What we want to know how to shift the weights of the functions. We want to know $\frac{\partial L}{\partial W}$, but it'll take some work to get there. Now, explicitly,
+and the next partial derivative is also strait-foward:
 
 \begin{equation}
 \frac{\partial L}{\partial \hat{y}} = 2(\hat{y} - y )
 \end{equation}
 
-So,
+Applying the chain rule yields:
 
 \begin{equation}
+\label{eqn:dldy}
 \frac{\partial L}{\partial \hat{y}} = \frac{\partial L}{\partial L}\frac{\partial L}{\partial \hat{y}} \\
 = 1 \cdot 2(\hat{y} - y )
 \end{equation}
+
+The next required term in the chain is the derivative of the loss with respect to the sigmoid:
 
 \begin{equation}
 \frac{\partial L}{\partial \sigma} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
 \end{equation}
 
-We already found the first part, but how about the second term in the chain? Well,
+\noindent We already found the first term (\ref{eqn:dldy}), and the second term in trivial.
 
 \begin{equation}
     \frac{\partial \hat{y}}{\partial \sigma} = 1 \\
@@ -185,60 +182,58 @@ We already found the first part, but how about the second term in the chain? Wel
     = 2(\hat{y} - y ) \cdot 1
 \end{equation}
 
-Okay, now, let's go a layer deeper.
+\noindent At this point, we have the derivative $ \frac{\partial L}{\partial \sigma} $ for the $ \sigma $ in the final layer $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right) $. The next derivative in the chain will be $ \frac{\partial L}{\partial g} $ where $ g = h_\nu W_\kappa ^\nu + b_\kappa $ as before. Continuing the chain,
 
 \begin{equation}
-\frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f}
+\frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
 \end{equation}
 
-So how about this next chain?
+\noindent where
 
-\begin{equation}
-\frac{\partial \sigma}{\partial f} = \sigma(z)(1 - \sigma(z))
-\end{equation}
+\begin{align}
+\sigma(g) &= \dfrac{1}{1 + e^{-g}} \\
+\implies \frac{\partial \sigma}{\partial g} &= \sigma(g)(1 - \sigma(g))
+\end{align}
 
-where z is the value of f(x). So,
+\noindent Combining these previously calculated terms yields:
 
 \begin{equation}
 \frac{\partial L}{\partial f} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z))
 \end{equation}
 
-Now we're up to the good part. The parameters we want to "wiggle" to change our network are the weights and biases (W and b). So,
+Now comes the good part. Recall that the trainable parameters in the network are the weights and biases (W and b). The next step will is to calculate the gradients with respect to each, which in turn will be used to update the paramters.
 
 \begin{equation}
-\frac{\partial L}{\partial W} = \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f} \frac{\partial f}{\partial W}
+\frac{\partial L}{\partial W} = \frac{\partial L}{\partial g}\frac{\partial g}{\partial W} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial W}
 \end{equation}
 
-This last chain
+\noindent The last partial in the chain is
 
 \begin{equation}
-\frac{\partial f}{\partial W} = x
+\frac{\partial g}{\partial W} = W
 \end{equation}
 
 So,
 
 \begin{equation}
-\frac{\partial L}{\partial W} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z)) \cdot x
+\frac{\partial L}{\partial W} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(g)) \cdot W
 \end{equation}
 
 And also,
 
-\begin{equation}
-\frac{\partial L}{\partial W} = \frac{\partial L}{\partial f} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial f} \frac{\partial f}{\partial b}
-\end{equation}
+\begin{align}
+\label{eqn:dLdW}
+\frac{\partial L}{\partial b} &= \frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial b} \\
+\frac{\partial g}{\partial b} &= 1 \\
+\implies \frac{\partial L}{\partial b} &= 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(g)(1 - \sigma(g)) \cdot 1
+\end{align}
 
-\begin{equation}
-\frac{\partial f}{\partial b} = 1
-\end{equation}
-
-\begin{equation}
-\frac{\partial L}{\partial b} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z)) \cdot 1
-\end{equation}
-
-This was just the process for a neural network with one hidden layer and a sigmoid activation function, but one can see how you could continue the process if you had more than one hidden layer. For example, after $\frac{\partial L}{\partial f}$ you would chain $\frac{\partial f}{\partial g}$ where g is the next hidden layer (f and g are swapped here with how I wrote it in the first part). If there were an activation function for this layer, which there often is, instead of $\frac{\partial f}{\partial g}$, you would have to chain another $\frac{\partial f}{\partial \sigma}$ first.
-
+Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_W L $  and $ \nabla_BL $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm which will be discuseed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial devivatives will yield the gradients for earlier layer in the network.
 
 \section{Optimizers}
+Having calculated the all the gradients via backpropagation, the weights and biases of the network are now adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network --which is equivilent to minimizing the loss funciton--, the weights and biases are updated by shifting their values in the oppoisite direction of the gradient of the loss fucntion with respect to the weights. Gradient descent is the core principle of machine learning; the efficient algorithm for systematically updating the models parameters
+makes it possible to develop deep neural networks and train with large datasets.
+
 \subsubsection{Adaptive moment Estimator}
 Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum).
 
