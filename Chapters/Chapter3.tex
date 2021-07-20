@@ -228,23 +228,13 @@ And also,
 \implies \frac{\partial L}{\partial b} &= 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(g)(1 - \sigma(g)) \cdot 1
 \end{align}
 
-Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_W L $  and $ \nabla_BL $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm which will be discuseed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial devivatives will yield the gradients for earlier layer in the network.
+Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just the partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_W L $  and $ \nabla_BL $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm discussed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial derivatives will yield the gradients for earlier layers in the network.
 
 \section{Optimizers}
-Having calculated the all the gradients via backpropagation, the weights and biases of the network are now adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network --which is equivilent to minimizing the loss funciton--, the weights and biases are updated by shifting their values in the oppoisite direction of the gradient of the loss fucntion with respect to the weights. Gradient descent is the core principle of machine learning; the efficient algorithm for systematically updating the models parameters
-makes it possible to develop deep neural networks and train with large datasets.
+Having calculated all the gradients via backpropagation, the weights and biases of the network can now be adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network --which is equivalent to minimizing the loss function--, the weights and biases are updated by shifting their values in the opposite direction of the gradient of the loss function with respect to the weights. Gradient descent is the core principle of machine learning; the efficient algorithm for systematically updating model-parameters it possible to develop deep neural networks and train with large datasets.
 
-\subsubsection{Adaptive moment Estimator}
-Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum).
-
-\subsubsection{RMS Propagation}
-RMS prop is another varient of SGD to improve convergence speed. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
-
-\begin{align}
-    \label{eqn:RMS_Prop}
-    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta L \cdot \nabla_\theta L) \\
-    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta L}{\sqrt{S_{k+1}} + \epsilon}
-\end{align}
+\subsubsection{Gradient Descent}
+Vanilla gradient descent  \cite{gradient-descent-rev-article} makes ... 
 
 \subsubsection{Stochastic Gradient Descent with Momentum}
 Compared to regular SGD, this can greatly reduce time to convergence. The general idea is add a fraction of the previous update to the current update. The exponential moving average is an averaging of points within a period that puts greater weight on more recent points (a simple moving average treats each point as equally significant). Here, V is the EMA.
@@ -271,6 +261,25 @@ Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is 
 %     V[k+1] = \beta v[k] + \nabla_\theta L( \theta [k])
 %     \alpha [k+1] = \theta [k] - \alpha * v [k+1]
 % \end{lstlisting}
+\subsubsection{RMS Propagation}
+RMS prop is another variant of SGD to improve convergence speed. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
+
+\begin{align}
+    \label{eqn:RMS_Prop}
+    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta L \cdot \nabla_\theta L) \\
+    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta L}{\sqrt{S_{k+1}} + \epsilon}
+\end{align}
+
+\subsubsection{Adaptive moment Estimator}
+Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum). It's 80,000 ciations in the 6 years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}.
+
+\begin{align} 
+    \begin{split} 
+    m_t &= \beta_1 m_{t-1} + (1 - \beta_1) g_t \\ 
+    v_t &= \beta_2 v_{t-1} + (1 - \beta_2) g_t^2 
+    \end{split} 
+\end{align}
+
 
 \section{Batch normalization}
 
@@ -296,13 +305,16 @@ You can see that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, you get the
 
 The structure of implementing batch normalization looks something like this:
 
-$$\text{first pass:} x \cdot \theta^T \rightarrow z$$
-$$\text{batch normalize:} z \rightarrow \widetilde{z}$$ 
-$$\text{apply activation function:} g(\widetilde{z}) = a$$
-$$\text{second pass:} a \cdot \theta^T$$     
+$$\text{first pass: } x \cdot \theta^T \rightarrow z$$
+$$\text{batch normalize: } z \rightarrow \widetilde{z}$$ 
+$$\text{apply activation function: } g(\widetilde{z}) = a$$
+$$\text{second pass: } a \cdot \theta^T$$     
 etc.
 
-Note, this is for one mini batch, so $x$ is the $i^{th}$ mini-batch. Normalizing the hidden layers for each batch means that later hidden layers don't have to adapt as much to the earlier hidden layers. This means that the later layers can do a better job tuning themselves a little more independently of the other layers, and it speeds up the learning process. Note, because you're scaling each mini-batch $(z \rightarrow \widetilde{z})$, you add a little bit of noise, which is a little bit of regularization. But don't use batch-norm as a form of regularization. That's not its purpose.
+Note, this is for one mini-batch, so $x$ is the $i^{th}$ mini-batch. Normalizing the hidden layers for each batch means that later hidden layers don't have to adapt as much to the earlier hidden layers. This means that the later layers can do a better job tuning themselves a little more independently of the other layers, and it speeds up the learning process. Note, because you're scaling each mini-batch $(z \rightarrow \widetilde{z})$, you add a little bit of noise, which is a little bit of regularization. But don't use batch-norm as a form of regularization. That's not its purpose.
+
+\section{Covolutional Neural Networks}
+Convolution in the context of machine learning differs from that of physics. In machine learning, convolutional layers are 
 
 \section{How to Train a Neural Network}
 Here the process for building a NN for cifar10Permalink
