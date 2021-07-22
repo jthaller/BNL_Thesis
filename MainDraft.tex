@@ -64,6 +64,18 @@
 % }
 % -------
 
+\newcommand*{\boxednumber}[1]{%
+    \expandafter\readdigit\the\numexpr#1\relax\relax
+}
+\newcommand*{\readdigit}[1]{%
+    \ifx\relax#1\else
+        \boxeddigit{#1}%
+        \expandafter\readdigit
+    \fi
+}
+% Format macro used for every digit, adjust to your liking:
+\newcommand*{\boxeddigit}[1]{\fbox{#1}\hspace{-\fboxrule}}
+
 % Here we set the page dimensions to match the standard thesis format.  These values should not be changed.
 %%% SET LENTGH AND WIDTH %%%
 \setlength{\textwidth}{6.5in}

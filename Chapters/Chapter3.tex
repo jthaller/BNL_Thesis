@@ -301,7 +301,7 @@ Normalize the values for hidden layer l like:
 \widetilde{Z}_i = \gamma Z_{norm}^{(i)} - \beta
 \end{equation}
 
-You can see that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, you get the first equation, i.e. you're normalizing the hidden layer in the same way as the input layer. You generally don't want to do this, however, because if you're normalizing everything to be centered around zero, your activation function will mostly focused on the linear regime of the sigmoid.
+You can see that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, you get the first equation, i.e. you're normalizing the hidden layer in the same way as the input layer. You generally don't want to do this, however, because if you're normalizing everything to be centered around zero, your activation function will be mostly focused on the linear regime of the sigmoid.
 
 The structure of implementing batch normalization looks something like this:
 
@@ -314,11 +314,103 @@ etc.
 Note, this is for one mini-batch, so $x$ is the $i^{th}$ mini-batch. Normalizing the hidden layers for each batch means that later hidden layers don't have to adapt as much to the earlier hidden layers. This means that the later layers can do a better job tuning themselves a little more independently of the other layers, and it speeds up the learning process. Note, because you're scaling each mini-batch $(z \rightarrow \widetilde{z})$, you add a little bit of noise, which is a little bit of regularization. But don't use batch-norm as a form of regularization. That's not its purpose.
 
 \section{Covolutional Neural Networks}
-Convolution in the context of machine learning differs from that of physics. In machine learning, convolutional layers are 
+Convolution is a mathematical operation for combining two functions, the result of which is a third function revealing the effect of the second function on the first \cite{Boas-mathmethods}. The convolution of two continuous functions, $ f $ and $ g $, is a special type of integral transformation. The result is the integral of the product of $ f $ and the shifted inverse of $ g $, where $ f $ can be thought of as the input function and $ g $ is often referred to as the kernel.
+
+\begin{equation}
+    f \otimes g = \int_{-\infty}^{\infty} f(\tau)g(t-\tau) \,d\tau 
+\end{equation}
+
+\noindent The variable $ i $ (no relation to the imaginary number) is represents the weighted-shift in the function $ g(\tau) $. Different values of $ i $ emphasize different parts of the other function, $ f(\tau) $.  
+
+In computer science, convolutions are an important and powerful tool for signal and image processing \cite{1dconv-NN-survey}. Because images and signals ---which can be thought of as a 1D image --- are comprised of a discrete number of points (e.g.~pixels), a modified foruma is required. The convolution of the signal $ f $ with the kernel $ g $ can be written as \cite{cornell-convs}:
+
+\begin{equation}
+    \label{eqn:cs-1dconv}
+    f \otimes g = \sum_{j=1}^m g(j) \cdot  f(i-j+m/2)
+\end{equation}
+
+\noindent Here (\ref{eqn:cs-1dconv}), $ m $ is the length of the kernel $ g $, and $ i $ and $ j $ are hyperparameters. To demonstrate visually, consider a simple, example absorption spectrum with only 10 data points (\ref{fig:conv-ex-spectrum}).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example.png}
+    \caption[Toy Absorption Spectrum]{A simple abosrption spectrum for demonstration purposes.}
+    \label{fig:conv-ex-spectrum}
+\end{figure}
+ 
+\noindent Each data point, $ (E, \mu) $ in the spectrum is described as a feature vector, where the feature is the the energy value for a given point $ (E, \mu) $. The vector is depicted in (\ref{conv-squares}) with zeros padded on both sides. Additionally, consider a kernel, $ g $  
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|}
+    \cline{2-13}
+    \textit{f} = & 0 & .09 & .10 & .09 & .70 & .80 & .68 & .60 & .62 & .63 & .60 & 0 \\ \cline{2-13}
+    \end{tabular}
+    \label{conv-squares}
+\end{table}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{lccc}
+    \cline{2-4}
+    \multicolumn{1}{l|}{\textit{g} =} & \multicolumn{1}{c|}{.1} & \multicolumn{1}{c|}{.1} & \multicolumn{1}{c|}{.1} \\ \cline{2-4}                 
+    \end{tabular}
+\end{table}
+
+\noindent The convolution works by mutliplying each element in the input vector $ f $ by the corresponding element in the kernel $ g $ and summing the results. The kernel then moves to be centered around the next element in $ f $. One way to think about this process is a kernel or filter sliding over an input signal. Applying the kernel $ g $ onto the first index of $ f $ yields: 
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    0  & .09 & .10 & .09 & .70 & \multicolumn{1}{c|}{.80} & \multicolumn{1}{c|}{.68} & \multicolumn{1}{c|}{.60} & .62 & .63 & .60 & 0 \\ \hline
+    .1 & .1  & .1  &     &     &                          &                          &                          &     &     &     &   \\ \hline
+    \end{tabular}
+\end{table}
+$$ 
+h(1) = (0)(.1) + (.09)(.1) + (.10)(.1) = 0.019
+$$
+
+\noindent where $ h(1) $ is 1st index of the resulting vector. For the next point, the kernel shifts to be centered around it. 
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    0 & .09 & .10 & .09 & .70 & \multicolumn{1}{c|}{.80} & \multicolumn{1}{c|}{.68} & \multicolumn{1}{c|}{.60} & .62 & .63 & .60 & 0 \\ \hline
+      & .1  & .1  & .1  &     &                          &                          &                          &     &     &     &   \\ \hline
+    \end{tabular}
+\end{table}
+
+$$ 
+h(2) = (.09)(.1) + (.10)(.1) + (.09)(.1) = .028
+$$
+
+\noindent The final resulting vector is:
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|}
+    \cline{2-11}
+    \textit{h} = & .019 & .028 & .089 & .159 & .218 & .208 & .190 & .185 & .185 & .123 \\ \cline{2-11} 
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+    \label{fig:conv-res-spectrum}
+    \centering
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example-res.png}
+    \caption[1D Convolution Result]{The result of the 1D convolution of kergel $ g = (.1, .1, .1) $  on the spectrum in Figure \ref{fig:conv-ex-spectrum}.}
+\end{figure}
+
+The toy example was chosen to demonstrate the basics of a 1D convolution. In this example, the input spectrum was a vector of length 10 the kernel of length 3. In the context of applying a 1D convolution to a neural network, the size of the input vector is the cardinality of the hidden layer directly preceding the convolutional layer. Often the hidden layer's output, represented as a vector, is reshaped into an n-dimensional tensor before applying the convolution. To apply a 1D-convolution to a Tensor of rank $ n $, simply apply the convolution to each of the n-vectors separately, ensuring to pad the ends of each vector with zeros. Layers with dimensionality greater than one can be ``un-raveled''. Alternatively, the layers of each dimension can be truncated or ``pooled'' by averaging the layers that are stacked on one another (or taking the max of each layer) until the desired dimensionality is achieved. A common way to achieve this is with a max pooling layer or an average pooling layer. Max pooling and average pooling layers also have the additional benefit of downsampleing the feature space, tending to make the network more robust to slight variations in the position of features in the input image or signal. This is referred to as ``local translation invariance'' \cite{local-translation-invariance}.
+
+Another important possible change, in the above example, we ``slid'' the kernel across the input spectrum one point at a time. This is referred to as a stride size of one. The stride could be any integrer less than the length of the input vector $ f $, though in practice, typically a stride lengths tend to be one or close to one. Lastly, in the above example, we only applied one convolutional kernel, or ``filter.'' In practice, many filters are applied sequentially. In the above example, the filter $ g = (.1, .1, .1) $ was simply decided upon \textit{a priori}. In practice, the values for each filter in the convolutional layer are initialized randomly or according to the specified initialization funciton. The default in Keras is Glorot Uniform. The values of each filter are trainable parameters which evolve to produce the best final prediction given the subsequent layers in the neural network.
+
 
 \section{How to Train a Neural Network}
-Here the process for building a NN for cifar10Permalink
-You need to start with a simple model first. Pick some hype hyperparameters to see if you can overfit it (say, make the training set 1 - 10 images). If you can overfit it, then it means your code is working and your architecture makes sense. Next you can up the images to say 1000 and run a broad hyperparameter search. Afterwords, run maybe 20 epochs and see how the training and validation loss are moving. If they both are going down, your architecture looks good. If not, start over.
+Here is the process for building a NN for cifar10Permalink.
+You need to start with a simple model first. Pick some hype hyperparameters to see if you can overfit it (say, make the training set 1 - 10 images). If you can overfit it, then it means your code is working and your architecture makes sense. Next you can up the images to say 1000 and run a broad hyperparameter search. Afterward, run maybe 20 epochs and see how the training and validation loss are moving. If they both are going down, your architecture looks good. If not, start over.
 
 Once it looks like your training loss is continuing to decrease but your validation loss plateaus, it’s time to start introducing regularization (say nn.Dropout(.5)) and data augmentation. This way you won’t continue to overfit the data and can keep dropping the validation loss.
 
