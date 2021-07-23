@@ -63,12 +63,12 @@ $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right)$ is the final o
 \end{figure}
 
 \subsection{Loss Metrics and Regularization}
-It is necessary to evaluate the quality of every prediction the neural network makes in order to update the netork parameters. The measure of the error in one prediction is referred to as the \textit{cost}, and the summed total of all the errors in predictions is called the \textit{loss}. For regression problems, the two most common cost functions are the mean squared error and the mean absolute error. These are also referred to as the L2 and L1 losses, respectively, and defined as:
+It is necessary to evaluate the quality of every prediction the neural network makes in order to update the netork parameters. The measure of the error in one prediction is referred to as the \textit{loss}, and the summed total of all the errors in predictions is called the \textit{cost}. For regression problems, the two most common cost functions are the mean squared error and the mean absolute error. These are also referred to as the L2 and L1 costs, respectively, and defined as:
 
 \begin{align}
     \label{eqn:lossFunctions}
-    \text{L1 Loss} &= \frac{1}{n} \sum \left( \hat{y} - y \right) \\
-    \text{L2 Loss} &= \frac{1}{n} \sum \left( \hat{y} - y \right)^2
+    \text{L1 Cost} &= \frac{1}{n} \sum \left( \hat{y} - y \right) \\
+    \text{L2 Cost} &= \frac{1}{n} \sum \left( \hat{y} - y \right)^2
 \end{align}
 
 \noindent where $ n $ is the number of training sampels. The equation for updating the weights under L2 regularization is as follows:
@@ -76,7 +76,7 @@ It is necessary to evaluate the quality of every prediction the neural network m
     W := (1-\alpha \lambda)W - \frac{\partial J}{\partial W}  
 \end{equation}
 
-\noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero since your multiplying the weights by a number $<1$. For L2, the equation for the total cost (loss) is:
+\noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero due to the multiplicatiion of the weights by a value $<1$. For L2, the equation for the cost is:
 
 \begin{equation}
 \text{L2 cost} = \sum (y_i - y)^2 + \lambda \sum (W)^2
@@ -110,27 +110,27 @@ Backpropagation is the process of updating all the trainable parameters of the m
 \noindent where the the output layer $ \hat{y} $ is a function of the hidden layer, $ h_\nu ^{(1)} $ which in turn is a function of the input layer $ x_\mu $. Consider the L2 loss (\ref{eqn:lossFunctions}). Note that the loss function is a function of the previous functional (\ref{eqn:functional}). To see how much to shift the weights, calcuate the gradients for each layer. The first partial derivative is trivial:
 
 \begin{equation}
-    \frac{\partial L}{\partial L} = 1
+    \frac{\partial J}{\partial J} = 1
 \end{equation}
 
 \noindent For the next layer (the output layer):
 
 \begin{equation}
-\frac{\partial \hat{y}}{\partial L} = \frac{\partial L}{\partial L}\frac{\partial \hat{y}}{\partial L}
+\frac{\partial \hat{y}}{\partial J} = \frac{\partial J}{\partial J}\frac{\partial \hat{y}}{\partial J}
 \end{equation}
 
 
 \noindent For the next nested-function (the sigmoid):
 
 \begin{equation}
-\frac{\partial L}{\partial \sigma} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
+\frac{\partial J}{\partial \sigma} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
 \end{equation}
 
 
 \noindent The next layer is the hidden layer before the activation function. For simplicity it will be referred to as $ g $ where $ g = x_\mu W_\nu ^\mu + b_\nu $.  
 
 \begin{equation}
-    \frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
+    \frac{\partial J}{\partial g} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
 \end{equation}
 
 
@@ -142,7 +142,7 @@ Backpropagation is the process of updating all the trainable parameters of the m
 
 \subsection{Concrete Example}
 
-Finally, we will repeat the backpropogation process of updating the weights for the previous example as explicitly as possible. Consider again the functional $ \hat{y} $ in equation (\ref{eqn:functional}) and the L2 loss in equation (\ref{eqn:lossFunctions}), rewritten here as $ L $ . To determine how do shift the weights in the function, want to know $\frac{\partial L}{\partial W}$, where $ W  $ is short for $ W_\kappa ^{\nu (2)} $, the weight matrix connected to the second layer (the output layer). 
+Finally, we will repeat the backpropogation process of updating the weights for the previous example as explicitly as possible. Consider again the functional $ \hat{y} $ in equation (\ref{eqn:functional}) and the L2 loss in equation (\ref{eqn:lossFunctions}), rewritten here as $ L $ . To determine how do shift the weights in the function, want to know $\frac{\partial J}{\partial W}$, where $ W  $ is short for $ W_\kappa ^{\nu (2)} $, the weight matrix connected to the second layer (the output layer). 
 
 \begin{align}
 L = \frac{1}{m}\sum(\hat{y} - y)^2 \\
@@ -151,41 +151,41 @@ L = \frac{1}{m}\sum(\hat{y} - y)^2 \\
 \noindent As before, the first partial derivative is trivial
 
 \begin{equation}
-    \frac{\partial L}{\partial L} = 1
+    \frac{\partial J}{\partial J} = 1
 \end{equation}
 
-and the next partial derivative is also strait-foward:
+\noindent and the next partial derivative is also strait-foward:
 
 \begin{equation}
-\frac{\partial L}{\partial \hat{y}} = 2(\hat{y} - y )
+\frac{\partial J}{\partial \hat{y}} = 2(\hat{y} - y )
 \end{equation}
 
-Applying the chain rule yields:
+\noindent Applying the chain rule yields:
 
 \begin{equation}
 \label{eqn:dldy}
-\frac{\partial L}{\partial \hat{y}} = \frac{\partial L}{\partial L}\frac{\partial L}{\partial \hat{y}} \\
+\frac{\partial J}{\partial \hat{y}} = \frac{\partial J}{\partial J}\frac{\partial J}{\partial \hat{y}} \\
 = 1 \cdot 2(\hat{y} - y )
 \end{equation}
 
-The next required term in the chain is the derivative of the loss with respect to the sigmoid:
+\noindent The next required term in the chain is the derivative of the loss with respect to the sigmoid:
 
 \begin{equation}
-\frac{\partial L}{\partial \sigma} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
+\frac{\partial J}{\partial \sigma} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma}
 \end{equation}
 
 \noindent We already found the first term (\ref{eqn:dldy}), and the second term in trivial.
 
 \begin{equation}
     \frac{\partial \hat{y}}{\partial \sigma} = 1 \\
-    \implies \frac{\partial L}{\partial \sigma} =  \frac    {\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}  {\partial \sigma} \\
+    \implies \frac{\partial J}{\partial \sigma} =  \frac    {\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}  {\partial \sigma} \\
     = 2(\hat{y} - y ) \cdot 1
 \end{equation}
 
-\noindent At this point, we have the derivative $ \frac{\partial L}{\partial \sigma} $ for the $ \sigma $ in the final layer $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right) $. The next derivative in the chain will be $ \frac{\partial L}{\partial g} $ where $ g = h_\nu W_\kappa ^\nu + b_\kappa $ as before. Continuing the chain,
+\noindent At this point, we have the derivative $ \frac{\partial J}{\partial \sigma} $ for the $ \sigma $ in the final layer $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right) $. The next derivative in the chain will be $ \frac{\partial J}{\partial g} $ where $ g = h_\nu W_\kappa ^\nu + b_\kappa $ as before. Continuing the chain,
 
 \begin{equation}
-\frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
+\frac{\partial J}{\partial g} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g}
 \end{equation}
 
 \noindent where
@@ -198,13 +198,13 @@ The next required term in the chain is the derivative of the loss with respect t
 \noindent Combining these previously calculated terms yields:
 
 \begin{equation}
-\frac{\partial L}{\partial f} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z))
+\frac{\partial J}{\partial f} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(z))
 \end{equation}
 
 Now comes the good part. Recall that the trainable parameters in the network are the weights and biases (W and b). The next step will is to calculate the gradients with respect to each, which in turn will be used to update the paramters.
 
 \begin{equation}
-\frac{\partial L}{\partial W} = \frac{\partial L}{\partial g}\frac{\partial g}{\partial W} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial W}
+\frac{\partial J}{\partial W} = \frac{\partial J}{\partial g}\frac{\partial g}{\partial W} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial W}
 \end{equation}
 
 \noindent The last partial in the chain is
@@ -213,56 +213,63 @@ Now comes the good part. Recall that the trainable parameters in the network are
 \frac{\partial g}{\partial W} = W
 \end{equation}
 
-So,
+
+\noindent So,
 
 \begin{equation}
-\frac{\partial L}{\partial W} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(g)) \cdot W
+\frac{\partial J}{\partial W} = 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(z)(1 - \sigma(g)) \cdot W
 \end{equation}
 
-And also,
+\noindent For the baises,
 
 \begin{align}
 \label{eqn:dLdW}
-\frac{\partial L}{\partial b} &= \frac{\partial L}{\partial g} = \frac{\partial L}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial b} \\
+\frac{\partial J}{\partial b} &= \frac{\partial J}{\partial g} = \frac{\partial J}{\partial \hat{y}} \frac{\partial \hat{y}}{\partial \sigma} \frac{\partial \sigma}{\partial g} \frac{\partial g}{\partial b} \\
 \frac{\partial g}{\partial b} &= 1 \\
-\implies \frac{\partial L}{\partial b} &= 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(g)(1 - \sigma(g)) \cdot 1
+\implies \frac{\partial J}{\partial b} &= 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(g)(1 - \sigma(g)) \cdot 1
 \end{align}
 
-Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just the partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_W L $  and $ \nabla_BL $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm discussed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial derivatives will yield the gradients for earlier layers in the network.
+Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just the partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_w L $  and $ \nabla_B L $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm discussed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial derivatives will yield the gradients for earlier layers in the network.
 
 \section{Optimizers}
-Having calculated all the gradients via backpropagation, the weights and biases of the network can now be adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network --which is equivalent to minimizing the loss function--, the weights and biases are updated by shifting their values in the opposite direction of the gradient of the loss function with respect to the weights. Gradient descent is the core principle of machine learning; the efficient algorithm for systematically updating model-parameters it possible to develop deep neural networks and train with large datasets.
+Having calculated all the gradients via backpropagation, the weights and biases of the network can now be adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network ---which is equivalent to finding the parameters that minimize the value of the loss function--- the weights and biases are updated by shifting their values in the opposite direction of the gradient of the loss function with respect to the weights, $ \nabla_w L $ . Gradient descent is the core principle of machine learning; this efficient algorithm for systematically updating model-parameters, made it possible to develop deep neural networks and train them with large datasets. Several improvements have been made to gradient descent since its inception \cite{cauchy-orig-grad-descent}, with the state of the art being AdamW \cite{AdamW-orig}. In this section, several optimization algorithms are introduced in order to provide context for Adam, the optimizer used for training our model. In the previous section, the gradients for the weights and biases were written explicitely. For simplicity, the variable $ \theta $ is introduced to refer to either parameter. As before, $ J(\theta) $  is the cost function; it could be the L1 or L2 cost, or any other differentiable measurement of fit quality.
 
 \subsubsection{Gradient Descent}
-Vanilla gradient descent  \cite{gradient-descent-rev-article} makes ... 
+Vanilla gradient descent \cite{gradient-descent-rev-article} updates the parameters in the following way:
+
+\begin{equation}
+    \label{batch-grad-descent}
+    \theta := \theta - \eta \cdot \nabla_\theta J(\theta)
+\end{equation}
+
+\noindent Here (\ref{batch-grad-descent}), $ \eta $ is a \textit{hyperparameter} known as the learning rate. A hyperparameter is a user-defined parameter that must be chosen before the training process begins; it is not a trainable parameter. One limitation to gradient descent is the need for the entire cost $ J $ to be calculated. For large datasets, this can become impractical. Two common variants are batch gradient descent and stochastic gradient descent (SGD). In the former, the training set is divided into batches and the gradient is updated after each batch. One iteration through all the batches is called an \textit{epoch}. In the latter, the gradient is calculated using the loss function instead of the cost function, i.e. the gradient is calculated and the parameters are updated after each training sample. Both methods greatly reduced training time with the help of optimized, parallel computing \cite{stoch-grad-desc-parallel}. By updating the parameters after every training sample, SGD will move in the direction of the true gradient. The major limit to these methods, however, is the fixed learning rate \cite{grad-desc-limits}. If the learning rate, $ \eta $ is too large, the algorithm will be unstable and ``bounce'' around the global minimum of the cost function. If $ \eta $ is too small, the algorithm will, at best, take a long time to train, and at worst, end up stuck in a local minimum. 
 
 \subsubsection{Stochastic Gradient Descent with Momentum}
-Compared to regular SGD, this can greatly reduce time to convergence. The general idea is add a fraction of the previous update to the current update. The exponential moving average is an averaging of points within a period that puts greater weight on more recent points (a simple moving average treats each point as equally significant). Here, V is the EMA.
+Compared to regular SGD, stochastic gradient descent with momentum \cite{grad-desc-with-mom-orig} can greatly reduce the time to convergence. The general idea is to add a fraction of the previous parameter update to the current update. The exponential moving average (EMA) is an averaging of points within a period that puts greater weight on more recent points\footnote{In contrast a simple moving average treats each point as equally significant}. Here, $ S_t $ is the $ t^{th} $  value in the sequence S, and $ V_t $ is the $ t^{th} $  value in the new exponential moving averaged sequence, $ V $ .
+
+% \begin{align}
+%     % \label{eq:SGD}
+%     & V_1 = \beta V_0 + \left(1 - \beta \right) S_1 \\
+%     & V_2 = \beta V_1 + \left(1 - \beta \right) S_2 \\
+%     & ...
+% \end{align}
+\begin{equation}
+    \label{eq:SGD-w-momentum}
+    V_t = \beta V_{t-1} + (1 - \beta)S_t
+\end{equation}
+
+\noindent where $ \beta \epsilon [0,1]$, a hyperparameter which partly defines how much weight the previous $ 1/(1-\beta) $ terms of S contribute\footnote{Typically 0.90 is a good starting point}. EMA's are common in market forecasting, so often $ S_t $  is the price at time $ t $. The continuous update for SGD with momentum is as follows:
 
 \begin{align}
-    % \label{eq:SGD}
-    & V_1 = \beta V_0 + \left(1 - \beta \right) S_1 \\
-    & V_2 = \beta V_1 + \left(1 - \beta \right) S_2 \\
-    & ...
-\end{align}
-
-\noindent where S is the sequence. EMA's are common in market forecasting, so often S is price at time t.
-$ \beta $ is defined from [0,1], and usually a value around 0.90 is used. The continuous update for SGD with momentum, using Andrew Ng's notation, is as follows:
-
-\begin{align}
-    V_1 &= \beta V_0  + \left( 1 - \beta \right) \nabla_w L \left( W, X, y \right)\\
-    w &= W - \alpha V_1
+    V_t &= \beta V_{t-1}  + \left( 1 - \beta \right) \nabla_\theta J \left( \theta \right)\\
+    w &= W - \alpha V_t
 \end{align}
 
 
-Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is the gradient of the loss function with respect to the weights. SGD with momentum tends to work better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through a ravine in the right direction, where SGD tends to oscillate back and forth on in the short way. In my course's notation:
+Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is the gradient of the loss function with respect to the weights. Note that the cost function $ J(\theta) $ may instead be the loss function $ L(\theta) $ if updates are performed after each training sample (i.e.~a batch size of one). SGD with momentum tends to perform better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through ravine-shaped local minima in the correct direction, whereas SGD tends to oscillate back and forth along the ravine's steeper dimension \cite{qian1999momentum}.
 
-% \begin{lstlisting}
-%     V[k+1] = \beta v[k] + \nabla_\theta L( \theta [k])
-%     \alpha [k+1] = \theta [k] - \alpha * v [k+1]
-% \end{lstlisting}
 \subsubsection{RMS Propagation}
-RMS prop is another variant of SGD to improve convergence speed. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
+RMS prop is another variant of SGD to improve convergence speed \cite{improving-rprop} \cite{adagrad} \cite{2017marginal-adagrad}. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
 
 \begin{align}
     \label{eqn:RMS_Prop}
@@ -270,7 +277,7 @@ RMS prop is another variant of SGD to improve convergence speed. Once again, the
     & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta L}{\sqrt{S_{k+1}} + \epsilon}
 \end{align}
 
-\subsubsection{Adaptive moment Estimator}
+\subsubsection{Adaptive Moment Estimator}
 Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum). It's 80,000 ciations in the 6 years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}.
 
 \begin{align} 
@@ -283,7 +290,7 @@ Adam is a combination of RMS prop and SGD with momentum. It uses the squred grad
 
 \section{Batch normalization}
 
-Batch normalization is a way to make your network more robust to covariance shift\footnote{Covariate shift is a type of dataset shift where the distribution of training data differs from that of testing, or in this context, batch to batch.}. For example, if you train your cat vs. not cat identifier with only images of black cats, your network won't make good predictions when it comes to orange cats.
+Batch normalization is a way to make your network more robust to covariance shift\footnote{Covariate shift is a type of dataset shift where the distribution of training data differs from that of testing, or in this context, batch to batch.} \cite{batch-norm-orig}  \cite{batch-norm-conference}. For example, if you train your cat vs. not cat identifier with only images of black cats, your network won't make good predictions when it comes to orange cats.
 
 The idea is to normalize each hidden layer, similar to how you normalize the input dataset. However, whereas with normalization of training data centers the dataset around a mean of zero and STD of 1, the mean and variance of the batch normalization are trainable/learnable parameters.
 
@@ -322,7 +329,7 @@ Convolution is a mathematical operation for combining two functions, the result 
 
 \noindent The variable $ i $ (no relation to the imaginary number) is represents the weighted-shift in the function $ g(\tau) $. Different values of $ i $ emphasize different parts of the other function, $ f(\tau) $.  
 
-In computer science, convolutions are an important and powerful tool for signal and image processing \cite{1dconv-NN-survey}. Because images and signals ---which can be thought of as a 1D image --- are comprised of a discrete number of points (e.g.~pixels), a modified foruma is required. The convolution of the signal $ f $ with the kernel $ g $ can be written as \cite{cornell-convs}:
+In computer science, convolutions are an important and powerful tool for signal and image processing \cite{1dconv-NN-survey} \cite{deepCNNforImages}. Because images and signals ---which can be thought of as a 1D image --- are comprised of a discrete number of points (e.g.~pixels), a modified foruma is required. The convolution of the signal $ f $ with the kernel $ g $ can be written as \cite{cornell-convs}:
 
 \begin{equation}
     \label{eqn:cs-1dconv}
@@ -383,7 +390,7 @@ $$
 \end{table}
 
 $$ 
-h(2) = (.09)(.1) + (.10)(.1) + (.09)(.1) = .028
+h(2) = (.09)(.1) + (.10)(.1) + (.09)(.1) = 0.028
 $$
 
 \noindent The final resulting vector is:
@@ -400,10 +407,10 @@ $$
     \label{fig:conv-res-spectrum}
     \centering
     \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example-res.png}
-    \caption[1D Convolution Result]{The result of the 1D convolution of kergel $ g = (.1, .1, .1) $  on the spectrum in Figure \ref{fig:conv-ex-spectrum}.}
+    \caption[1D Convolution Result]{The result of the 1D convolution of kernel $ g = (.1, .1, .1) $  on the spectrum in Figure \ref{fig:conv-ex-spectrum}.}
 \end{figure}
 
-The toy example was chosen to demonstrate the basics of a 1D convolution. In this example, the input spectrum was a vector of length 10 the kernel of length 3. In the context of applying a 1D convolution to a neural network, the size of the input vector is the cardinality of the hidden layer directly preceding the convolutional layer. Often the hidden layer's output, represented as a vector, is reshaped into an n-dimensional tensor before applying the convolution. To apply a 1D-convolution to a Tensor of rank $ n $, simply apply the convolution to each of the n-vectors separately, ensuring to pad the ends of each vector with zeros. Layers with dimensionality greater than one can be ``un-raveled''. Alternatively, the layers of each dimension can be truncated or ``pooled'' by averaging the layers that are stacked on one another (or taking the max of each layer) until the desired dimensionality is achieved. A common way to achieve this is with a max pooling layer or an average pooling layer. Max pooling and average pooling layers also have the additional benefit of downsampleing the feature space, tending to make the network more robust to slight variations in the position of features in the input image or signal. This is referred to as ``local translation invariance'' \cite{local-translation-invariance}.
+The toy example was chosen to demonstrate the basics of a 1D convolution. In this example, the input spectrum was a vector of length ten and the kernel of length three. In the context of applying a 1D convolution to a neural network, the size of the input vector is the cardinality of the hidden layer directly preceding the convolutional layer. Often the hidden layer's output, represented as a vector, is reshaped into an n-dimensional tensor before applying the convolution. To apply a 1D-convolution to a Tensor of rank $ n $, simply apply the convolution to each of the n-vectors separately, ensuring to pad the ends of each vector with zeros. Layers with dimensionality greater than one can be ``un-raveled''. Alternatively, the layers of each dimension can be truncated or ``pooled'' by averaging the layers that are stacked on one another (or taking the max of each layer) until the desired dimensionality is achieved. A common way to achieve this is with a max pooling layer or an average pooling layer. Max pooling and average pooling layers also have the additional benefit of downsampleing the feature space, tending to make the network more robust to slight variations in the position of features in the input image or signal. This is referred to as ``local translation invariance'' \cite{local-translation-invariance}.
 
 Another important possible change, in the above example, we ``slid'' the kernel across the input spectrum one point at a time. This is referred to as a stride size of one. The stride could be any integrer less than the length of the input vector $ f $, though in practice, typically a stride lengths tend to be one or close to one. Lastly, in the above example, we only applied one convolutional kernel, or ``filter.'' In practice, many filters are applied sequentially. In the above example, the filter $ g = (.1, .1, .1) $ was simply decided upon \textit{a priori}. In practice, the values for each filter in the convolutional layer are initialized randomly or according to the specified initialization funciton. The default in Keras is Glorot Uniform. The values of each filter are trainable parameters which evolve to produce the best final prediction given the subsequent layers in the neural network.
 
