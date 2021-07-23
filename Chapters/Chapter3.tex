@@ -268,25 +268,28 @@ Compared to regular SGD, stochastic gradient descent with momentum \cite{grad-de
 
 Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is the gradient of the loss function with respect to the weights. Note that the cost function $ J(\theta) $ may instead be the loss function $ L(\theta) $ if updates are performed after each training sample (i.e.~a batch size of one). SGD with momentum tends to perform better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through ravine-shaped local minima in the correct direction, whereas SGD tends to oscillate back and forth along the ravine's steeper dimension \cite{qian1999momentum}.
 
-\subsubsection{RMS Propagation}
-RMS prop is another variant of SGD to improve convergence speed \cite{improving-rprop} \cite{adagrad} \cite{2017marginal-adagrad}. Once again, the idea is to dampen oscillations in directions where you are close to the minimum, and accelerate movement when you are far from the minimum. Here, we keep a moving average of the squared gradients for each weight. As before, $\nabla_\theta L$ is the gradient of the cost with respect to weights.
+\subsubsection{Root Mean Squared Propagation}
+Root Mean Squared Propogation (RMSprop)\footnote{RMSprop has an interesting history. It is an unpublished algorithm, first introduced by Geoff Hinton in an online series of lectures. Nevertheless, it is an incredibly popular algorithm and included in most ML platforms.} is another variant of SGD designed to improve convergence speed and remedy adagrad's \cite{adagrad} tendency to rapidly diminishing gradients \cite{improving-rprop}\cite{2017marginal-adagrad}. The idea is to dampen oscillations in directions when the predictions are close to the cost function's minimum and accelerate movement when far away. In RMSprop, we keep a moving average of the squared gradients for each weight and use these to divide the learning rate by an exponentially decaying average. As before, $\nabla_\theta J$ is the gradient of the cost with respect to weights.
 
 \begin{align}
     \label{eqn:RMS_Prop}
-    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta L \cdot \nabla_\theta L) \\
-    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta L}{\sqrt{S_{k+1}} + \epsilon}
+    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta J \cdot \nabla_\theta J) \\
+    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta J}{\sqrt{S_{k+1}} + \epsilon}
 \end{align}
 
+\noindent The hyperparameter $ \epsilon $ is included in the denominator to prevent a possible division by zero.\footnote{Typical values for $ \alpha $  and $ \beta $  are 0.001 and 0.9, respectively.} 
+
 \subsubsection{Adaptive Moment Estimator}
-Adam is a combination of RMS prop and SGD with momentum. It uses the squred gradients to scale the learning rate (like RMS prop), and it uses a moving average of the gradient (like SGD with momentum). It's 80,000 ciations in the 6 years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}.
+Adaptive Moment Estimator (Adam) is a combination of RMSprop and SGD with momentum. Adam uses the squared gradients to scale the learning rate for each parameter (similar to RMS prop), and it uses a moving average of the gradient (similar to SGD with momentum).
 
 \begin{align} 
     \begin{split} 
-    m_t &= \beta_1 m_{t-1} + (1 - \beta_1) g_t \\ 
-    v_t &= \beta_2 v_{t-1} + (1 - \beta_2) g_t^2 
+    m_t &= \beta_1 m_{t-1} + (1 - \beta_1) (\nabla_\theta J) \\ 
+    v_t &= \beta_2 v_{t-1} + (1 - \beta_2) (\nabla_\theta J \cdot \nabla_\theta J) 
     \end{split} 
 \end{align}
 
+\noindent The new parameters in this algorithm, $ m_{t-1} $ and $ v_{t-1} $ are the first and second moments of the gradient (the mean and variance), respectively. Adam's 80,000 ciations in the 6 years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}. This was the chosen algorithm for training our neural network for predicting disorder in XANES.
 
 \section{Batch normalization}
 
