@@ -21,12 +21,14 @@ Instead of creating structures with a range of \textit{disorder}, we instead beg
 
 A 2-dimensional projection of this isotropic distortion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure used consists of the first four shells (561 atoms) with a lattice constant of 4.0782~\AA~to match that of bulk Au.\textit{Citation? Wolfram Element Data?} In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller \textit{gold-lattice-const}; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the crystal structure is correct. 
 
-We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $ (0,0,0) $, but all other first shell atomic coordinates are in a shifted location on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift has all first nearest neighbor atoms shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has the first nearest neighbor coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber. The atoms in the outer shells are scaled accordingly to preserve the crystal structure according to:
+We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $ (0,0,0) $, all the atoms expanded or contracted radially. All the first shell atomic coordinates are shifted on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift has all first nearest neighbor atoms shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has the first nearest neighbor coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber. The atoms in the outer shells are scaled accordingly to preserve the crystal structure according to equation \ref{eq:distortionator}
 
 \begin{equation}
 	\label{eq:distortionator}
-	\vb*{\rho}_{shifted} = \dfrac{\vb*{\rho} * \vert \vb*{\rho} \vert_{min} + \delta}{\vert \vb*{\rho} \vert_{min}} 
+	\vb*{\rho}_{shifted}^{(i)} = \vb*{\rho_0}^{(i)} \left( \dfrac{a + \delta}{a} \right)
 \end{equation}
+where $ \vb*{\rho}_0^{(i)} $ is the vector from the center absorber to the original (lattice) position of atom \textit{i}, $ a $ is the lattice constant of Au, and $ \delta \in [-0.45,~0.45] $ and is the distance the atoms in the first shell will be shifted.   
+
 % alpha = (df[df.rho > 0].rho.min() + delta)/df[df.rho > 0].rho.min()
 % df_temp['rho'] *= alpha
 
@@ -47,7 +49,7 @@ Each FEFF input file is run with the following parameters:
 ~
 \end{minipage}
 
-Running the 91 simulations (one for each of the distorted structure) takes approximately 30 minutues. Were we to generate thousands more or employ RMC or MD, this process could take weeks of compute time. We plot the resulting XANES spectra from the FEFF simulations in figure \ref{fig:feff-results}.
+\noindent Running the 91 simulations (one for each of the distorted structures) takes approximately 30~minutes. Were we to generate thousands more or employ RMC or MD, this process could take days or weeks of computation time. We plot the resulting XANES spectra from the FEFF simulations in figure \ref{fig:feff-results}.
 
 \begin{figure}[h]
 	\centering
@@ -59,7 +61,7 @@ Running the 91 simulations (one for each of the distorted structure) takes appro
 
 \section{Generating Disorder via Probability Distribution Averaging}
 
-One way to characterize system disorder is with the Gaussian width, $ \sigma $ , of the partial radial distribution function. The idea of our statistical averaging method is to emulate this width by weighting the simulated XANES spectra accordingly. For example, Figure \ref{fig:gaussian-weighting-hist} depicts a histogram with $ \sigma=0.1 $~\AA. Each histogram bin represents a simulated XANES spectrum with a different isotropic displacement. For example, the bin at $ \Delta\rho=0.0 $~\AA~represents the simulated XANES spectrum with no distortion, and the bin at $ \Delta\rho=-0.2 $~\AA~represents the simulated XANES spectrum with all the atomic coordinates shifted isotropically inwards towards the center absorber by $ 0.2 $~\AA. The height of each bin, $ f(\Delta\rho) $, represents the relative contribution of each simulated XANES spectrum towards the resulting weighted spectrum. For visual clarity, Figure \ref{fig:gaussian-weighting-hist} depicts only 40 bins; the actual weighting includes 91 bins ranging from $ -0.45 $~\AA~to~$ +0.45 $~\AA.
+One way to characterize system disorder is with the Gaussian width, $ \sigma $, of the partial radial distribution function. The idea of our statistical averaging method is to emulate this width by weighting the simulated XANES spectra according to this distribution. For example, Figure \ref{fig:gaussian-weighting-hist} depicts a histogram with $ \sigma=0.1 $~\AA. Each histogram bin represents a simulated XANES spectrum with a different isotropic displacement. For example, the bin at $ \Delta\rho=0.0 $~\AA~represents the simulated XANES spectrum with no distortion, and the bin at $ \Delta\rho=-0.2 $~\AA~represents the simulated XANES spectrum with all the atomic coordinates shifted isotropically inwards towards the center absorber by $ 0.2 $~\AA. The height of each bin, $ f(\Delta\rho) $, represents the relative contribution of each simulated XANES spectrum towards the resulting weighted spectrum. For visual clarity, Figure \ref{fig:gaussian-weighting-hist} depicts only 40 bins; the actual weighting includes 91 bins ranging from $ -0.45 $~\AA~to~$ +0.45 $~\AA.
 % figure created in playground.ipynb
 % !htb
 \begin{figure}[h!]
@@ -192,3 +194,4 @@ I NEED A PLOT COMPARING THIS METHOD TO PARTICLE AVERAGED METHOD HERE.
 
 \section{Traditional Particle-Averaged Simulations} 
 \label{sec:traditional-disorder}
+The traditional method for running FEFF simulations is referred to as particle-averaged FEFF. The simulation software only simulates the absorption spectrum from one absorber at a time. In the skew-norm methodology, we only calculate a center absorber because of symmetry. For simulating disordered structures, however, it is necessary to calculate all the absorbers. For this project, we are interested, at first, in simulating bulk Au. Accordingly, 
