@@ -19,10 +19,16 @@ Instead of creating structures with a range of \textit{disorder}, we instead beg
 	\label{fig:2d-distortion}
 \end{figure}
 
-A 2-dimensional projection of this isotropic distorion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure used consists of the first four shells (55 atoms) with a lattice constant of 
-4.0782~\AA~to match that of bulk Au.\textit{Citation? Wolfram Element Data?} In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller \textit{citations?}; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the crystal structure is correct. 
+A 2-dimensional projection of this isotropic distortion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure used consists of the first four shells (561 atoms) with a lattice constant of 4.0782~\AA~to match that of bulk Au.\textit{Citation? Wolfram Element Data?} In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller \textit{gold-lattice-const}; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the crystal structure is correct. 
 
-We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $ (0,0,0) $, but all other atomic coordinates are in a shifted location on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift has all coordinates shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber.
+We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $ (0,0,0) $, but all other first shell atomic coordinates are in a shifted location on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift has all first nearest neighbor atoms shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has the first nearest neighbor coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber. The atoms in the outer shells are scaled accordingly to preserve the crystal structure according to:
+
+\begin{equation}
+	\label{eq:distortionator}
+	\vb*{\rho}_{shifted} = \dfrac{\vb*{\rho} * \vert \vb*{\rho} \vert_{min} + \delta}{\vert \vb*{\rho} \vert_{min}} 
+\end{equation}
+% alpha = (df[df.rho > 0].rho.min() + delta)/df[df.rho > 0].rho.min()
+% df_temp['rho'] *= alpha
 
 \begin{minipage}{\linewidth}
 Each FEFF input file is run with the following parameters: 

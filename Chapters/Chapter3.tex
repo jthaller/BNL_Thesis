@@ -1,18 +1,17 @@
 %Chapter 3
-In order to predict disorder from XANES spectra, we rely on machine learning, a technique capable of building highly non-linear models from a large collection of data. Due to the integral part of machine learning, specifically deep learning, this chapter serves as a basis for defining, first, how neural netorks fundementally work, and then the specific implimentations used in the project.
+In order to predict disorder from XANES spectra, we rely on machine learning, a technique capable of building highly non-linear models from a large collection of data. Due to the integral role ma machine learning plays in this thesis, this chapter serves as a basis for defining, first, how neural networks fundamentally work. All required terms necessary for understanding the specific neural network implementation discussed in the next chapter are defined in this chapter.
 
-First we clarify the terms machine learning (ML), deep learning, and artificial intelligence (AI). Machine learning refers to the statistical technique of fitting a model to a large collection of data. These models can either be regressors or classifiers, the former being able to predict a continuous range of values and the latter being a discrete predictor. Neural networks are one example of a machine learning model that tends to be computationally intensive. They are useful for creating highly non-linear models capable of making difficult predictions and solving difficult tasks. Neural networks were inspired by biological processing systems, and the graphical representation includes common terms such as ``nodes'' and ``connections.'' The field of ML involving ANNs with many layers is referred to as deep learning \cite{schmidhuber2015deep}. AI is a subfield of deep learning where a neural network is trained to generate human-like responses, such as a chatbot or a virtual assistant. 
+First, we clarify the terms machine learning (ML), deep learning, and artificial intelligence (AI). Machine learning refers to the statistical technique of fitting a model to a large collection of data. These models can either be regressors or classifiers, the former being able to predict a continuous range of values and the latter being a discrete predictor. Neural networks are one example of a machine learning model that tends to be computationally intensive. They are useful for creating highly non-linear models capable of making difficult predictions and solving complex tasks. Neural networks were inspired by biological processing systems, and the graphical representation includes common terms such as ``nodes'' and ``connections.'' The field of ML involving ANNs with many layers is referred to as deep learning \cite{schmidhuber2015deep}. AI is a subfield of deep learning where a neural network is trained to generate human-like responses, such as a chatbot or a virtual assistant. 
 
-With these definitions, to predict disorder from XANES we utilize deep learning to train a regression-based neural network. The following sections will walk through the mathematical process of training a simple neural network. In practice, sophisticated APIs such as Google's TensorFlow or Facebook's PyTorch handle the mathematical backend; however, one should fundamentally understand what these frameworks are doing.
+With these definitions, to predict disorder from XANES we utilize deep learning to train a regression-based neural network. The following sections will walk through the mathematical process of training a simple neural network. In practice, sophisticated APIs such as Google's TensorFlow \cite{tensorflow2015-whitepaper} or Facebook's PyTorch \cite{pytorch-paper}  handle the mathematical backend; however, one should fundamentally understand what these frameworks are doing.
 % \cite{tensorflow2015-whitepaper} 
 % \cite{pytorch-paper}
-
 \section{Feedforward and Backpropagation in ANNs}
 
 Understanding how a neural network makes a prediction requires a solid grasp of linear algebra. The process where a NN passes information from the input to the subsequent layers to make a prediction is called the feedforward process. The name comes from the operation where each layer of the NN passes information to the next layer until the reaching output layer. The process of updating the weights of the NN is called backpropagation and relies principally on vector calculus. Neither action is particularly mathematically complicated; however, there are so many parts that it is easy to get lost in the sea of similar-sounding partial derivatives. In this next section, we explicitly walk through the math for the feedforward process of a fully connected (affine) neural network.
 
 \subsection{Feedforward}
-Consider the neural network in figure \ref{fig:simpleNN} with an input layer of three nodes, a single hidden layer with five nodes, and an output layer with two nodes. The input layer (zeroth layer) has a cardinality of $ \mu=3 $ and is represented in Einstein notation\footnote{Recall that in Einstein notation repeated indices are implicitly summed over.} as a row vector $ x_\mu $. Each edge in the graph represents a weight that is multiplied with the connected node on the left. Each node in the input layer is multiplied by the weight of the connected edge and added together. This operation for all input nodes and weights can thus be represented as a dot product between the input layer row vector and a weight matrix. The hidden layer (first layer) has a cardinality of $ \nu=5 $. Thus, the resulting dot product is $ x_\mu W_\nu^{\mu(1)} $ where $ W_\nu^{\mu(1)} $ represents the matrix of weights to create the first layer. While this result has the correct dimensionality for the hidden layer, there are still two operations reuired to produce the actual values for the nodes $ h_\nu^{(1)} $. First, a small trainable parameter, $ b_\nu $  is added to every value from the previous calculation. The values in this row vector are called biases and are introduced to prevent overfitting ---i.e. the phenomenon where a model predicts the training data well, but is unable to generalize and predict un-seen data. Biases are a regularization parameter. Regularization techniques are discussed below. An example is provided in Figure \ref{fig:overfitting}. The final operation applied to produce the first hidden layer's values is known as an activation function. Without an activation function, a neural network would be unable to learn non-linear features. There are several types of activation functions, the three most common being sigmoid, tanh, and ReLu.
+Consider the neural network in figure \ref{fig:simpleNN} with an input layer of three nodes, a single hidden layer with five nodes, and an output layer with two nodes. The input layer (zeroth layer) has a cardinality of $ \mu=3 $ and is represented in Einstein notation\footnote{Recall that in Einstein notation repeated indices are implicitly summed over.} as a row vector $ x_\mu $. Each edge in the graph represents a weight that is multiplied with the connected node on the left. Each node in the input layer is multiplied by the weight of the connected edge and added together. This operation for all input nodes and weights can thus be represented as a dot product between the input layer row vector and a weight matrix. The hidden layer (first layer) has a cardinality of $ \nu=5 $. Thus, the resulting dot product is $ x_\mu W_\nu^{\mu(1)} $ where $ W_\nu^{\mu(1)} $ represents the matrix of weights to create the first layer. While this result has the correct dimensionality for the hidden layer, there are still two operations reuired to produce the actual values for the nodes $ h_\nu^{(1)} $. First, a small trainable parameter, $ b_\nu $  is added to every value from the previous calculation. The values in this row vector are called biases and are introduced to prevent overfitting---i.e. the phenomenon where a model predicts the training data well, but is unable to generalize and predict un-seen data. Biases are a regularization parameter. Regularization techniques are discussed below. An example is provided in Figure \ref{fig:overfitting}. The final operation applied to produce the first hidden layer's values is known as an activation function. Without an activation function, a neural network would be unable to learn non-linear features. There are several types of activation functions, the three most common being sigmoid, tanh, and ReLu.
 
 
 \subsubsection{Sigmoid and Tanh}
@@ -57,7 +56,7 @@ $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right)$ is the final o
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN.png}
+    \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN.pdf}
     \caption[Neural Network Example]{Figure first made by me for my website}
     \label{fig:simpleNN}
 \end{figure}
@@ -79,7 +78,7 @@ It is necessary to evaluate the quality of every prediction the neural network m
 \noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero due to the multiplicatiion of the weights by a value $<1$. For L2, the equation for the cost is:
 
 \begin{equation}
-\text{L2 cost} = \sum (y_i - y)^2 + \lambda \sum (W)^2
+\text{L2 cost} = J = \sum (y_i - y)^2 + \lambda \sum (W)^2
 \end{equation}
 
 L1 regularization is just the same as above, but with an absolute value for the regularization term instead of a square. L1 is known as LASSO (least absolute shrinkage and selection operator), because it shrinks the less important features' coefficients to zero. This is because for small values $abs(w)$ is a much stiffer penalty than $w^2$. Thus, L1 is thus a good choice when you have a ton of features.
@@ -229,20 +228,20 @@ Now comes the good part. Recall that the trainable parameters in the network are
 \implies \frac{\partial J}{\partial b} &= 2(\hat{y} - y ) \cdot 1 \cdot  \sigma(g)(1 - \sigma(g)) \cdot 1
 \end{align}
 
-Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just the partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix W and vector b yields the gradients $ \nabla_w L $  and $ \nabla_B L $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm discussed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial derivatives will yield the gradients for earlier layers in the network.
+Note that $ W $ is actually $ W_\kappa ^{\nu (2)} $, a matrix of weights, and b is actually $ b_\kappa $, a row vector of biases. Thus, the above equation (\ref{eqn:dLdW}) is just the partial derivative for one term in the weight matrix or bias vector. Repeating the process for each term in the matrix $ W $  and vector $ b $  yields the gradients $ \grad_w L $  and $ \grad_B L $, which represent the gradient of the loss function with respect to the weights and biases, respectively. This is the origin of the term, ``gradient descent,'' an optimization algorithm discussed in the next section. This was just the process to calculate the gradients need to update weights for the final layer, but one can see how continuing the process of chaining partial derivatives will yield the gradients for earlier layers in the network.
 
 \section{Optimizers}
-Having calculated all the gradients via backpropagation, the weights and biases of the network can now be adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network ---which is equivalent to finding the parameters that minimize the value of the loss function--- the weights and biases are updated by shifting their values in the opposite direction of the gradient of the loss function with respect to the weights, $ \nabla_w L $ . Gradient descent is the core principle of machine learning; this efficient algorithm for systematically updating model-parameters, made it possible to develop deep neural networks and train them with large datasets. Several improvements have been made to gradient descent since its inception \cite{cauchy-orig-grad-descent}, with the state of the art being AdamW \cite{AdamW-orig}. In this section, several optimization algorithms are introduced in order to provide context for Adam, the optimizer used for training our model. In the previous section, the gradients for the weights and biases were written explicitely. For simplicity, the variable $ \theta $ is introduced to refer to either parameter. As before, $ J(\theta) $  is the cost function; it could be the L1 or L2 cost, or any other differentiable measurement of fit quality.
+Having calculated all the gradients via backpropagation, the weights and biases of the network can now be adjusted. The general idea of gradient descent relies on the fact that the gradient of a function points in the direction of greatest increase. Thus, to optimize the network---which is equivalent to finding the parameters that minimize the value of the loss function---the weights and biases are updated by shifting their values in the opposite direction of the gradient of the loss function with respect to the weights, $ \grad_w L $ . Gradient descent is the core principle of machine learning; this efficient algorithm for systematically updating model-parameters, made it possible to develop deep neural networks and train them with large datasets. Several improvements have been made to gradient descent since its inception \cite{cauchy-orig-grad-descent}, with the state of the art being AdamW \cite{AdamW-orig}. In this section, several optimization algorithms are introduced in order to provide context for Adam, the optimizer used for training our model. In the previous section, the gradients for the weights and biases were written explicitly. For simplicity, the variable $ \theta $ is introduced to refer to either parameter. As before, $ J(\theta) $  is the cost function; it could be the L1 or L2 cost, or any other differentiable measurement of fit quality.
 
 \subsubsection{Gradient Descent}
 Vanilla gradient descent \cite{gradient-descent-rev-article} updates the parameters in the following way:
 
 \begin{equation}
     \label{batch-grad-descent}
-    \theta := \theta - \eta \cdot \nabla_\theta J(\theta)
+    \theta := \theta - \eta \cdot \grad_\theta J(\theta)
 \end{equation}
 
-\noindent Here (\ref{batch-grad-descent}), $ \eta $ is a \textit{hyperparameter} known as the learning rate. A hyperparameter is a user-defined parameter that must be chosen before the training process begins; it is not a trainable parameter. One limitation to gradient descent is the need for the entire cost $ J $ to be calculated. For large datasets, this can become impractical. Two common variants are batch gradient descent and stochastic gradient descent (SGD). In the former, the training set is divided into batches and the gradient is updated after each batch. One iteration through all the batches is called an \textit{epoch}. In the latter, the gradient is calculated using the loss function instead of the cost function, i.e. the gradient is calculated and the parameters are updated after each training sample. Both methods greatly reduced training time with the help of optimized, parallel computing \cite{stoch-grad-desc-parallel}. By updating the parameters after every training sample, SGD will move in the direction of the true gradient. The major limit to these methods, however, is the fixed learning rate \cite{grad-desc-limits}. If the learning rate, $ \eta $ is too large, the algorithm will be unstable and ``bounce'' around the global minimum of the cost function. If $ \eta $ is too small, the algorithm will, at best, take a long time to train, and at worst, end up stuck in a local minimum. 
+\noindent Here (\ref{batch-grad-descent}), $ \eta $ is a \textit{hyperparameter} known as the learning rate. A hyperparameter is a user-defined parameter that must be chosen before the training process begins; it is not a trainable parameter. One limitation to gradient descent is the need for the entire cost $ J $ to be calculated. For large datasets, this can become impractical. Two common variants are batch gradient descent and stochastic gradient descent (SGD). In the former, the training set is divided into batches, and the gradient is updated after each batch. One iteration through all the batches is called an \textit{epoch}. In the latter, the gradient is calculated using the loss function instead of the cost function, i.e. the gradient is calculated, and the parameters are updated after each training sample. Both methods greatly reduced training time with the help of optimized, parallel computing \cite{stoch-grad-desc-parallel}. By updating the parameters after every training sample, SGD will move in the direction of the true gradient. The major limit to these methods, however, is the fixed learning rate \cite{grad-desc-limits}. If the learning rate, $ \eta $ is too large, the algorithm will be unstable and ``bounce'' around the global minimum of the cost function. If $ \eta $ is too small, the algorithm will, at best, take a long time to train, and at worst, end up stuck in a local minimum. 
 
 \subsubsection{Stochastic Gradient Descent with Momentum}
 Compared to regular SGD, stochastic gradient descent with momentum \cite{grad-desc-with-mom-orig} can greatly reduce the time to convergence. The general idea is to add a fraction of the previous parameter update to the current update. The exponential moving average (EMA) is an averaging of points within a period that puts greater weight on more recent points\footnote{In contrast a simple moving average treats each point as equally significant}. Here, $ S_t $ is the $ t^{th} $  value in the sequence S, and $ V_t $ is the $ t^{th} $  value in the new exponential moving averaged sequence, $ V $ .
@@ -261,67 +260,81 @@ Compared to regular SGD, stochastic gradient descent with momentum \cite{grad-de
 \noindent where $ \beta \epsilon [0,1]$, a hyperparameter which partly defines how much weight the previous $ 1/(1-\beta) $ terms of S contribute\footnote{Typically 0.90 is a good starting point}. EMA's are common in market forecasting, so often $ S_t $  is the price at time $ t $. The continuous update for SGD with momentum is as follows:
 
 \begin{align}
-    V_t &= \beta V_{t-1}  + \left( 1 - \beta \right) \nabla_\theta J \left( \theta \right)\\
+    V_t &= \beta V_{t-1}  + \left( 1 - \beta \right) \grad_\theta J \left( \theta \right)\\
     w &= W - \alpha V_t
 \end{align}
 
 
-Here, $ \alpha $  is the learning rate, as always. To be clear, $\nabla_w L$ is the gradient of the loss function with respect to the weights. Note that the cost function $ J(\theta) $ may instead be the loss function $ L(\theta) $ if updates are performed after each training sample (i.e.~a batch size of one). SGD with momentum tends to perform better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through ravine-shaped local minima in the correct direction, whereas SGD tends to oscillate back and forth along the ravine's steeper dimension \cite{qian1999momentum}.
+Here, $ \alpha $  is the learning rate, as always. To be clear, $\grad_w L$ is the gradient of the loss function with respect to the weights. Note that the cost function $ J(\theta) $ may instead be the loss function $ L(\theta) $ if updates are performed after each training sample (i.e.~a batch size of one). SGD with momentum tends to perform better than SGD because it gives a closer estimate of the full gradient from the batch than SGD. Additionally, the momentum helps push the update through ravine-shaped local minima in the correct direction, whereas SGD tends to oscillate back and forth along the ravine's steeper dimension \cite{qian1999momentum}.
 
 \subsubsection{Root Mean Squared Propagation}
-Root Mean Squared Propogation (RMSprop)\footnote{RMSprop has an interesting history. It is an unpublished algorithm, first introduced by Geoff Hinton in an online series of lectures. Nevertheless, it is an incredibly popular algorithm and included in most ML platforms.} is another variant of SGD designed to improve convergence speed and remedy adagrad's \cite{adagrad} tendency to rapidly diminishing gradients \cite{improving-rprop}\cite{2017marginal-adagrad}. The idea is to dampen oscillations in directions when the predictions are close to the cost function's minimum and accelerate movement when far away. In RMSprop, we keep a moving average of the squared gradients for each weight and use these to divide the learning rate by an exponentially decaying average. As before, $\nabla_\theta J$ is the gradient of the cost with respect to weights.
+Root Mean Squared Propogation (RMSprop)\footnote{RMSprop has an interesting history. It is an unpublished algorithm, first introduced by Geoff Hinton in an online series of lectures. Nevertheless, it is an incredibly popular algorithm and included in most ML platforms.} is another variant of SGD designed to improve convergence speed and remedy adagrad's \cite{adagrad} tendency to rapidly diminishing gradients \cite{improving-rprop}\cite{2017marginal-adagrad}. The idea is to dampen oscillations in directions when the predictions are close to the cost function's minimum and accelerate movement when far away. In RMSprop, we keep a moving average of the squared gradients for each weight and use these to divide the learning rate by an exponentially decaying average. As before, $\grad_\theta J$ is the gradient of the cost with respect to weights.
 
 \begin{align}
     \label{eqn:RMS_Prop}
-    & S_{k+1} = \beta S_k + (1 - \beta)(\nabla_\theta J \cdot \nabla_\theta J) \\
-    & \theta_{k+1} = \theta_k - \alpha \frac{\nabla_\theta J}{\sqrt{S_{k+1}} + \epsilon}
+    & S_{k+1} = \beta S_k + (1 - \beta)(\grad_\theta J \cdot \grad_\theta J) \\
+    & \theta_{k+1} = \theta_k - \alpha \frac{\grad_\theta J}{\sqrt{S_{k+1}} + \epsilon}
 \end{align}
 
-\noindent The hyperparameter $ \epsilon $ is included in the denominator to prevent a possible division by zero.\footnote{Typical values for $ \alpha $  and $ \beta $  are 0.001 and 0.9, respectively.} 
+\noindent The hyperparameter $ \epsilon $ is included in the denominator to prevent a possible division by zero as well as provide more stability.\footnote{Typical values for $ \alpha $  and $ \beta $  are 0.001 and 0.9, respectively.} 
 
 \subsubsection{Adaptive Moment Estimator}
 Adaptive Moment Estimator (Adam) is a combination of RMSprop and SGD with momentum. Adam uses the squared gradients to scale the learning rate for each parameter (similar to RMS prop), and it uses a moving average of the gradient (similar to SGD with momentum).
 
 \begin{align} 
     \begin{split} 
-    m_t &= \beta_1 m_{t-1} + (1 - \beta_1) (\nabla_\theta J) \\ 
-    v_t &= \beta_2 v_{t-1} + (1 - \beta_2) (\nabla_\theta J \cdot \nabla_\theta J) 
+    m_t &= \beta_1 m_{t-1} + (1 - \beta_1) (\grad_\theta J) \\ 
+    v_t &= \beta_2 v_{t-1} + (1 - \beta_2) (\grad_\theta J \cdot \grad_\theta J) 
     \end{split} 
 \end{align}
 
-\noindent The new parameters in this algorithm, $ m_{t-1} $ and $ v_{t-1} $ are the first and second moments of the gradient (the mean and variance), respectively. Adam's 80,000 ciations in the 6 years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}. This was the chosen algorithm for training our neural network for predicting disorder in XANES.
+\noindent The new parameters in this algorithm, $ m_{t-1} $ and $ v_{t-1} $ are the first and second moments of the gradient (the mean and variance), respectively. Adam's 80,000 citations in the six years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}. This was the chosen algorithm for training our neural network for predicting disorder in XANES.
 
-\section{Batch normalization}
-
-Batch normalization is a way to make your network more robust to covariance shift\footnote{Covariate shift is a type of dataset shift where the distribution of training data differs from that of testing, or in this context, batch to batch.} \cite{batch-norm-orig}  \cite{batch-norm-conference}. For example, if you train your cat vs. not cat identifier with only images of black cats, your network won't make good predictions when it comes to orange cats.
-
-The idea is to normalize each hidden layer, similar to how you normalize the input dataset. However, whereas with normalization of training data centers the dataset around a mean of zero and STD of 1, the mean and variance of the batch normalization are trainable/learnable parameters.
-
-Normalize input data i like:
-
+\section{Normalization}
+Normalization is an important step for any machine learning algorithm. There are three types of normalization utilized in our training process: feature normalization, label normalization, and batch normalization. Without feature normalization, a model will put greater weight on features with larger values. For example, if a model is trained to predict surface stress of a silca bead in silicone gel given the diameter of the bead in microns and the adhesion energy in $ \text{mNm}^{-1} $, the model would learn to ignore the bead's size in its predictions. This is because the values particle's size are $ 1000\times $ smaller than the adhesion energy \cite{williamsThesis}. To correct for this, each feature is ``normalized'' on the training data to be on the same scale. Often a z-score is used to center the features around zero with a standard deviation of one. This is known standardizing or applying a standard-scalar \cite{statsTextbook}.
 
 \begin{equation}
-    Z_{norm}^{(i)} = \frac{x_i-\mu}{\sqrt{\sigma^2-\epsilon}}
+    \label{z-score}
+    Z_{norm}^{(i)} = \dfrac{x_i-\mu}{\sqrt{\sigma^2-\epsilon}}
 \end{equation}
 
+\noindent In our neural network, the training features are normalized in this way. 
 
-Normalize the values for hidden layer l like:
+For the same reasons feature normalization is important, the training labels must also be normalized. Instead of using the standard scalar, the labels are normalized using min-max normalization, which normalizes the values between zero and one. This is a useful when the labels are known to be evenly distributed over a range. To scale the $ i^{th} $ label (y) via min-max scaling:
+
+\begin{equation}
+    Z_{norm}^{(i)} = \dfrac{x_i - \text{Min}(y)}{\text{Max}(y) - \text{Min}(y)}
+\end{equation}
+
+Scaling the training features means the neural network will predict the scaled values. To determine the true value, the prediction can simply be ``un-scaled'' via:
+
+\begin{equation}
+    y^{(i)} = - \dfrac{Z_{norm}^{(i)}\left(\text{Max}(y) - \text{Min}(y)\right)}{\text{Min(y)}}
+\end{equation}
+
+\noindent It is important that the scaling paramters $ \mu,~\sigma,~\text{Min}(y)$ and $\text{Max}(y) $ come from the training set---not the testing or validation set. Using the values from the entirety of data constitutes a form of \textit{data leakage}, where the training process is given a hint of the validation or test data. It is important that the model never sees the testing or validation until testing or validation time; otherwise the model is unlikely to generalize as well to unseen data as one might expect given a loss curve.
+
+Batch normalization is a technique designed to make NN's more robust to internal covariate shift \cite{batch-norm-orig}. Covariate shift referrs to a systematic difference between the training and validation data, or in the context of a training batch, a systematic shift in the distribution of data from batch to another \cite{batch-norm-conference}. For example, if a NN is trained for binary classification to predict whether or not an image includes a cat---and the network is trained on images of only black cats---the network is unlikely to make a correct prediction when it encounters an image of an orange cat.
+
+The idea of batch normalization is to normalize each hidden layer similar to how training data or labels are normalized; however, whereas normalizing the training data centers the dataset or labels using fixed parameters such as the mean and variance, in batch normalization the mean and variance of the batch normalization are learnable parameters. In batch normalization, the values for a hidden layer are scaled via:
 
 \begin{equation}
 \widetilde{Z}_i = \gamma Z_{norm}^{(i)} - \beta
 \end{equation}
 
-You can see that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, you get the first equation, i.e. you're normalizing the hidden layer in the same way as the input layer. You generally don't want to do this, however, because if you're normalizing everything to be centered around zero, your activation function will be mostly focused on the linear regime of the sigmoid.
+\noindent Notice that if $\sqrt{\sigma^2 + \epsilon}$ and $\gamma = \mu$, we get equation (\ref{z-score}), i.e. the hidden layer is normalized in the same way as the input layer. This is generally not useful, however, because normalizing all parameters to be centered around zero causes the sigmoid-like activation functions to be mostly focused on the linear regime.
 
-The structure of implementing batch normalization looks something like this:
+% The general structure of implementing batch normalization looks something like this:
+% \begin{align}
+% \text{first pass: }& x \cdot \theta^T \rightarrow z \\
+% \text{batch normalize: }& z \rightarrow \widetilde{z} \\
+% \text{apply activation function: }& g(\widetilde{z}) = a \\
+% \text{second pass: }& a \cdot \theta^T
+% \end{align}
 
-$$\text{first pass: } x \cdot \theta^T \rightarrow z$$
-$$\text{batch normalize: } z \rightarrow \widetilde{z}$$ 
-$$\text{apply activation function: } g(\widetilde{z}) = a$$
-$$\text{second pass: } a \cdot \theta^T$$     
-etc.
+% Note, this is for one batch, so $x$ is the $i^{th}$ batch. 
 
-Note, this is for one mini-batch, so $x$ is the $i^{th}$ mini-batch. Normalizing the hidden layers for each batch means that later hidden layers don't have to adapt as much to the earlier hidden layers. This means that the later layers can do a better job tuning themselves a little more independently of the other layers, and it speeds up the learning process. Note, because you're scaling each mini-batch $(z \rightarrow \widetilde{z})$, you add a little bit of noise, which is a little bit of regularization. But don't use batch-norm as a form of regularization. That's not its purpose.
+The output of the batch normalization is passed forward to the next hidden layer of the network, while the normalized input is retained in the current layer. Normalizing the hidden layers for each batch means that later hidden layers do not have to adapt as much to the earlier hidden layers. Consequently, this allows the deeper layers to do a better job tuning themselves a little more independently of the other layers, improving performance and speeding up the learning process. Note, because each batch is scaled $(z \rightarrow \widetilde{z})$, a small amount of noise is added, which acts as a slight form of regularization\footnote{Note, while batch-norm adds regularization, this is not indendent to be used as a form of regularization. L1, L2 regrularization or dropout layers should be used instead.}. Recently, several papers have been published disputing the reason batch normalizatio improves the model's performance, however, they do not dispute its efficacy \cite{whybatchnorm1} \cite{whybatchnorm2} \cite{whybatchnorm3}. 
 
 \section{Covolutional Neural Networks}
 Convolution is a mathematical operation for combining two functions, the result of which is a third function revealing the effect of the second function on the first \cite{Boas-mathmethods}. The convolution of two continuous functions, $ f $ and $ g $, is a special type of integral transformation. The result is the integral of the product of $ f $ and the shifted inverse of $ g $, where $ f $ can be thought of as the input function and $ g $ is often referred to as the kernel.
@@ -332,7 +345,7 @@ Convolution is a mathematical operation for combining two functions, the result 
 
 \noindent The variable $ i $ (no relation to the imaginary number) is represents the weighted-shift in the function $ g(\tau) $. Different values of $ i $ emphasize different parts of the other function, $ f(\tau) $.  
 
-In computer science, convolutions are an important and powerful tool for signal and image processing \cite{1dconv-NN-survey} \cite{deepCNNforImages}. Because images and signals ---which can be thought of as a 1D image --- are comprised of a discrete number of points (e.g.~pixels), a modified foruma is required. The convolution of the signal $ f $ with the kernel $ g $ can be written as \cite{cornell-convs}:
+In computer science, convolutions are an important and powerful tool for signal and image processing \cite{1dconv-NN-survey} \cite{deepCNNforImages}. Because images and signals---which can be thought of as a 1D image---are comprised of a discrete number of points (e.g.~pixels), a modified foruma is required. The convolution of the signal $ f $ with the kernel $ g $ can be written as \cite{cornell-convs}:
 
 \begin{equation}
     \label{eqn:cs-1dconv}
@@ -415,20 +428,20 @@ $$
 
 The toy example was chosen to demonstrate the basics of a 1D convolution. In this example, the input spectrum was a vector of length ten and the kernel of length three. In the context of applying a 1D convolution to a neural network, the size of the input vector is the cardinality of the hidden layer directly preceding the convolutional layer. Often the hidden layer's output, represented as a vector, is reshaped into an n-dimensional tensor before applying the convolution. To apply a 1D-convolution to a Tensor of rank $ n $, simply apply the convolution to each of the n-vectors separately, ensuring to pad the ends of each vector with zeros. Layers with dimensionality greater than one can be ``un-raveled''. Alternatively, the layers of each dimension can be truncated or ``pooled'' by averaging the layers that are stacked on one another (or taking the max of each layer) until the desired dimensionality is achieved. A common way to achieve this is with a max pooling layer or an average pooling layer. Max pooling and average pooling layers also have the additional benefit of downsampleing the feature space, tending to make the network more robust to slight variations in the position of features in the input image or signal. This is referred to as ``local translation invariance'' \cite{local-translation-invariance}.
 
-Another important possible change, in the above example, we ``slid'' the kernel across the input spectrum one point at a time. This is referred to as a stride size of one. The stride could be any integrer less than the length of the input vector $ f $, though in practice, typically a stride lengths tend to be one or close to one. Lastly, in the above example, we only applied one convolutional kernel, or ``filter.'' In practice, many filters are applied sequentially. In the above example, the filter $ g = (.1, .1, .1) $ was simply decided upon \textit{a priori}. In practice, the values for each filter in the convolutional layer are initialized randomly or according to the specified initialization funciton. The default in Keras is Glorot Uniform. The values of each filter are trainable parameters which evolve to produce the best final prediction given the subsequent layers in the neural network.
+Another important possible change in the above example is the stride length. In the above example, we ``slid'' the kernel across the input spectrum one point at a time. This is referred to as a stride size or stride length of one. The stride could be any integrer less than the length of the input vector $ f $, though in practice, typically a stride lengths tend to be one or close to one. Lastly, in the above example, we only applied one convolutional kernel, or ``filter.'' In practice, many filters are applied sequentially. In the above example, the filter $ g = (.1, .1, .1) $ was simply decided upon \textit{a priori}. In practice, the values for each filter in the convolutional layer are initialized randomly or according to the specified initialization funciton. The default in Keras is Glorot Uniform. The values of each filter are trainable parameters which evolve to produce the best final prediction given the subsequent layers in the neural network.
 
 
 \section{How to Train a Neural Network}
-Here is the process for building a NN for cifar10Permalink.
-You need to start with a simple model first. Pick some hype hyperparameters to see if you can overfit it (say, make the training set 1 - 10 images). If you can overfit it, then it means your code is working and your architecture makes sense. Next you can up the images to say 1000 and run a broad hyperparameter search. Afterward, run maybe 20 epochs and see how the training and validation loss are moving. If they both are going down, your architecture looks good. If not, start over.
+Building a successful neural network requires a combination of intuition and procedural know-how. The first key is to start with a simple model, perhaps a single hidden. If you start with a complex model with data augmentation and regularization, you’ll never be able to tune the hyperparameters and find a good solution. Then, a good strategy is to pick a simple architecture and reasonable hyperparapeters and train the model on a small subset of training samples, say 1--10 samples. Train the model over 10 or so epochs and see if the training cost is decreasing and and see if you can overfit. If you can overfit the small sample size, it means the code is working and the network architecture makes sense. Now you can increase the number of samples in the training data, either to the full train-test split or a subset of that if working with ``big data.''\footnote{Big data has become a nebulous term, but a reasonable example is when you there is so much data that the dataset cannot loaded into the computer's memory (RAM) at the same time.} Next you can run a broad hyperparameter search. Afterward, run maybe 20 epochs and see how the training and validation loss are moving. If they both are going down, the architecture looks good. If not, start over. Ideally the training and validation loss curves will be decreasing together like in figure \ref{fig:Example-Training-Loss-Curve}. If after hyperparameter tuning the model still does not predict as well as required, the model is underfitting and a more complex architecture is required (add more layers).
 
-Once it looks like your training loss is continuing to decrease but your validation loss plateaus, it’s time to start introducing regularization (say nn.Dropout(.5)) and data augmentation. This way you won’t continue to overfit the data and can keep dropping the validation loss.
+\begin{figure}
+    \includegraphics[width=\linewidth]{Chapters/Figures/epoch_loss1.pdf}
+    \caption{In this example loss curve, the x-axis is the epoch and the y-axis is the mean-squared error of the prediciton. The red curve is the training data and the blue curve is the validation set. Notice how both curve decrease togther, but the training curve has a smaller error than the validation curve. This is the expected behavior of a model that is not overfitting and training properly.}
+    \label{fig:Example-Training-Loss-Curve}
+\end{figure}
 
-I haven’t done it yet with the cifar10 set, but I suspect that you should build up a more complex architecture without regularization and make sure you can overfit it to death before tuning hyperparameters and introducing regularization.
+Ideally the training and validation loss will decrease together over many epochs. It is likely, however, that after many epochs the training loss will continue to decrease while the validation loss plateaus. This is the point to start introducing regularization such as dropout layers as well and considering data augmentation. These techniques will allow the model to continue decreasing the validation loss and prevent overfitting. The main goal of training is to minimize the validation loss. The placement of dropout layers and the type of data augmentation are subject to trial and error. Generally, it is best to include dropout layers after a ReLU acticaiton and before an affine layer, and there has been some research suggesting the inclusion of low-probability dropout layers after convolutional layers tends to improve model performance \cite{conv-dropout-layers} \cite{conv-dropout-layers2}, but these rules do not work for every network and it is still worth trying different options while training.
 
-If you start with a complex model with data augmentation and regularization you’ll never be able to tune the hyperparameters and find a good solution.
-
-It’s best to put dropout layers after a ReLU activation and before an affine (nn.Linear()) layer
 
 
 % \section{Autoencoders if they become useful}
