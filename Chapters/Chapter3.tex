@@ -43,10 +43,10 @@ f(x)=
 \noindent ReLU is important because it provides a much greater range in values. Whereas the sigmoid and tanh activation functions saturate around 4, ReLU never saturates for linear values. Additionally, ReLU is simple to calculate and tends to help neural networks converge quickly. Arguably thier most major benefit is the reduced likelihood of creating a vanishing gradient. Further, because ReLU returns 0 for any negative value fed foward into the node, many ReLU activation functions in a given layer help lead to sparser layers, reducing the overall complexity of the model and helping prevent overfitting.
 
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=.5\linewidth]{Chapters/Figures/overfitting.png}
-    \caption[Overfitting]{The green curve represents a model that is overfitting the data in a binary classification problem. Although it makes perfect predictions for the training data in this figure, the model will not generalize well. Introducing biases and including dropout layers in neural networks are strategies to prevent overfitting.}
+    \includegraphics[width=\linewidth]{Chapters/Figures/overfittingOrig2.pdf}
+    \caption[Overfitting]{The green curve represents a model overfitting a binary classification problem. Although it makes near-perfect predictions for the training data in this figure, the model will not generalize as well as the simpler, black curve. Introducing biases and dropout layers in neural networks are strategies to prevent overfitting to reduce the model variance and fit the data like the black curve.}
     \label{fig:overfitting}
 \end{figure}
 
@@ -62,12 +62,17 @@ $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right)$ is the final o
 \end{figure}
 
 \subsection{Loss Metrics and Regularization}
-It is necessary to evaluate the quality of every prediction the neural network makes in order to update the netork parameters. The measure of the error in one prediction is referred to as the \textit{loss}, and the summed total of all the errors in predictions is called the \textit{cost}. For regression problems, the two most common cost functions are the mean squared error and the mean absolute error. These are also referred to as the L2 and L1 costs, respectively, and defined as:
+In order to update the netork parameters, it is necessary to evaluate the quality of every prediction the neural network makes. The measure of the error in one prediction is referred to as the \textit{loss}, and the summed total of all the errors in predictions is called the \textit{cost}. For regression problems, the two most common cost functions are the mean squared error and the mean absolute error \cite{regularization-2017survey}. These are also referred to as the L2 and L1 costs, respectively, and defined as:
 
+% \begin{align}
+%     \label{eqn:lossFunctions}
+%     \text{L1 Cost} &= \frac{1}{n} \sum_i \abs*{\hat{y_i} - y_i} \\
+%     \text{L2 Cost} &= \frac{1}{n} \sum_i \left( \hat{y_i} - y_i \right)^2
+% \end{align}
 \begin{align}
     \label{eqn:lossFunctions}
-    \text{L1 Cost} &= \frac{1}{n} \sum \left( \hat{y} - y \right) \\
-    \text{L2 Cost} &= \frac{1}{n} \sum \left( \hat{y} - y \right)^2
+    \text{L1 Cost} &= J = \sum (\hat{y}_i - y)^2 + \lambda \sum \abs*{W} \\
+    \text{L2 Cost} &= J = \sum (\hat{y}_i - y)^2 + \lambda \sum (W)^2
 \end{align}
 
 \noindent where $ n $ is the number of training sampels. The equation for updating the weights under L2 regularization is as follows:
@@ -75,13 +80,7 @@ It is necessary to evaluate the quality of every prediction the neural network m
     W := (1-\alpha \lambda)W - \frac{\partial J}{\partial W}  
 \end{equation}
 
-\noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero due to the multiplicatiion of the weights by a value $<1$. For L2, the equation for the cost is:
-
-\begin{equation}
-\text{L2 cost} = J = \sum (y_i - y)^2 + \lambda \sum (W)^2
-\end{equation}
-
-L1 regularization is just the same as above, but with an absolute value for the regularization term instead of a square. L1 is known as LASSO (least absolute shrinkage and selection operator), because it shrinks the less important features' coefficients to zero. This is because for small values $abs(w)$ is a much stiffer penalty than $w^2$. Thus, L1 is thus a good choice when you have a ton of features.
+\noindent where $\alpha$ is the learning rate, $\lambda$ is the regularization hyper-parameter, and J is the cost. L2 regularization is often referred to as weight decay. Every iteration the weights are pushed closer to zero due to the multiplicatiion of the weights by a value $<1$. L1 is known as LASSO (least absolute shrinkage and selection operator), because it shrinks the less important features' coefficients to zero. This is because for small values $\abs*{w}$ is a much stiffer penalty than $w^2$. Thus, L1 is thus a good choice when you have a dozens of features.
 
 % \noindent Explicitly, for one component of the hidden layer:
 
@@ -90,8 +89,7 @@ L1 regularization is just the same as above, but with an absolute value for the 
 %         &= \sigma\Big(\sum_{i=1}^{i=5}w_{ij}x_{i} + b_j\Big)
 % \end{align}
 
-
-\noindent The process can be repeated ad-nauseam for networks with more layers.
+Dropout layers are another variation of model regularization used exclusively for neural networks \cite{dropout-srivastava2014}. The idea is to introduce a hidden layer with a probability ``dropping out,`` i.e. ignored. Large weights in a neural network are indicative of a high-variance network, likely to be overfitting the data. By indroducing layers with a probability of dropping out, the inward connection to the next layer change stochastically from batch to batch. This has the effect the adding noise to the network, similar to the inclusion of biases \cite{conv-dropout-layers} \cite{conv-dropout-layers2}.
 
 \subsection{Backpropagation}
 Backpropagation is the process of updating all the trainable parameters of the machine learning model, including weights, biases, and any other trainable parameters. The partial derivative require repeated use of the chain rule. Representing the above neural network as a functional yields the equation:
@@ -290,7 +288,7 @@ Adaptive Moment Estimator (Adam) is a combination of RMSprop and SGD with moment
 
 \noindent The new parameters in this algorithm, $ m_{t-1} $ and $ v_{t-1} $ are the first and second moments of the gradient (the mean and variance), respectively. Adam's 80,000 citations in the six years since its publication gives some indication of the importance and power of this algorithm \cite{orig-ADAM-paper}. This was the chosen algorithm for training our neural network for predicting disorder in XANES.
 
-\section{Normalization}
+\section{Normalization} \label{sec:normalization}
 Normalization is an important step for any machine learning algorithm. There are three types of normalization utilized in our training process: feature normalization, label normalization, and batch normalization. Without feature normalization, a model will put greater weight on features with larger values. For example, if a model is trained to predict surface stress of a silca bead in silicone gel given the diameter of the bead in microns and the adhesion energy in $ \text{mNm}^{-1} $, the model would learn to ignore the bead's size in its predictions. This is because the values particle's size are $ 1000\times $ smaller than the adhesion energy \cite{williamsThesis}. To correct for this, each feature is ``normalized'' on the training data to be on the same scale. Often a z-score is used to center the features around zero with a standard deviation of one. This is known standardizing or applying a standard-scalar \cite{statsTextbook}.
 
 \begin{equation}
@@ -334,7 +332,10 @@ The idea of batch normalization is to normalize each hidden layer similar to how
 
 % Note, this is for one batch, so $x$ is the $i^{th}$ batch. 
 
-The output of the batch normalization is passed forward to the next hidden layer of the network, while the normalized input is retained in the current layer. Normalizing the hidden layers for each batch means that later hidden layers do not have to adapt as much to the earlier hidden layers. Consequently, this allows the deeper layers to do a better job tuning themselves a little more independently of the other layers, improving performance and speeding up the learning process. Note, because each batch is scaled $(z \rightarrow \widetilde{z})$, a small amount of noise is added, which acts as a slight form of regularization\footnote{Note, while batch-norm adds regularization, this is not indendent to be used as a form of regularization. L1, L2 regrularization or dropout layers should be used instead.}. Recently, several papers have been published disputing the reason batch normalizatio improves the model's performance, however, they do not dispute its efficacy \cite{whybatchnorm1} \cite{whybatchnorm2} \cite{whybatchnorm3}. 
+The output of the batch normalization is passed forward to the next hidden layer of the network, while the normalized input is retained in the current layer. Normalizing the hidden layers for each batch means that later hidden layers do not have to adapt as much to the earlier hidden layers. Consequently, this allows the deeper layers to do a better job tuning themselves a little more independently of the other layers, improving performance and speeding up the learning process. Note, because each batch is scaled $(z \rightarrow \widetilde{z})$, a small amount of noise is added, which acts as a slight form of regularization\footnote{Note, while batch-norm adds regularization, this is not indendent to be used as a form of regularization. L1, L2 regrularization or dropout layers should be used instead.}. Recently, several papers  \cite{whybatchnorm1} \cite{whybatchnorm2} \cite{whybatchnorm3} have been published disputing the reason batch normalization improves the model's performance, however, none dispute its efficacy. 
+
+\section{Data Augmentation}
+Data augmentation is a technique to expand the size and variance of the training data for machine learning purposes and has been critically important for devoloping powerful deep neural networks, particularly in the domain image processing. \cite{data-augmentation1}\cite{data-augmentation2} \cite{data-augmentation3} \cite{data-augmentation4}. Consider the example in section \ref{sec:normalization} of a cat-vs-not-cat binary classifier. The idea of data augmentation is to take the dataset containing only images of the red cats and add new images created from the original dataset. Common methods of data augmentation are image cropping, adding a color, sharpness, or contrast filter. For signal processing, such as absorption spectra, the introduction of gaussian noise and shifting the spectra horizonally are common methods for increasing the size of the training data \cite{data-augmentation5}.
 
 \section{Covolutional Neural Networks}
 Convolution is a mathematical operation for combining two functions, the result of which is a third function revealing the effect of the second function on the first \cite{Boas-mathmethods}. The convolution of two continuous functions, $ f $ and $ g $, is a special type of integral transformation. The result is the integral of the product of $ f $ and the shifted inverse of $ g $, where $ f $ can be thought of as the input function and $ g $ is often referred to as the kernel.

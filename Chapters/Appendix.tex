@@ -29,7 +29,7 @@ Given \texttt{feff.inp} file, generate many \texttt{feff.inp} files --- each wit
 ~
 \end{minipage}
 
-\section{gaussianator.py}
+\section{gaussianator.py} \label{appendix:gaussianator}
 Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the $\Delta \rho$ shifted crystrals) and generates many gaussian averaged XANES spectra. One file per different standard deviation of the gaussian. The File structure is organized as follows: 
 
 \begin{minipage}{\linewidth}
@@ -49,7 +49,135 @@ Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the 
 \end{Verbatim}
 ~
 \end{minipage}
+
+\begin{lstlisting}[language=Python]
+    # Inputs: -----
+    # dataframe df = the already mapped concat dataframe of all the different delta_rho shifted feff xanes
+    # float64 mean = mean of gaussian.
+    # float64 std = standard deviation of gaussian
+    # float64 skewness = skew parameter of stats.skewnorm
+    # Outputs: ----
+    # dataframe df_weighted2 = one dataframe. It is one distribution-weighted spectra with cols=['omega','mu']
+    # float64 avg_MSD = the mean squared displacement of the skewnorm-averaged spectrum
+    # Note a skewness of 0, sigma 1, and mean 0 is a standardized normal distribution.
+    def weight_by_distribution2(df_concat, mean, std, skewness):
+    # ---------
+    # get the bin heights for all the bins
+    bin_heights = np.array([stats.skewnorm.pdf(nn_dist, loc=mean, scale=std, a=skewness) for nn_dist in BINS])
+    normalization_factor = np.sum(bin_heights)
+    # same as sum(bin_height_i * nn_bond_dist)/(sum(bin_heights))
+    weighted_nn_dist_mean = np.dot(bin_heights, BINS) / normalization_factor
+    # same as sum(bin_height_i * ( nn_bond_dist_i - mean_bond_dist )^2 )/sum(bin_heights)
+    sq_dif = np.square(np.subtract(BINS, weighted_nn_dist_mean))
+    avg_msd = np.divide(np.dot(bin_heights, sq_dif), normalization_factor)
+    # now do the spectrum -----------------
+    df_weighted2 = pd.DataFrame(data={'omega': df_concat.loc['0'].omega, 'mu': np.zeros(df_concat.loc['0'].omega.shape[0])})
+    for shift, bin_height in zip(SHIFTS, bin_heights):
+        df_weighted2.mu += df_concat.loc[shift]['mu'].multiply(bin_height)
+    df_weighted2.mu /= normalization_factor  # correct for the sum, so the area under the PDF=1
+    return df_weighted2, avg_msd
+\end{lstlisting}
     
+
+\section{generate-training-data.py}
+This script generates the FEFF input files (\texttt{feff.inp}) for the disordered structures---i.e. the true-disordered structures, NOT the distorted structures used for the skew-norm averaging.
+
+\begin{minipage}{\linewidth}
+    ~ \\
+    \begin{Verbatim}[samepage=false]
+        BNL
+        │   distortionator.py
+        │   gaussianator.py
+        │   generate-training-data.py
+        │       
+        └───DATA
+        │   │       
+        │   │
+        │   └───MSD-0
+        │   │   │   avg_msd.txt
+        │   │   │
+        │   │   └── 0
+        │   │   │   │   feff.inp
+        │   │   │   │   msd.txt
+        │   │   ...
+        │   │   │
+        │   │   └── 12
+        │   │       │   feff.inp
+        │   │       │   msd.txt
+        │   │       
+        │   ...
+        │   │
+        │   └───MSD-1000
+        │   │   │   ...
+        │   │   ...
+
+    \end{Verbatim}
+    ~
+    \end{minipage}
+
+\begin{lstlisting}[language=Python]
+# Inputs: -----
+# pandas dataframe df = the unshifted dataframe with spherical coordinates
+# float shift_sigma = the width of the np.random.normal distribution from which shift distances are chosen
+# Outpts: ----
+# np arrays x, y, z = the shifted coorinates
+# Notes: -----
+# shift_val = radius of sphere project new point onto = distance of new disordered atom from original location
+def gen_random_delta_rho_shift(df, shift_sigma):
+    df_temp = df.copy()
+    # SHIFT
+    df_temp['shift_val'] = np.random.normal(loc=0, scale=shift_sigma, size=df_temp.shape[0])
+    df_temp['theta'] = 6.28 * np.random.random_sample(df_temp.shape[0])
+    df_temp['phi'] = 6.28 * np.random.random_sample(df_temp.shape[0])
+    # Calculate the new coordintes
+    df_temp['x'] += round(df_temp.shift_val*np.sin(df_temp.phi)*np.cos(df_temp.theta), 5)
+    df_temp['y'] += round(df_temp.shift_val*np.sin(df_temp.phi)*np.sin(df_temp.theta), 5)
+    df_temp['z'] += round(df_temp.shift_val*np.cos(df_temp.phi), 5)
+    # turn to numpy array
+    x1 = df_temp.loc[:, 'x'].values
+    y1 = df_temp.loc[:, 'y'].values
+    z1 = df_temp.loc[:, 'z'].values
+    return x1, y1, z1
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python]
+# Inputs: -----
+# str folder path of one structure (contains 13 subfolders, one for each absober)
+# Outputs: ----
+#Returns float64 MSD, the mean-squared-displacement of the structure.
+def do_one_structure(folder):
+    bonds = set()
+    rhos = []
+    duplicates = 0
+    for i in range(13):
+        subfolder_path = os.path.join(folder, str(i))
+        file = os.path.join(subfolder_path, 'feff.inp')
+        df_absorbers = (load_initial_file(file)
+                         .pipe(to_spherical)
+                         .query('rho < 3.5')
+                         )
+        for index, row in df_absorbers.iterrows():
+            option1 = (df_absorbers[df_absorbers.absorber==0].index[0], index)
+            option2 = (index, df_absorbers[df_absorbers.absorber==0].index[0])
+            if df_absorbers[df_absorbers.absorber==0].index[0] == index:
+                pass
+            elif option1 in bonds or option2 in bonds: # duplicate bond found
+                duplicates += 1
+            elif option1 not in bonds or option2 not in bonds: # new bond found
+                bonds.add(option1)
+                rhos.append(row.rho)
+    if len(rhos) != 120 or len(bonds) != 120:
+        raise Not120BondsException(len(rhos), len(bonds))
+    dif = np.array(rhos) - np.mean(arr)
+    squared = np.square(dif)
+    summed = np.sum(squared)
+    msd = summed/len(rhos)
+    with open(os.path.join(folder, 'fixed_avg_msd.txt'), "w") as f:
+        f.write(str(msd))
+    return msd
+\end{lstlisting}
+
+
 
 \section{create-g(r).ipynb}
 
