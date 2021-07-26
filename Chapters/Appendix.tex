@@ -50,6 +50,7 @@ Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the 
 ~
 \end{minipage}
 
+\pagebreak
 \begin{lstlisting}[language=Python]
     # Inputs: -----
     # dataframe df = the already mapped concat dataframe of all the different delta_rho shifted feff xanes
@@ -61,7 +62,7 @@ Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the 
     # float64 avg_MSD = the mean squared displacement of the skewnorm-averaged spectrum
     # Note a skewness of 0, sigma 1, and mean 0 is a standardized normal distribution.
     def weight_by_distribution2(df_concat, mean, std, skewness):
-    # ---------
+    # calculate the MSD -------------------
     # get the bin heights for all the bins
     bin_heights = np.array([stats.skewnorm.pdf(nn_dist, loc=mean, scale=std, a=skewness) for nn_dist in BINS])
     normalization_factor = np.sum(bin_heights)
@@ -77,8 +78,8 @@ Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the 
     df_weighted2.mu /= normalization_factor  # correct for the sum, so the area under the PDF=1
     return df_weighted2, avg_msd
 \end{lstlisting}
-    
 
+\pagebreak
 \section{generate-training-data.py}
 This script generates the FEFF input files (\texttt{feff.inp}) for the disordered structures---i.e. the true-disordered structures, NOT the distorted structures used for the skew-norm averaging.
 
@@ -115,6 +116,7 @@ This script generates the FEFF input files (\texttt{feff.inp}) for the disordere
     ~
     \end{minipage}
 
+\pagebreak
 \begin{lstlisting}[language=Python]
 # Inputs: -----
 # pandas dataframe df = the unshifted dataframe with spherical coordinates
@@ -140,6 +142,7 @@ def gen_random_delta_rho_shift(df, shift_sigma):
     return x1, y1, z1
 \end{lstlisting}
 
+\pagebreak
 \begin{lstlisting}[language=Python]
 # Inputs: -----
 # str folder path of one structure (contains 13 subfolders, one for each absober)
@@ -181,10 +184,10 @@ def do_one_structure(folder):
 
 \section{create-g(r).ipynb}
 
-This ipython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers, and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
+This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers, and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
 
 \section{nn.ipynb}
 The neural network, a Jupyter notebook.
 
 \section{nn-buddy.py}
-The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of dataloading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample.
+The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of data-loading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample.
