@@ -1,6 +1,7 @@
 % Look!  An Appendix!
 
 % Appendices are a good idea for almost any thesis.  Your main thesis body will likely contain perhaps 40-60 pages of text and figures.  You may well write a larger document than this, but chances are that some of the information contained therein, while important, does \emph{not} merit a place in the main body of the document.  This sort of content - peripheral clarifying details, computer code, information of use to future students but not critical to understanding your work \ldots - should be allocated to one or several appendices.  
+The code for this thesis is well-documented and stored in a GitHub\texttrademark ~repository. This appendix includes short descriptions of the major scripts written for this thesis, as well as the inclusion of a selected few major functions. The mathematical formulas and descriptions for how these scripts work are included in the main chapters of this thesis; however, there are instances where looking at the code can be useful in understanding the approach. Also included are the file structures that the scripts generate or expect to find. This is important to know if actually running the scripts.
 
 \section{distortionator.py}
 Given \texttt{feff.inp} file, generate many \texttt{feff.inp} files --- each with a structure slightly shifted radially outwards (or inwards) from the original structure. File structure is organized as the following: 
@@ -80,7 +81,7 @@ Take all the \texttt{xmu.dat} files (each one represents the sprectrum from the 
 \end{lstlisting}
 
 \pagebreak
-\section{generate-training-data.py}
+\section{generate-training-data.py} \label{app:gen-train-data}
 This script generates the FEFF input files (\texttt{feff.inp}) for the disordered structures---i.e. the true-disordered structures, NOT the distorted structures used for the skew-norm averaging.
 
 \begin{minipage}{\linewidth}
@@ -147,7 +148,7 @@ def gen_random_delta_rho_shift(df, shift_sigma):
 # Inputs: -----
 # str folder path of one structure (contains 13 subfolders, one for each absober)
 # Outputs: ----
-#Returns float64 MSD, the mean-squared-displacement of the structure.
+# Returns float64 MSD, the mean-squared-displacement of the structure.
 def do_one_structure(folder):
     bonds = set()
     rhos = []
@@ -184,10 +185,10 @@ def do_one_structure(folder):
 
 \section{create-g(r).ipynb}
 
-This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers, and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
+This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
 
 \section{nn.ipynb}
 The neural network, a Jupyter notebook.
 
 \section{nn-buddy.py}
-The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of data-loading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample.
+The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of data-loading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample. This way, the 

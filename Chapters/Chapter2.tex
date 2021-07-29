@@ -10,7 +10,33 @@ Before making any predictions, neural networks must first be trained on a large 
 
 \section{Traditional Particle-Averaged Simulations} 
 \label{sec:traditional-disorder}
-The traditional method for running FEFF simulations is referred to as particle-averaged FEFF. The simulation software only simulates the absorption spectrum from one absorber at a time. In the skew-norm methodology, we only calculate a center absorber because of symmetry. For simulating disordered structures, however, it is necessary to calculate all the absorbers. For this project, we are interested, at first, in simulating bulk Au. Accordingly, we attempt to neglect the surface effectson the spectrum by simulting the absorption of the only the first shell atoms and averaging (arithmetic mean) the results. This way, the first shell absorber atoms are surounded by bulk structure and the potentials and multiple scattering in FEFF will take more bulk structure into account instead of more surface effects. The decision to simulate bulk was made to reduce the number of confounding variables; if the technique works for simulating disordered bulk structures, the next stage would be to expand the process to nanoparticles. While particle averaging is the traditional method for simulating XANES via FEFF, the method is computationally intensive for large structures with many absorbers. The goal of developing a skew-norm averaging method was to be able to create an infinite number of disordered XANES spectra from a limited number of simulations. For particle averaging, to create 1000 disordered structures requires 13,000 simulations, a process that necessitates several days of computation time on a distributed computing cluster.
+The traditional method for running FEFF simulations is referred to as particle-averaged FEFF. The simulation software only simulates the absorption spectrum from one absorber at a time. In the skew-norm methodology, we only calculate a center absorber because of symmetry. For simulating disordered structures, however, it is necessary to calculate all the absorbers. For this project, we are interested, at first, in simulating bulk Au. Accordingly, we attempt to neglect the surface effects on the spectrum by simulating the absorption of only the first shell atoms and averaging (arithmetic mean) the results. This way, the first shell absorber atoms are surrounded by bulk structure and the potentials and multiple scattering in FEFF will take more bulk structure into account instead of more surface effects. The decision to simulate bulk was made to reduce the number of confounding variables; if the technique works for simulating disordered bulk structures, the next stage would be to expand the process to nanoparticles. 
+
+Simulating absorption spectra via FEFF requires the creation of Feff input files, which include various user-defined parameters as well as the Euclidean coordinates of the structure. Determining how to create these structures is a project in and of itself. The approach taken for this experiment was to start with the perfectly ordered crystal of Au atoms. Then, for each structure, each individual atom is shifted by a random distance in a random direction. For each atom (in a given structure), the direction to be shifted is chosen from a uniform distribution, whereas the distance by which to shift the atom from its original location is chosen from a Gaussian. For each structure, the standard deviation of the gaussian from which the shifted distance is drawn differs. Thus, with a narrow width gaussian, the shifted distances on average tend to be smaller than for a gaussian with a large width. Thus, structures with small MSD's tend to be created when the width of the gaussian for shift distances is narrow, whereas high MSD structures tend to be created when the width of the shift gaussian is wide. The code for this script can be found in Appendix \ref{app:gen-train-data}.
+
+FEFF requires tuning. There are various debates about choosing potentials blah blah blah
+
+
+\begin{minipage}{\linewidth}
+	Each FEFF input file is run with the following parameters: 
+	\begin{Verbatim}[samepage=true, numbers=left]
+		SCF 4.6 0 30 .5 1
+		EDGE    L3
+		EXCHANGE    5   0.2 0.5
+		S02 1.
+		XANES   3.7 0.05    0.1
+		FMS 7
+	
+		POTENTIALS
+		0	79	Au	-1	-1	0.
+		1	79	Au	-1	-1	0.
+	\end{Verbatim}
+	~
+	\end{minipage}
+
+While particle averaging is the traditional method for simulating XANES via FEFF, the method is computationally intensive for large structures with many absorbers. The goal of developing a skew-norm averaging method was to be able to create an infinite number of disordered XANES spectra from a limited number of simulations. For particle averaging, to create 1000 disordered structures requires 13,000 simulations, a process that necessitates several days of computation time on a distributed computing cluster.
+
+
 
 \begin{figure}[h!]
 	\centering
@@ -19,6 +45,9 @@ The traditional method for running FEFF simulations is referred to as particle-a
 	\label{fig:avg-experimental-vs-simulation2}
 \end{figure}
 
+\section{FEFF Simulations here?}
+Not sure if this should go in this section. Maybe be relegated to the appendix? Basically just recap the intro of this article by them https://iopscience.iop.org/article/10.1088/1742-6596/430/1/012001/pdf  and that lecture on FEFF
+\cite{feff-citation} \cite{feff-new-dev} \cite{rehr2010parameter}.
 
 \section{Statistical-Averaged Simulations}
 
@@ -46,22 +75,6 @@ where $ \vb*{\rho}_0^{(i)} $ is the vector from the center absorber to the origi
 % alpha = (df[df.rho > 0].rho.min() + delta)/df[df.rho > 0].rho.min()
 % df_temp['rho'] *= alpha
 
-\begin{minipage}{\linewidth}
-Each FEFF input file is run with the following parameters: 
-\begin{Verbatim}[samepage=true, numbers=left]
-    SCF 4.6 0 30 .5 1
-    EDGE    L3
-    EXCHANGE    5   0.2 0.5
-    S02 1.
-    XANES   3.7 0.05    0.1
-    FMS 7
-
-    POTENTIALS
-    0	79	Au	-1	-1	0.
-    1	79	Au	-1	-1	0.
-\end{Verbatim}
-~
-\end{minipage}
 
 \noindent Running the 91 simulations (one for each of the distorted structures) takes approximately 30~minutes. Were we to generate thousands more or employ RMC or MD, this process could take days or weeks of computation time. We plot the resulting XANES spectra from the FEFF simulations in figure \ref{fig:feff-results}.
 
@@ -108,7 +121,7 @@ In both equations (\ref{eqn:gaussian-averaging}) and (\ref{eqn:gaussian-standard
 	g(x) = \frac{1}{{\sigma \sqrt {2\pi } }}e^{{{ - \left( {x - \mu } \right)^2 } \mathord{\left/ {\vphantom {{ - \left( {x - \mu } \right)^2 } {2\sigma ^2 }}} \right. \kern-\nulldelimiterspace} {2\sigma ^2 }}}
 \end{equation}
 
-The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different degrees of disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance; to simulate even more conditions, however, we can instead use the multivariate skew-normal distribution (\ref{eqn:skew-norm}) \cite{skewnorm_Azzalini_1999, 2020SciPy-NMeth}, \textit{f(x)}.
+The above example only generates one (simulated) disordered XANES spectrum and does so via weighting of a Gaussian distribution with mean and variance equal to $ 0 $ and $ 0.01 $, respectively. To simulate systems with different degrees of disorder, we can vary the shape of the probability density function. With a Gaussian distribution, we can only vary the mean and variance; to simulate even more conditions, however, we can instead use the multivariate skew-normal distribution (\ref{eqn:skew-norm}) \cite{skewnorm_Azzalini_1999} \cite{2020SciPy-NMeth}, \textit{f(x)}. 
 
 \begin{equation}
 	\label{eqn:skew-norm}
@@ -143,12 +156,12 @@ and $ \Phi (x) $ is the Gaussian CDF:
 % \end{equation}
 
 \noindent
-Equation (\ref{eqn:skew-norm}) includes the shape parameter, $ \alpha $, which has the nice property of producing a right-skewed distribution when positive and a left-skewed distibution when negative. When $ \alpha=0 $, the distribution simply produces the typical Gaussian distribution (eq. \ref{eqn:gaussian}). Utilizing equation (\ref{eqn:skew-norm}), we can vary $ \mu, \sigma,  $ and $ \alpha $ to alter the first four moments of the function: mean, standard deviation, skew, and kurtosis. Eighteen possible skew-norm weighting functions are plotted in Figure \ref{fig:skew-norm-options}. To produce the neural network training data, 1000 such weightings are used.
+Equation (\ref{eqn:skew-norm}) includes the shape parameter, $ \alpha $, which has the nice property of producing a right-skewed distribution when positive and a left-skewed distribution when negative. When $ \alpha=0 $, the distribution simply produces the typical Gaussian distribution (eq. \ref{eqn:gaussian}). Utilizing equation (\ref{eqn:skew-norm}), we can vary $ \mu, \sigma,  $ and $ \alpha $ to alter the first four moments of the function: mean, standard deviation, skew, and kurtosis. Eighteen possible skew-norm weighting functions are plotted in Figure \ref{fig:skew-norm-options}. 1000 unique combinations of weightings are used to produce the neural network's training data.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/skewnorm_options.png}
-	\caption[Simulated Disordered Spectrum Weightings]{Eighteen skew-norm distributions plotted with all possible combinations of $ \sigma=\{.08, .145\} $, $ \mu=\{-.1, 0, .1\} $, and $ \alpha=\{-5,0,5\} $. Each represents a possible way to produce a simulated, disordered spectrum from many FEFF-simulated, distorted spectra} 
+	\caption[Simulated Disordered Spectrum Weightings]{Eighteen skew-norm distributions plotted with all possible combinations of $ \sigma \in \{.08, .145\} $, $ \mu \in \{-.1, 0, .1\} $, and $ \alpha \in \{-5,0,5\} $. Each represents a possible way to produce a simulated, disordered spectrum from many FEFF-simulated, distorted spectra} 
 	\label{fig:skew-norm-options}
 \end{figure}
 
@@ -173,7 +186,8 @@ Here, $ f(x) $ is the skew-norm function from equation (\ref{eqn:skew-norm}). Th
 
 \subsection{Simulation vs. Experimental Data} \label{sec:end-disorder}
 
-To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data. \textit{Can someone give me citations for these?} In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
+To check our FEFF simulation parameters, as well as the validity of the gaussian-weighted disorder technique, we compare the simulation data to experimental data 
+cite{au-nanowires-silca-wang}, \cite{crooks-55nm-au-exp} \cite{jing-au-nanoparticle-exp} \cite{au-nanowires-silca-wang}. In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~$ {\AA}$ ^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated disordered spectrum was weighted according to the gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
 
 \begin{figure}[h]
 	\centering

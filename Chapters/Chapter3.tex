@@ -1,9 +1,9 @@
 %Chapter 3
-In order to predict disorder from XANES spectra, we rely on machine learning, a technique capable of building highly non-linear models from a large collection of data. Due to the integral role ma machine learning plays in this thesis, this chapter serves as a basis for defining, first, how neural networks fundamentally work. All required terms necessary for understanding the specific neural network implementation discussed in the next chapter are defined in this chapter.
+Predicting disorder from XANES spectra requires a sophisticated model or algorithm capable of extracting non-linear features from the data. Increasing the disorder in the structure does not simply shift or scale the spectrum by a scalar; instead, disorder alters the spectrum in a complex and unknown way, for which we rely on machine learning  (ML) to discern. The general goal of ML is to recognize patterns in data, iteratively learning to solve complex, non-linear problems to make powerful predictions on new, unseen data \cite{ML-and-the-physical-sci}. Due to the integral role ML plays in this thesis, the following chapter serves to establish how neural networks fundamentally work. All terms necessary for understanding the specific neural network implementation discussed in the chapter \ref{ch:results} will be defined here.
 
-First, we clarify the terms machine learning (ML), deep learning, and artificial intelligence (AI). Machine learning refers to the statistical technique of fitting a model to a large collection of data. These models can either be regressors or classifiers, the former being able to predict a continuous range of values and the latter being a discrete predictor. Neural networks are one example of a machine learning model that tends to be computationally intensive. They are useful for creating highly non-linear models capable of making difficult predictions and solving complex tasks. Neural networks were inspired by biological processing systems, and the graphical representation includes common terms such as ``nodes'' and ``connections.'' The field of ML involving ANNs with many layers is referred to as deep learning \cite{schmidhuber2015deep}. AI is a subfield of deep learning where a neural network is trained to generate human-like responses, such as a chatbot or a virtual assistant. 
+First, we clarify the distinction between the following commonly misused terms: machine learning (ML), deep learning, and artificial intelligence (AI). ML refers to the general computational technique of fitting a model to a collection of data utilizing an iterative training process. These models can either be regressors or classifiers, the former predicts a continuous range of values, and the latter being a discrete predictor. Neural networks are one example of a machine learning model that tends to be computationally intensive. They are capable of creating highly non-linear models able to solve complex tasks such as object detection \cite{szegedy2013deep} or speech recognition \cite{ms-speech-recognition-paper} \cite{speech-recognition}. Neural networks were inspired by biological nervous systems; consequently, graphical representations of ANNs include common terms such as ``nodes'' and ``connections.'' The field of ML involving ANNs with many layers is referred to as deep learning \cite{schmidhuber2015deep}. AI is a subfield of deep learning where a neural network is trained to generate human-like responses. Common examples of AI are generative chatbots \cite{chatbots} and a virtual assistants \cite{virtual-assistants} \cite{virtual-assistants2}. 
 
-With these definitions, to predict disorder from XANES we utilize deep learning to train a regression-based neural network. The following sections will walk through the mathematical process of training a simple neural network. In practice, sophisticated APIs such as Google's TensorFlow \cite{tensorflow2015-whitepaper} or Facebook's PyTorch \cite{pytorch-paper}  handle the mathematical backend; however, one should fundamentally understand what these frameworks are doing.
+With these definitions, to predict disorder from XANES we utilize deep learning to train a regression-based neural network. The following sections will walk through the mathematical process of training a simple neural network. In practice, sophisticated APIs such as Google's TensorFlow \cite{tensorflow2015-whitepaper} or Facebook's PyTorch \cite{pytorch-paper} handle the mathematical backend and optimization; however, one must first build a fundamental understanding of the methods these frameworks are executing before attempting to implement them.
 % \cite{tensorflow2015-whitepaper} 
 % \cite{pytorch-paper}
 \section{Feedforward and Backpropagation in ANNs}
@@ -21,12 +21,12 @@ The sigmoid activation function is defined as the following:
     \sigma (x) = \frac{1}{1 + e^{-x}}
 \end{equation}
 
-The sigmoid activation function maps the input between zero and one. Hence, sigmoid activation functions are often used in the final layer to output a probability. The sigmoid approaches 1 and -1 around $ x=4 $ and $ x=-4 $ respectively, meaning that the sigmoid activation function is only useful within that limited range. One issue with both these activation functions is the potential for creating a vanishing gradient. The gradient of either of these functions appoaches zero for values above 4. This hurts the ability for the NN to learn how to meaningfully update its trainable parameters. The importance of calculating gradiets will be discussed in next section in the context of backpropagation. 
+The sigmoid activation function maps the input between zero and one. Hence, sigmoid activation functions are often used in the final layer to output a probability. The sigmoid function approaches 1 and -1 around $ x=4 $ and $ x=-4 $ respectively, meaning that the sigmoid activation function is only useful within that limited range. One issue with both these activation functions is the potential for creating a vanishing gradient. The gradient of either of these functions approaches zero for values above four. This asymptotic approach hurts the ability of the NN to meaningfully update its trainable parameters. The importance of calculating the gradients of these activation functions will be discussed in the next section in the context of backpropagation. 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/sigmoids.png}
-    \caption[Activation-Functions]{Plotted are three common activation functions: sigmoid, tanh, and ReLu.}
+    \includegraphics[width=\linewidth]{Chapters/Figures/sigmoids2.pdf}
+    \caption[Activation-Functions]{Plotted above are three common activation functions: sigmoid, tanh, and ReLU. Simgoid and tanh are particularly useful for scaling the output of a neural network layer to be within a given range. ReLU and its variations are useful for deep ANNs, where vanishing gradients are problematic.}
     \label{fig:ActivationFunctions}
 \end{figure}
 
@@ -56,8 +56,8 @@ $ \hat{y} = \sigma \left( h_\nu W_\kappa ^\nu + b_\kappa \right)$ is the final o
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN.pdf}
-    \caption[Neural Network Example]{Figure first made by me for my website}
+    \includegraphics[width=\linewidth]{Chapters/Figures/einstein_NN_2.pdf}
+    \caption[Neural Network Example]{This diagram of a fully connected (affine) neural network has a single hidden layer and two output nodes. The tensors for each hidden layer are written in Einstein notation. The implicitely summed over greek letters and dimensionality are written below the tensors for clarification.}
     \label{fig:simpleNN}
 \end{figure}
 
@@ -239,7 +239,7 @@ Vanilla gradient descent \cite{gradient-descent-rev-article} updates the paramet
     \theta := \theta - \eta \cdot \grad_\theta J(\theta)
 \end{equation}
 
-\noindent Here (\ref{batch-grad-descent}), $ \eta $ is a \textit{hyperparameter} known as the learning rate. A hyperparameter is a user-defined parameter that must be chosen before the training process begins; it is not a trainable parameter. One limitation to gradient descent is the need for the entire cost $ J $ to be calculated. For large datasets, this can become impractical. Two common variants are batch gradient descent and stochastic gradient descent (SGD). In the former, the training set is divided into batches, and the gradient is updated after each batch. One iteration through all the batches is called an \textit{epoch}. In the latter, the gradient is calculated using the loss function instead of the cost function, i.e. the gradient is calculated, and the parameters are updated after each training sample. Both methods greatly reduced training time with the help of optimized, parallel computing \cite{stoch-grad-desc-parallel}. By updating the parameters after every training sample, SGD will move in the direction of the true gradient. The major limit to these methods, however, is the fixed learning rate \cite{grad-desc-limits}. If the learning rate, $ \eta $ is too large, the algorithm will be unstable and ``bounce'' around the global minimum of the cost function. If $ \eta $ is too small, the algorithm will, at best, take a long time to train, and at worst, end up stuck in a local minimum. 
+\noindent Here (\ref{batch-grad-descent}), $ \eta $ is a \textit{hyperparameter} known as the learning rate. A hyperparameter is a user-defined parameter that must be chosen before the training process begins; it is not a trainable parameter. Hyperparameters can be ``tuned'' by repeating the entire training process with various hyperparameters set. Typically, one trains the model with a variety of hyperparameters over a short number of epochs. Once satisfied, the number of epochs is increased, and the training is repeated with the best-found hyperparameters. One limitation to gradient descent is the need for the entire cost $ J $ to be calculated. For large datasets, this can become impractical. Two common variants are batch gradient descent and stochastic gradient descent (SGD). In the former, the training set is divided into batches, and the gradient is updated after each batch. One iteration through all the batches is called an \textit{epoch}. In the latter, the gradient is calculated using the loss function instead of the cost function---i.e. the gradient is calculated, and the parameters are updated after each training sample. Both methods greatly reduced training time with the help of optimized, parallel computing \cite{stoch-grad-desc-parallel}. By updating the parameters after every training sample, SGD will move in the direction of the true gradient. The major limit to these methods, however, is the fixed learning rate \cite{grad-desc-limits}. If the learning rate, $ \eta $ is too large, the algorithm will be unstable and ``bounce'' around the global minimum of the cost function. If $ \eta $ is too small, the algorithm will, at best, take a long time to train, and at worst, end up stuck in a local minimum. 
 
 \subsubsection{Stochastic Gradient Descent with Momentum}
 Compared to regular SGD, stochastic gradient descent with momentum \cite{grad-desc-with-mom-orig} can greatly reduce the time to convergence. The general idea is to add a fraction of the previous parameter update to the current update. The exponential moving average (EMA) is an averaging of points within a period that puts greater weight on more recent points\footnote{In contrast a simple moving average treats each point as equally significant}. Here, $ S_t $ is the $ t^{th} $  value in the sequence S, and $ V_t $ is the $ t^{th} $  value in the new exponential moving averaged sequence, $ V $ .
@@ -335,11 +335,15 @@ The idea of batch normalization is to normalize each hidden layer similar to how
 The output of the batch normalization is passed forward to the next hidden layer of the network, while the normalized input is retained in the current layer. Normalizing the hidden layers for each batch means that later hidden layers do not have to adapt as much to the earlier hidden layers. Consequently, this allows the deeper layers to do a better job tuning themselves a little more independently of the other layers, improving performance and speeding up the learning process. Note, because each batch is scaled $(z \rightarrow \widetilde{z})$, a small amount of noise is added, which acts as a slight form of regularization\footnote{Note, while batch-norm adds regularization, this is not intended to be used as a form of regularization. L1, L2 regularization or dropout layers should be used instead.}. Recently, several papers  \cite{whybatchnorm1} \cite{whybatchnorm2} \cite{whybatchnorm3} have been published disputing the reason batch normalization improves the model's performance; none, however, dispute its efficacy. Data augmentation may be vital in building the neural network trained on simulation data to predict experimental data, for which there is a sparsity of data for training. 
 
 \section{Data Sparsity}
+Unfortunately, not all project goals include a plethora of diverse training data. This section introduces two techniques for dealing with training data: data augmentation and transfer learning.
+
 \subsection{Data Augmentation}
-Data augmentation is a technique to expand the size and variance of the training data for machine learning purposes and has been critically important for developing powerful deep neural networks, particularly in the domain of image processing. \cite{data-augmentation1}\cite{data-augmentation2} \cite{data-augmentation3} \cite{data-augmentation4}. Consider the example in section \ref{sec:normalization} of a cat-vs-not-cat binary classifier. The idea of data augmentation is to take the dataset containing only images of the red cats and add new images created from the original dataset. Common methods of data augmentation are image cropping, adding a color, sharpness, or contrast filter. For signal processing, such as absorption spectra, common methods for increasing the size of the training data include the introduction of Gaussian noise and shifting the spectra horizontally \cite{data-augmentation5}.
+Data augmentation is a technique for expanding the size and variance of the training data for machine learning purposes. It has been critically important for developing powerful deep neural networks, particularly in the domain of image processing. \cite{data-augmentation1}\cite{data-augmentation2} \cite{data-augmentation3} \cite{data-augmentation4}. Consider the example in section \ref{sec:normalization} of a cat-vs-not-cat binary classifier. The idea of data augmentation is to take the dataset containing only images of the red cats and add new images created from the original dataset. Common methods of data augmentation are image cropping, image rotation, and introducing image filters that alter the color, sharpness, or contrast. For signal processing, including absorption spectroscopy, common methods for expanding the training data size include the introduction of Gaussian noise and shifting the spectra horizontally \cite{data-augmentation5}. By artificially expanding the size and complexity of training data, data augmentation helps prevent models from overfitting.
 
 \subsection{Transfer Learning}
-Transfer learning was first introduced \cite{transferlearning-reminder} \cite{transferlearning2} \cite{transferlearning3} \cite{transferBook}.
+Transfer learning was first introduced in 1976 to \cite{transferlearning-reminder} \cite{transferlearning2} \cite{transferlearning3}. The idea is to alter a model trained on one task to be to solve a new, but similar task. One famous example involves a neural network originally trained to classify pastries, which, utilizing transfer learning, was re-purposed for detecting cancer cells \cite{ny-pastry-article}. Consider a model first trained on dataset $ A $ with the final goal of predicting dataset $ B $. Note that $ A $ and $ B $ in this example are not a train-test split, but, instead, inherently different problems. By pre-training the model on $ A $ to solve a similar task with $ B $ , the model learns inductive biases which encourage the model's parameters $ \theta_B $ to be similar to $ \theta_A $. This may have the effect of training the model to learn low-level features that may not have been learned from $ B $ alone  \cite{transferBook}. 
+
+In the context of this thesis, transfer learning will be an important tool for creating a neural network capable of predicting disorder from an experiemental XANES spectra. Because of the sparsity of experimental data, it is unfeasible to train the neural network on experimental data alone. Instead, we rely on simulated XANES spectra created with FEFF. The systematic differences between the simulated XANES spectra and the experimental counterparts, however, suggest a neural network trained purely off simulation spectra will not perform well when it encounters an experimental spectrum for the first time. Applying the principles of transfer learning, the neural network can first be trained with the simulated XANES spectra, for which there are ample examples. Then, using the limited number of experimental data---included extra examples created via data augmentation---the network can be trained again via transfer learning.
 
 
 \section{Covolutional Neural Networks}
@@ -362,12 +366,12 @@ In computer science, convolutions are an important and powerful tool for signal 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example.png}
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example.pdf}
     \caption[Toy Absorption Spectrum]{A simple abosrption spectrum for demonstration purposes.}
     \label{fig:conv-ex-spectrum}
 \end{figure}
  
-\noindent Each data point, $ (E, \mu) $ in the spectrum is described as a feature vector, where the feature is the the energy value for a given point $ (E, \mu) $. The vector is depicted in (\ref{conv-squares}) with zeros padded on both sides. Additionally, consider a kernel, $ g $  
+\noindent Each data point, $ (E, \mu) $ in the spectrum is described as a feature vector, where the feature is the the energy value for a given point $ (E, \mu) $. The vector, $ f $,  is depicted below with boxes to represent each element in the vector. Zeros are padded on both sides for reasons that will become clear soon. 
 
 \begin{table}[h!]
     \centering
@@ -375,8 +379,9 @@ In computer science, convolutions are an important and powerful tool for signal 
     \cline{2-13}
     \textit{f} = & 0 & .09 & .10 & .09 & .70 & .80 & .68 & .60 & .62 & .63 & .60 & 0 \\ \cline{2-13}
     \end{tabular}
-    \label{conv-squares}
 \end{table}
+
+\noindent Additionally, consider the kernel, $ g $  
 
 \begin{table}[h!]
 \centering
@@ -428,7 +433,7 @@ $$
 \begin{figure}[h!]
     \label{fig:conv-res-spectrum}
     \centering
-    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example-res.png}
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/conv-example-res.pdf}
     \caption[1D Convolution Result]{The result of the 1D convolution of kernel $ g = (.1, .1, .1) $  on the spectrum in Figure \ref{fig:conv-ex-spectrum}.}
 \end{figure}
 
@@ -442,7 +447,7 @@ Building a successful neural network requires a combination of intuition and pro
 
 \begin{figure}
     \includegraphics[width=\linewidth]{Chapters/Figures/epoch_loss1.pdf}
-    \caption{In this example loss curve, the x-axis is the epoch, and the y-axis is the mean-squared error of the prediction. The red curve is the training data, and the blue curve is the validation set. Notice how both curves decrease together, but the training curve has a smaller error than the validation curve. This is the expected behavior of a model that is not overfitting and training properly.}
+    \caption[Example ANN Training Curve]{In this example loss curve, the x-axis is the epoch, and the y-axis is the mean-squared error of the prediction. The red curve is the training data, and the blue curve is the validation set. Notice how both curves decrease together, but the training curve has a smaller error than the validation curve. This is the expected behavior of a model that is not overfitting and training properly.}
     \label{fig:Example-Training-Loss-Curve}
 \end{figure}
 
