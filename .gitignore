@@ -15,6 +15,7 @@ Feff_code/
 *.cb
 *.cb2
 .*.lb
+.vscode/**
 
 ## Intermediate documents:
 *.dvi
