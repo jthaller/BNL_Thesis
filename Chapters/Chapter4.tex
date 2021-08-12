@@ -4,15 +4,44 @@ The results of the raining process are presented in this chapter. We begin by fi
 \section{Training with Simulation Data} \label{sec:nn-sim-data}
 The 1000 simulated XANES spectra were first loaded into a Pandas dataframe \cite{pandas-1} \cite{pandas-2} of shape $ 1000\times82 $. Each of the 82 columns represents a discrete energy value, and each row represents the absorption for a given spectrum at those energies. The dataset was split into training and testing groups according to an 80-20 random split, respectively. All absorption columns were then scaled via the standard scalar (\ref{z-score}) and the training labels scaled via a min-max scaler (\ref{eqn:min-max-scaler}). First, the model was trained to predict four descriptors: the mean-squared-displacement (MSD), the mean bond length distance, the standard deviation of the bond length distributions, and the skew of the bond length distribution. Note that the standard deviation is the same as the square root of the MSD. This feature was only included preliminarily in order to better understand the correlation in the network's predictions. 
 
+\bgroup
+\def\arraystretch{1.5}%  1 is the default, change whatever you need
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    Layer  Type    & Output Shape  & Number of Parameters \\ \hline
+    Normalization  & (None, 82)    & 165                  \\ \hline
+    Dense          & (None, 128)   & 10,624               \\ \hline
+    Dense          & (None, 128)   & 16,512               \\ \hline
+    Dense          & (None, 512)   & 25,088               \\ \hline
+    Reshape        & (None, 8, 64) & 0                    \\ \hline
+    1D-Convolution & (None, 6, 32) & 6,176                \\ \hline
+    Dropout        & (None, 6, 32) & 0                    \\ \hline
+    1D-Max-Pooling & (None, 3, 32) & 0                    \\ \hline
+    Flatten        & (None, 96)    & 0                    \\ \hline
+    Dense          & (None, 128)   & 12,416               \\ \hline
+    Dense          & (None, 48)    & 6,192                \\ \hline
+    Dense          & (None, 512)   & 25,088               \\ \hline
+    Flatten        & (None, 512)   & 0                    \\ \hline
+    Dense          & (None, 4)     & 513                  \\ \hline
+    \end{tabular}
+    \caption[NN-Architecture Optimized for Simulations]{The model includes 108,966 total parameters, with 108,801 of those being trainable.}
+    \label{tb:nn-arch-sims}
+\end{table}
+\egroup
+
+
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/nn_rdf_validation_preds.png}
+    \includegraphics[width=\linewidth]{Chapters/Figures/pa_train-test-fixed.png}
     \caption{One configuration of the trained neural network includes four output nodes: MSD, Sigma, Mean, and Kurtosis. Sigma is just the square root of the MSD and was included during training to affirm the patterns recognized by the network.}
     \label{fig:train-test-split-all4}
 \end{figure}
 
 \section{Experimental Data} \label{ch:results}
-Training the neural network entirely on simulation data and then making predictions on experimental data is unlikely to provide quality results. Using the trained network from Table (...) that predicted the test set values in Figure \ref{fig:train-test-split-all4}, we predicted the MSD values from two experimental spectra. On the unpublished IMASC data, the netork predicted an MSD of $0.0003724~\AA^2$ instead of the EXAFS equation fitted value of ${\sigma^2=0.0102(8)~\AA^2}$. This poor prediction suggests the network considers the experimental spectrum to look most similar to the lowest disorder FEFF spectra; the model is not generalizing to understand the disorder encoded in the spectral shape.
+
+Training the neural network entirely on simulation data and then making predictions on experimental data is unlikely to provide quality results. Using the trained network from Table (\ref{tb:nn-arch-sims}) that predicted the test set values in Figure \ref{fig:train-test-split-all4}, we predicted the MSD values from two experimental spectra. On the unpublished IMASC data, the network predicted an MSD of $0.0003724~\AA^2$ instead of the EXAFS equation fitted value of ${\sigma^2=0.0102(8)~\AA^2}$. This poor prediction suggests the network considers the experimental spectrum to look most similar to the lowest disorder FEFF spectra; the model is not generalizing to understand the disorder encoded in the spectral shape.
 
 
 \begin{figure}
@@ -29,18 +58,76 @@ Noise is artificially injected into the spectra by randomly shifting each absorp
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/gaussian-noise-data-aug.pdf}
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/gaussian-noise-data-aug.pdf}
     \caption[Data Augmentation: Gaussian Noise]{Gaussian noise is added to the spectra to increase the variance of the training data. This helps the network to learn the low-level features of the spectra and ignore artifacts not caused by the structural disorder. For demonstration purposes, the scale of the noise in this figure has been increased beyond what was used in training.}
     \label{fig:data-aug-gauss-noise}
 \end{figure}
 
-The second form of data augmentation is added through horizontal shifts. While this is common for signal processing and time series analysis, the inclusion here is more controversial. In XAFS, the edge location is dependent on the oxidation/reduction state of the species. Shifting the horizontal location is akin to shifting the species of the model; however, the neural network is not being tasked to determine the oxidation state of the sample. Instead, the model is only tasked with predicting the mean-squared-displacement of the nanoparticle's bond lengths. The theory is that the disorder information is encoded in the  
+The second form of data augmentation utilizes horizontal shifts. While this is common for signal processing and time series analysis, the inclusion here is more controversial. In XAFS, the edge location is dependent on the oxidation/reduction state of the species. Shifting the horizontal location is akin to shifting the species of the model; however, the neural network is not being tasked to determine the oxidation state of the sample. Instead, the model is only tasked with predicting the mean-squared-displacement of the nanoparticle's bond lengths. The theory is that the disorder information is encoded in the  
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/data-aug-shift-pt75wieght.pdf}
+    \caption[Data Augmentation: Horizontal Shift]{In order to train the network to predict disorder from the overall shape of the spectra---as opposed to fixating on the edge location---we introduce horizontal-shift as a data augmentation technique.}
+    \label{fig:data-aug-hor}
+\end{figure}
+
+\subsection{Transfer Learning}
+In building the transfer learning model, we opted to begin with a new network architecture, which can be found in Table (\ref{tab:meta-1}). We hypothesized that applying convolutional layers before any affine layers may lead to a more consistent prediction between simulation and experimental spectra.
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Name}} & \multicolumn{1}{c|}{\textbf{Type}} & \multicolumn{1}{c|}{\textbf{\# Parameters}} & \multicolumn{1}{c|}{\textbf{Output Shape}} \\ \hline
+    normalization\_input                & InputLayer                         & 0                                           &                                            \\ \hline
+    normalization                       & Normalization                      & 165                                         & None, 82                                   \\ \hline
+    reshape                             & Reshape                            & 0                                           & None, 82, 1                                \\ \hline
+    conv1                               & Conv1D                             & 128                                         & None, 82, 32                               \\ \hline
+    max\_pooling1d                      & MaxPooling1D                       & 0                                           & None, 41, 32                               \\ \hline
+    conv2                               & Conv1D                             & 3104                                        & None, 39, 32                               \\ \hline
+    max\_pooling1d\_1                   & MaxPooling1D                       & 0                                           & None, 19, 32                               \\ \hline
+    flatten                             & Flatten                            & 0                                           & None, 608                                  \\ \hline
+    input-after-norm                    & Dense                              & 58464                                       & None, 96                                   \\ \hline
+    dense                               & Dense                              & 30264                                       & None, 312                                  \\ \hline
+    dout                               & Dropout                              & 0                                       & None, 312                                  \\ \hline
+    dense\_1                            & Dense                              & 313                                         & None, 1                                    \\ \hline
+    \end{tabular}
+    \caption{A new network architecture was constructed for the transfer learning process. The new network only has one output node, representing the MSD of the input spectrum.e}
+    \label{tab:meta-1}
+\end{table}
+\egroup
+
+\begin{figure}
+    \centering
+    \
+    \includegraphics[width=\linewidth]{Chapters/Figures/new-hyperparameter-sweep-meta-1.png}
+    \label{fig:meta-1-sweep-params}
+    \caption[Hyperpamater Sweep 1]{The hyperparameters are obtained through a ``sweep,'' where the entire training process (20 epochs) is repeated with different hyperparameters each time. The hyperparameter traing process and figure generation was conducted with the aid of \cite{wandb}.}
+\end{figure}
 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/data-aug-shift-pt75wieght.pdf}
-    \caption[Data Augmentation: Horizontal Shift]{...}
-    \label{fig:data-aug-hor}
+    \
+    \includegraphics[width=\linewidth]{Chapters/Figures/10-sweep.png}
+    \label{fig:meta-1-sweep-loss}
+    \caption[Hyperpamater Sweep 1]{The validation mean-squared-error loss for 10 out of the 50 hyperparemters searched in this sweep are plotted. Most hyperparameters result in a loss curve with }
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \
+    \includegraphics[width=\linewidth]{Chapters/Figures/best-params-meta1.png}
+    \label{fig:meta-1-best}
+    \caption[Hyperpamater Sweep 1]{Both iterations of the training process were run with identical network architectures and hyperparameters; however, the two runs have significantly different validation losses. The discrepancy is due to the random weights initialization process. The slight difference in intial parameters causes one iteration to become "stuck" in a different local minimum, which performed similarly with the training set, but made substantially worse prediction on the validation set. The goal of the first stage of the transfer learning process is to identify hyperparmaters which will lead to the best transfer learning candidates.}
 \end{figure}
 

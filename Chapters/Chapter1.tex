@@ -65,7 +65,7 @@ The XAFS spectrum is typically divided into two regions of study: the area near 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/absorption-spectra-example.pdf}
+    \includegraphics[width=.75\linewidth]{Chapters/Figures/absorption-spectra-example.pdf}
     \caption{The absorption spectrum is divided into two regions: XANES and EXAFS. The XANES (x-ray absorption near edge structure) includes the lower energy region in the direct vicinity of the leading edge. The EXAFS (extended x-ray absorption fine structure) region includes all the energies beyond the XANES.}
     \label{XAFS-example-spectrum}
 \end{figure}
@@ -85,32 +85,53 @@ Preparing the absorption data for fitting requires series of steps in preparatio
     \widetilde{\chi}(r) = \frac{1}{2\pi} \int_{0}^{\infty }  k^n \chi(k) e^{2ikr} dk
 \end{equation}
 
-Alternatively, one can convert the wave to R-space, which is what Artemis and Athena, two of the most common EXAFS fitting software, do.
+Alternatively, one can convert the wave to R-space. Two of the most popular EXAFS fitting programs, Artemis and Athena, convert to R-space.
 
 \subsubsection{The EXAFS Equation}
-With the data reduction complete, a multi-parameter fitting can be performed via the EXAFS equation. This equation is an approximation based principally on the many-body Fermi golden rule (\ref{FermisGoldenRule}).
+With the data reduction complete, a multi-parameter fitting can be performed via the {EXAFS} equation. This equation is an approximation based principally on the single electron approximation of Fermi golden rule (\ref{FermisGoldenRule}).
 
 \begin{equation}
     \label{FermisGoldenRule}
     % Fermi's GOlden Rule for a one e- approximation
-    \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - E_f)  
+    \mu(\omega) \varpropto  \sum_{f}^{E_f > E_F} \left\langle \psi_i \lvert \Delta \rvert \psi_f \right\rangle ^2 \delta (E_F - E_i - \hbar \omega)  
 \end{equation}
 
-\noindent Fermi's golden rule describes the probability of a transition in state occurring. Here (\ref{FermisGoldenRule}), $ \mu(E) $ is the absorption coefficient, $ f $ and $ i $ are the final and initial states of the photoelectron, respectively. $ H_{int} $ is the matter-light interaction operator, and the delta function ensures conservation of energy. The summation over all energy values approximates the many-bodied problem as a single particle theory. 
+% \begin{equation}
+%     \label{FermisGoldenRule}
+%     % Fermi's GOlden Rule for a one e- approximation
+%     \mu(E) \varpropto \sum_{f}^{E_f > E_F} \left\lvert \left\langle f \lvert H_{int} \rvert i \right\rangle \right\rvert ^2 \delta (E - E_F - E_f)  
+% \end{equation}
+% $ H_{int} $ is the matter-light interaction operator,
 
-At energies above the core electron binding energy, excess energy is transferred to the photoelectron, which may then undergo multiple scattering with the surrounding atoms. The final wavefunction of the photoelectron is the superposition of the outgoing photoelectron and the scattered wave. EXAFS only takes into account the local region around the absorber at a distance $ r_j $  from the backscattering atom.
+\noindent Fermi's golden rule describes the probability of a transition in state occurring. Here (\ref{FermisGoldenRule}), $ \mu(\omega) $ is the absorption coefficient, $ f $ and $ i $ are the final and initial eigenstates of the photoelectron, respectively, $ \Delta $ is the dipole transition operator, and the delta function $ \delta $ ensures conservation of energy. The transition operator $ \Delta $ represents the interaction between the electrons and photon and is constrained by the dipole approximation. The constructive and descructive interference of the outgoing and backscattered waves modulates the transition matrix element coupling coupling the initial nad final states, resulting in the fine structure in XAS. The summation of all energy values approximates the many-bodied problem as a single particle theory. 
+
+At energies above the core electron binding energy, excess energy is transferred to the photoelectron, which may then undergo multiple scattering with the surrounding atoms. The final wavefunction of the photoelectron is the superposition of the outgoing photoelectron and the scattered wave \cite{anotherxafstocite}. EXAFS only takes into account the local region around the absorber at a distance $ r_j $  from the backscattering atom. The absorption coefficient, $ \mu $, is proportional to the transition rate given by Fermi’s golden rule. Therefore,  $ \mu $ depends on the energy and symmetry of both the initial and final electron states \cite{xafsXanesFermisGoldenRule}. 
+
+% The EXAFS signal for one backscattering atom can be described as (\ref{superposition_Exafs}). 
+% \begin{equation}
+%     \label{superposition_Exafs}
+%     \chi(k) \approx F_j(k) \dfrac{\sin[2kr_j + \phi_{ij}(k)]}{2r_j^2}
+% \end{equation}
+
+For a system with multiple atoms, one must sum over all the backscattered waves. The total EXAFS signal is the sum of all possible photoelectron scattering paths; this includes both single scattering and multiple scattering. The summation over all single scattering paths in the first nearest-neighbor shell can be written as: \textit{(135, 136):}
 
 \begin{equation}
-    \label{superposition_Exafs}
-    \chi(k) \approx F_j(k) \dfrac{\sin[2kr_j + \phi_{ij}(k)]}{2r_j^2}
+    \label{first-nn-exafs-single-scattering}
+    \chi(k) = \sum_i S_0^2 \int_{0}^{\infty} g_i(R) f_i(k, R) e^{-2R/\lambda(k)} \sin[2kR + \phi_i(k, R)]  \,\frac{dR}{kR^2} 
 \end{equation}
 
-The above equation (\ref{superposition_Exafs}) describes the EXAFS signal for only one backscattering atom. For a system with many atoms, one must sum over all the backscattered waves. To account for the inevitable variation in bond lengths, the Debye-Waller factor $ \sigma_j $ is introduced; $ \sigma_j $ describes the standard deviation of bond-lengths of the sample.\footnote{Note, this differs from the Debye-Waller factor used for x-ray absorption, which describes the broadening of a diffraction peak due to variations in inter-planar spacing \cite{DW-diffraction}}. The lifetime of the photoelectron's excited state is taken into account by introducing an exponential term to account for the mean-free-path, $ e^{-2r_j/\lambda} $. Combining all this information with an amplitude correction factor of $ S_0 $, we arrive at the EXAFS equation (\ref{ExafsFormula}). 
+\noindent where $ \chi $ is the total strength of the EXAFS signal and $ S_0$ is an amplitude correction factor. Here (\ref{first-nn-exafs-single-scattering}), $g_i(R)$ is the radial distribution function (RDF). The terms $ S_0^2 $, $ f_i (k, R) $, $\lambda(k)$, and $\phi_i(k, R)$ are related to the local structure described by the RDF and material specific. They are determined by factors such as interatomic distances, degree of structural disorder, and the number of nearest neighbors.
+
+To account for the inevitable variation in bond lengths, the Debye-Waller factor $ \sigma_j $ is introduced; $ \sigma_j $ describes the standard deviation of bond-lengths of the sample.\footnote{Note, this differs from the Debye-Waller factor used for x-ray absorption, which describes the broadening of a diffraction peak due to variations in inter-planar spacing \cite{DW-diffraction}}. The lifetime of the photoelectron's excited state is taken into account by introducing an exponential term to account for the mean-free-path, $ \text{exp}({-2r_j/\lambda}) $. Combining all this information, we arrive at the EXAFS equation (\ref{ExafsFormula}). 
 
 \begin{equation}
     \label{ExafsFormula}
-    \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)e^{-2\sigma_j^2k^2}e^{-\tfrac{2r_j}{\lambda(k)}}\sin[2kr_j + \phi_{ij}(k)]
+    \chi(k) = \sum_j \frac{N_j}{kr_j^2}F_j(k)\text{exp}({-2\sigma_j^2k^2})\text{exp}({-\tfrac{2r_j}{\lambda(k)}})\sin[2kr_j + \phi_{ij}(k)]
 \end{equation}
+
+\noindent
+
+To recapitulate all the terms in (\ref{ExafsFormula}): $ N_j  $ is the coordination number of atom j; $ k $  is the wavenumber; $ r_j $ is the distance to neighboring atom $ j $;$ F_j(k) $  is a scattering property of the neighboring atoms; $ \text{exp}({-2\sigma_j^2k^2}) $ is an exponential dampening term dependent on the variance in bond length $ \sigma_j^2 $; $ \phi_{ij} $ includes the phase shifts for the incoming and outgoing waves and  accounts for scatting off non-point-like atoms.    
 
 Although popular, the EXAFS equation is still a first-order approximation with assumptions and limitations. For example, the fitted disorder parameter, the Debye-Waller factor, explicitly assumes a Gaussian distribution of nearest-neighbor bond length distances. Other more accurate but computationally intensive alternatives are increasing in popularity. Such alternatives include molecular dynamics \cite{mol-dyn-xanes}, reverse Monte Carlo simulations \cite{RMC-xanes} and neural networks \cite{lin2020machine} \cite{timoshenko2018neural}.
 
