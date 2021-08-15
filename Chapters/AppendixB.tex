@@ -1,9 +1,6 @@
 \section{FEFF9 Design}
 
-FEFF is an \textit{ab initio} absorption simulation software based on real-space multiple scattering (RSMS) and the Greene's function. The current version, FEFF9, calculates a self-consistent density function over a wide range of structures by considering the excited state properties within an
-all-electron framework \cite{feff-new-dev}. 
-
-Like other density-functional theory (DFT) software, FEFF begins with an initial guess for the electronic density. Then, using an optimization algorithm like gradient descent (See \ref{sec:optimizers}), FEFF iterates through a series of calculations until the resulting potential matches the initial potential (self-consistency). This process is depicted in Figure \ref{fig:feff-dft-diagram}.
+FEFF is an \textit{ab initio} absorption simulation software based on real-space multiple scattering (RSMS) and the Greene's function. The current version, FEFF9, calculates a self-consistent density function over a wide range of structures by considering the excited state properties within an all-electron framework \cite{feff-new-dev}. Like other density-functional theory (DFT) software, FEFF begins with an initial guess for the electronic density. Then, using an optimization algorithm like gradient descent (See \ref{sec:optimizers}), FEFF iterates through a series of calculations until the resulting potential matches the initial potential (self-consistency). This process is depicted in Figure \ref{fig:feff-dft-diagram}.
 
 \begin{figure}
     \centering
