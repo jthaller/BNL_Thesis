@@ -185,7 +185,38 @@ def do_one_structure(folder):
 
 \section{create-g(r).ipynb}
 
-This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice.
+This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice. We achieve this by utilizing python's set exclusivity and checking that the set contains the expected number of bonds when complete.
+
+
+\begin{lstlisting}[language=Python]
+# inputs: ----
+# str folder = the folder path which includes 13 subfolders within
+# save_as = an optional boolean for saving the histogram plot.
+# returns: ----
+# msd, mean, sigma, skew
+def do_one_structure(folder, save_as=None):
+    rhos = set()
+    for i in range(13):
+        subfolder_path = os.path.join(folder, str(i))
+        df_absorbers = (load_initial_file(os.path.join(subfolder_path, 'feff.inp')).
+              pipe(to_spherical).
+              query('rho < 3.5 and rho > 0')
+              )
+        for rho in df_absorbers.rho:
+            rhos.add(rho)
+    if len(rhos) != 120:
+        raise Not120BondsException(len(rhos))
+    rhos = np.array(list(rhos))
+    difs = rhos - np.mean(rhos)
+    msd = np.sum(np.square(difs))/len(rhos)
+    rhos = list(rhos)
+    skew, mean, sigma = stats.skew(rhos), np.mean(rhos), np.std(rhos)
+    # code for plotting removed for brevity
+    if save_as is not None:
+        plt.savefig(save_as, dpi=600, bbox_inches='tight')
+    return msd, mean, sigma, skew
+\end{lstlisting}
+
 
 \section{nn.ipynb}
 The neural network, a Jupyter notebook.

@@ -78,7 +78,7 @@ Beginning approximately 50~eV beyond the edge of the absorption spectrum lies th
 The EXAFS fine structure is the product of the photoelectrons' self-interference as they are scattered by the local atomic environment surrounding the absorbing atoms from which they were excited.
 
 \subsubsection{EXAFS Data Reduction}
-Preparing the absorption data for fitting requires series of steps in preparation. These preparation steps are known as data reduction. First, the pre-edge background must be removed using the Victoreen formula (\ref{eqn:Victoreen}) or an alternative polynomial. Next, the atomic background, $ \mu_0(E) $  is removed, and the absorption measured absorption is normalized accordingly. This is a non-trivial process, as the absorption coefficient is not that of a single, isolated atomic absorber; instead, it represents that of an atom and its surrounding neighbors. High-order spline fittings must be used to remove the low-frequency, immeasurable oscillations caused by photoelectron scattering with nearby valence electrons. For EXAFS Fitting, the EXAFS function is often transformed into k-space, and Fourier transformed into a radial distribution-like function via (\ref{rdf-exafs}) \cite{exafsbook}.
+Preparing the absorption data for fitting requires series of steps in preparation. These preparation steps are known as data reduction. First, the pre-edge background must be removed using the Victoreen formula (\ref{eqn:Victoreen}) or an alternative polynomial. Next, the atomic background, $ \mu_0(E) $  is removed, and the absorption measured absorption is normalized accordingly. This is a non-trivial process, as the absorption coefficient is not that of a single, isolated atomic absorber; instead, it represents that of an atom and its surrounding neighbors \cite{feff-exafs-theoretical}. High-order spline fittings must be used to remove the low-frequency, immeasurable oscillations caused by photoelectron scattering with nearby valence electrons. For EXAFS fitting, the EXAFS function is often transformed into k-space, and Fourier transformed into a radial distribution-like function via (\ref{rdf-exafs}) \cite{exafsbook}.
 
 \begin{equation}
     \label{rdf-exafs}
@@ -88,7 +88,7 @@ Preparing the absorption data for fitting requires series of steps in preparatio
 Alternatively, one can convert the wave to R-space. Two of the most popular EXAFS fitting programs, Artemis and Athena, convert to R-space.
 
 \subsubsection{The EXAFS Equation}
-With the data reduction complete, a multi-parameter fitting can be performed via the {EXAFS} equation. This equation is an approximation based principally on the single electron approximation of Fermi golden rule (\ref{FermisGoldenRule}).
+With the data reduction complete, a multi-parameter fitting can be performed via the {EXAFS} equation. This equation is an approximation based principally on the single electron approximation of Fermi's golden rule (\ref{FermisGoldenRule}).
 
 \begin{equation}
     \label{FermisGoldenRule}

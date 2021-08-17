@@ -5,13 +5,28 @@ FEFF is an \textit{ab initio} absorption simulation software based on real-space
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{Chapters/Figures/dft-feff-diagram.pdf}
-    \caption[FEFF Diagram]{Feff Diagram works by ...}
+    \caption[FEFF Diagram]{Feff Diagram works by starting with an initaly guess for the density and calculating a resulting potential. From this, either the Schrodinger or Green}
     \label{fig:feff-dft-diagram}
 \end{figure}
 
-FEFF first makes an initial guess for the electronic density, then calculates the initial potential---which is a functional of that density. Using this potential and the Schrodinger equation, FEFF calculates Green's function \cite{greens-function-xafs-2021}. Finally, using Green's function, FEFF checks if the potential is self-consistent. If not, the potential is updated, and the iterative process repeats. Using Green's function, FEFF calculates the wave function and the absorption spectrum \cite{feff-citation} \cite{rehr2010parameter}. The exact mathematical formalism is beyond the scope of this thesis.
+FEFF first makes an initial guess for the electronic density, $ \rho^{(0)} $  then calculates the initial potential, $ V_{eff}^{(i)} $, which is a functional of that density. Using this potential, FEFF either solves the Schrodinger equation or the Green's function \cite{greens-function-xafs-2021}. Finally, using Green's function, FEFF calculates the new potential, $ \rho^{(i+1)} $, and checks if the potential is self-consistent. If not, the potential is updated, and the iterative process repeats. Once self-consistency is achieve, FEFF uses the potential to calculate the absorption spectrum using Fermi's Golden Rule \ref{FermisGoldenRule}. Alternatively, if using Green's function, FEFF calculates the density from Green's function and solves for the absorption through a series of approximations \cite{feff-citation} \cite{rehr2010parameter}. The exact mathematical formalism is beyond the scope of this thesis.
 
-\section{Green's Function}
+The different calculations for FEFF are executed by a series of sub-programs, coordinated to run in order through a BASH script. The input file (typically $\texttt{FEFF.inp}$) file is written by the user. The card parameters are discussed in the next section. The $\texttt{FEFF.inp}$ file is first read by the program $\texttt{rdinp}$ and the \textit{ab initio} Debye-Waller factor is calculated by $ \texttt{dmdw} $ if an optional matrix is specified \cite{feff-dw}. Then the muffin tin (overlap) potentials are calculated via $\texttt{potph}$. FEFF calculates the free atom potentials via a relativistic Dirac-Fock model \cite{feff-dirac-fock}. Then Hedin-Lundqvist/Quinn self-energy is used for calculating the excited states, and the scattering potentials are calculated by overlapping the individual and muffin tin and free atom densities \cite{rehr2009ab}. The last program run for the self-consistency scheme is $ \texttt{pot} $. The core holes are calculated via $ \texttt{screen} $, the angular momentum density of states is calculated wiht $ \texttt{ldos} $, and $ \texttt{xsph} $ calculates the scattering phase shifts along with dipole matrix elements and the x-ray cross section \cite{feff-mean-free-path}. Finally the full muliple scattering \cite{feff-multiple-scattering} is calculated and the Green's function is obtained via $ \texttt{fms} $. The matrix elements are multiplied with results from the Green's function in $ \texttt{mkgtr} $ and the multiple scattering path are written via $ \texttt{path} $. The effective scattering amplitutes $ f_{eff} $ (from which FEFF gets its name) and XAFS parameters for each path are calculated via $ \texttt{genfmt} $, and the $ \texttt{ff2x} $ is used to obtain the final XANES spectrum, the result of which is convolved with the many-body spectral function $ \texttt{sfconv} $ and written in the file $ xmu.dat $.     
+
+\section{FEFF Cards} \label{app:feff-cards}
+Calculating an absorption spectrum using FEFF9 requires an input file which is comprised of the coordinates of the structure as well as a series of parameters known as cards. Extensive explanations for each card can be found in the FEFF manual \cite{rehr2010parameter}. Here, we present only a brief description and suggestions for how to alter the cards in order to help fine the best parameters for replicating an experimental spectrum.  The $ \texttt{SCF} $  card helps FEFF find the self-consistency potential and better estimate the Fermi level. The $ \texttt{EDGE} $ card specifies which edge is being simulate. In our case, we are interested in the $L_3$ edge. The $ \texttt{EXCHANGE} $ card specifies the exchange correlation potential used for both the fine structure and background calculations. Setting S02 to 1 ensures just alters the amplitude of the absorption spectrum via $ S_0^2 $, the squared determinant of overlap integrals for core orbitals \cite{rehr2010parameter}. The amplitude can be adjust later on, so a large value such as one is just by convention. The $ \texttt{XANES} $ card's parameters are all optional, but and are used to alter the output energy mesh. We select parameters that include a greater density of measurements near the regions of greatest change (the peaks). The $ \texttt{FMS} $ card provides information about the full multiple scattering. Finally, The $ \texttt{POTENTIAL} $ card describes the elements present in the material. One absorber potential must be specified as zero, while the other non-absorbing potentials specified are labeled one. Other non-absorbing elements present in the sample would be labeled as 2, 3, and so on.
+
+
+% SCF 4.6 0 30 .5 1
+% 		EDGE    L3
+% 		EXCHANGE    5   0.2 0.5
+% 		S02 1.
+% 		XANES   3.7 0.05    0.1
+% 		FMS 7
+	
+% 		POTENTIALS
+% 		0	79	Au	-1	-1	0.
+% 		1	79	Au	-1	-1	0.
 
 % that includes inelastic losses, self-energy effects, and vibrational
 % damping.
