@@ -184,7 +184,7 @@ The disorder of the skew-norm-generated, disordered spectrum is characterized by
 
 \subsection{Simulation vs. Experimental Data} \label{sec:end-disorder}
 
-To check our FEFF simulation parameters, as well as the validity of the Gaussian-weighted disorder technique, we compare the simulation data to experimental data \cite{au-nanowires-silca-wang} \cite{crooks-55nm-au-exp} \cite{jing-au-nanoparticle-exp} \cite{au-nanowires-silca-wang}. In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil, this parameter was found to be $ \sigma^2=0.0081(5)~{\AA}^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated disordered spectrum was weighted according to the Gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to $ MSD $ values that match the measured $ \sigma^2 $ values for the experimental data.  
+To check our FEFF simulation parameters, as well as the validity of the Gaussian-weighted disorder technique, we compare the simulation data to experimental data \cite{au-nanowires-silca-wang} \cite{crooks-55nm-au-exp} \cite{jing-au-nanoparticle-exp}. In Figure \ref{fig:avg-experimental-vs-simulation}, both experimental and simulation spectra for bulk-like and nanoparticle scenarios are plotted. EXAFS fitting was used to characterize the disorder in the experimental measurements. For the bulk foil (unpublished data), this parameter was found to be $ \sigma^2=0.0081(5)~{\AA}^2 $, and for the 8~nm disordered particle, $ \sigma^2=0.0102(8) $~{\AA}$ ^2 $.  One simulated disordered spectrum was weighted according to the Gaussian $ N(0, 0.09) $ to represent the disordered nanoparticle, and the other was weighted according to the gaussian $ N(0, 0.038)  $ to represent the bulk. These weightings correspond to MSD values that match the measured $ \sigma^2 $ values for the experimental data.  
 
 \begin{figure}[h]
 	\centering
@@ -193,7 +193,7 @@ To check our FEFF simulation parameters, as well as the validity of the Gaussian
 	\label{fig:avg-experimental-vs-simulation}
 \end{figure}
 
-In Figure \ref{fig:avg-experimental-vs-simulation}, the bulk Au foil spectrum is above the 8~nm nanoparticle spectrum (more absorption) until the peak around 11937~eV, where the nanoparticle's absorption becomes higher. The two criss-cross again over the next two peaks, changing which material has the higher absorbance in an energy range. This change is more easily seen in Figure \ref{fig:avg-experimential-vs-simulation-difference}, which plots the difference between the bulk material and the nanoparticle absorption for both the experimental measurements and the simulations. The experimental and simulation difference-spectra follow the same trend with the exception of the peak around 11947~eV.
+In Figure \ref{fig:avg-experimental-vs-simulation}, the bulk Au foil spectrum is above the 8~nm nanoparticle spectrum (more absorption) until the peak around 11937~eV, where the nanoparticle's absorption becomes higher. The two spectra criss-cross again over the next two peaks, changing which material absorbs more at a given energy range. This change is more easily seen in Figure \ref{fig:avg-experimential-vs-simulation-difference}, which plots the difference between the bulk material and the nanoparticle absorption for both the experimental measurements and the simulations. The experimental and simulation difference-spectra follow the same trend with the exception of the peak around 11947~eV.
 % The two spectrum switch again at the peak around 11943~eV so the bulk foil's absorption nlevel is higher again. Beyond this peak, the two
 
 
@@ -204,9 +204,9 @@ In Figure \ref{fig:avg-experimental-vs-simulation}, the bulk Au foil spectrum is
 	\label{fig:avg-experimential-vs-simulation-difference}
 \end{figure}
 
-Figures \ref{fig:avg-experimental-vs-simulation} and \ref{fig:avg-experimential-vs-simulation-difference} are not meant to be perfect comparisons of simulations vs. experimental data. For one, the experimental data includes a comparison between a bulk spectrum to a nanoparticle. By contrast, both the simulation spectra are of the same size 55 atom cluster. Still, much of the disorder trends are coded in the simulation approach. 
+Figures \ref{fig:avg-experimental-vs-simulation} and \ref{fig:avg-experimential-vs-simulation-difference} are not meant to be perfect comparisons of simulations vs. experimental data. For one, the experimental data includes a comparison between a bulk spectrum to a nanoparticle. By contrast, both the simulation spectra are from identically sized 55 atom  Au clusters. Still, much of the disorder trends are coded in the simulation approach. 
 
-To test if the size information is also coded in our simulations, we compare different size nanoparticle simulations to experimental data in Figure \ref{fig:avg-experimental-vs-simulation2}. We first simulated two different size nanoparticle gold clusters, one with 13 Au atoms and one with 55. As expected, including more atoms in the simulation produces more bulk-like spectrum characteristics, such as larger amplitude peaks.
+To test if nanoparticle size information is also coded in our Gaussian-averaged simulations, we compare different size nanoparticle simulations to experimental data in Figure \ref{fig:avg-experimental-vs-simulation2}. We first simulated two different size nanoparticle gold clusters, one with 13 Au atoms and one with 55. As expected, including more atoms in the simulation produces more bulk-like spectrum characteristics, such as larger amplitude peaks.
 
 \begin{figure}[h]
 	\centering
@@ -216,28 +216,31 @@ To test if the size information is also coded in our simulations, we compare dif
 \end{figure}
 
 
-These preliminary indications suggest the statistical approach may provide useful insights given the similarity in trends; however, this does not yet provide any indication as to whether the statistical averaged simulations are equivilent to the particle average simulations, nor do they tell us whether these spectra would work for predicting the mean squared disorder from experimental spectra. This broader discussion is the topic of the next section.
+These preliminary indications suggest the statistical approach may provide useful insights given the similarity in trends; however, this does not yet provide any indication as to whether the statistical averaged simulations are equivalent to the particle average simulations, nor do they tell us whether these spectra would work as training data for predicting the mean squared disorder from experimental spectra. This broader discussion is the topic of the next section.
 
 
 \section{Particle-Averaged FEFF vs. Skewnorm-Averaged Structures} \label{sec:pa-feff-vs-gaussian-feff}
 
-While it is important to see that the skew-norm-averaging methodology maintains the systematic changes in XANES spectra as disorder increases (as seen in section \ref{sec:end-disorder}), it is more important to compare this methodology to the widely-used particle-averaged methodology (seen in section \ref{sec:traditional-disorder})
+While it is important to see that the skew-norm-averaging methodology maintains the systematic changes in XANES spectra as disorder increases (as seen in section \ref{sec:end-disorder}), it is more important to compare this methodology to the widely-used particle-averaged methodology (seen in section \ref{sec:traditional-disorder}). Unfortunately, this is where the efficacy of the statisitcal methodology breaks down and the limitations of the method are revealed. As seen in figures \ref{fig:pa-vs-sknm-feff} and \ref{fig:pa-vs-sknm-feff-bigmsd}, the particle averaged FEFF spectra and the skew-norm averaged spectra are distinctly different. We showcase two examples using skew-norm averaged, one for a bulk-like nanoparticle with small disorder (figure \ref{fig:pa-vs-sknm-feff}) and one for bulk-like nanoparticle with large disorder (\ref{fig:pa-vs-sknm-feff-bigmsd}). Averaging with a Gaussian instead of the skew-nrom produced the same problematic results. This is likely a result of the false assumption that the atomic positions contribute linearly towards  
 
+Because of the discepancy in spectral shape between particle-averaged and skew-norm averaged FEFF simulations for structures with the same disorder, the statistical based metholody work was abandoned for this thesis. This does not mean, however, that the skew-norm approach is without merit. Prelimary work has shown it is possible to create identical spectra through selective weighting of the distorted (non-disordered) spectra. One current limitation, however, is that the shape of the weightings required to produce these identical spectra remains unpredictable. Sometimes the weightings resemble Gaussian distribution similar to the radial distribution function, however this is not always the case. Sometimes jagged, multimodal weightings can produce very similar spectra. While it is in theory possible in experimental data for wildly different RDFs to have the same MSD value, we expect these strangely shaped distributions to be exceedingly unlikely in nature (from an entropic, configurational perspective), and for disorder to be bond lengths to be generally Gaussian in shape. Further work to understand the relationship between different distorted spectral weightings, FEFF simulations, and mean squared disorder of the structure may provide insight into the contribution of atomic displacement in a XANES spectrum for disordered structures.
 
-% In the skew-norm methodology, we only calculate a center absorber because of symmetry. For simulating disordered structures, however, it is necessary to calculate all the absorbers. 
-
+Consequently, for the remainder of this thesis, particle-averaged FEFF spectra were used as the training data for the neural network.
 
 \begin{figure}[!h]
 	\centering
-	\label{fig:pa-vs-sknm-feff}
+	
 	\includegraphics[width=.75\linewidth]{Chapters/Figures/PA-vs-skewnorm-newvals.png}
-	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF Low-Disorder]{The particle Averaged FEFF vs. Skewnorm Averaged FEFF. The systematic difference reveal a flawed assumption in the skewnorm-Averaged Methodology}
+	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF Low-Disorder]{The particle Averaged FEFF (PA) and Skewnorm-Averaged FEFF (PA) for low-disorered bulk-like Au nanoparticles are plotted above. The systematic difference reveal a flawed assumption in the skewnorm-Averaged Methodology}
+	\label{fig:pa-vs-sknm-feff}
 \end{figure}
 
 \begin{figure}[!h]
 	\centering
-	\label{fig:pa-vs-sknm-feff-bigmsd}
+	
 	\includegraphics[width=.75\linewidth]{Chapters/Figures/PA-vs-skewnorm-newvals-large-msd.png}
-	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF High-Disorder]{The particle Averaged FEFF vs. Skewnorm Averaged FEFF for particles of high disorder. The systematic differences between the particle averaged feff and the statistical averaged methods are less significant for particles of high-disorder. The persistent differences, however, suggest a false assumption in the statistical averaging mothodology.}
+	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF High-Disorder]{The particle Averaged FEFF (PA) and Skewnorm-Averaged FEFF (SN) for particles high-disorered bulk-like Au nanoparticles are plotted above. The systematic differences between the particle averaged feff and the statistical averaged methods are less significant for particles of high-disorder. The persistent differences, however, suggest a false assumption in the statistical averaging mothodology.}
+	\label{fig:pa-vs-sknm-feff-bigmsd}
 \end{figure}
+
 

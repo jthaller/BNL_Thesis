@@ -78,7 +78,7 @@ In building the transfer learning model, we opted to begin with a new network ar
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{Chapters/Figures/transfer-learning-breakdown.pdf}
-    \caption[Transfer Learning Process]{Caption here}
+    \caption[Transfer Learning Process]{The allocation of training and testing data is summarized above. At each stage, the network architecture remains unchanged; however, some of the network's parameters are retrained on new data. The different sets of data are color coded for readability. Note that the network is never trained on the original experimental data---it is only used for the final stage of testing.}
     \label{fig:transfer-learning-databreakdown}
 \end{figure}
 
@@ -127,9 +127,6 @@ The last stage of the fine-tuning process is to freeze even more layers and redu
     \label{fig:meta-1-sweep-params}
     \caption[Hyperpamater Sweep 1]{The hyperparameters are obtained through a ``sweep,'' where the entire training process (20 epochs) is repeated with different hyperparameters each time. The hyperparameter training process and figure generation was conducted with the aid of \cite{wandb}.}
 \end{figure}
-
-
-
 
 
 \begin{figure}
