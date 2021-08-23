@@ -58,11 +58,11 @@ Instead of creating structures with a range of \textit{disorder}, we begin by ge
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{Chapters/Figures/2d_distortion_example.png}
-	\caption[2D Distortion]{Each point represents an atom of first 12 nearest neighbors of a Au cluster projected onto the $xy$\nobreakdash-plane. The four corner points actually represent two atoms because of the projection. The blue atoms represent the original coordinates, and the red atoms represent the radially shifted coordinates. The center absorber atom is purple since its original position is the same as its distorted position.}
+	\caption[2D Distortion]{Each point represents one of the 12 nearest neighbor atoms surrounded the center of a Au cluster projected onto the $xy$\nobreakdash-plane. The four corner points actually represent two atoms because of the projection. The blue atoms represent the original coordinates, and the red atoms represent the radially shifted coordinates. The center absorber atom is purple since its original position is the same as its distorted position.}
 	\label{fig:2d-distortion}
 \end{figure}
 
-A 2-dimensional projection of this isotropic distortion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure consists of either 55 atoms to simulate a nanoparticles, or the first four shells (561 atoms) to simulate bulk materials. Both structures were created with a lattice constant of 4.0782~\AA~to match that of bulk Au \cite{gold-a-value-data}. In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller than for the bulk structure; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the BCC crystal structure is correct. 
+A 2-dimensional projection of this isotropic distortion is presented in Figure \ref{fig:2d-distortion}. Though the figure only shows the $xy$\nobreakdash-plane projection of the first 12 nearest neighbors, the actual structure consists of either 55 atoms to simulate nanoparticles, or the first four shells (561 atoms) to simulate bulk materials. Both structures were created with a lattice constant of 4.0782~\AA~to match that of bulk Au \cite{gold-a-value-data}. In reality, the nearest-neighbor distances for Au nanoparticles are likely smaller than for the bulk structure; this can be accounted for later on in the averaging process since the original coordinates will only be one structure out of many. The important part is that the BCC crystal structure is correct. 
 
 We generate a total of 91 FEFF input files with different levels of distortion. Each file contains the same center absorber located at $(0,0,0)$ with all the Euclidean distances from the center expanded or contracted radially. All the first shell atomic coordinates are shifted on the range of $ -0.45 $~\AA~to~$ +0.45 $~\AA~in increments of $ 0.01 $~\AA. For example, the FEFF input file with the greatest inward shift contains all first nearest neighbor atoms shifted $ 0.45 $~\AA~radially inwards towards the center absorber, and the FEFF input file with the largest outwards shift has the first nearest neighbor coordinates shifted $ 0.45 $~\AA~radially outwards away from the center absorber. The atoms in the outer shells are scaled accordingly to preserve the crystal structure according to equation \ref{eq:distortionator}
 
@@ -97,7 +97,7 @@ One way to characterize system disorder is with the Gaussian standard deviation,
 	\label{fig:gaussian-weighting-hist}
 \end{figure}
 
-The disordered, Gaussian-averaged XANES spectrum, $ \left\langle \mu(E) \right\rangle $, using the histogram weighting of the gaussian in Figure \ref{fig:gaussian-weighting-hist} is calculate via Equation (\ref{eqn:gaussian-averaging}):
+The disordered, Gaussian-averaged XANES spectrum, $ \left\langle \mu(E) \right\rangle $, using the histogram weighting of the Gaussian in Figure \ref{fig:gaussian-weighting-hist} is calculate via equation (\ref{eqn:gaussian-averaging}):
 
 \begin{equation}
 	\label{eqn:gaussian-averaging}
@@ -189,7 +189,7 @@ To check our FEFF simulation parameters, as well as the validity of the Gaussian
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.75\linewidth]{Chapters/Figures/updated_bulk_8nm_disorder_experimental_theory_comparison.png}
-	\caption[Simulation vs. Experimental]{Comparing the bulk foil (red) measurement to the 8~nm disordered nanoparticle (green) measurement is an analog to comparing the simulated, non disordered FEFF spectrum (blue) to the simulated disordered spectrum (orange).}
+	\caption[Simulation vs. Experimental XANES: Disorder Comparison]{Comparing the bulk foil (red) measurement to the 8~nm disordered nanoparticle (green) measurement is an analog to comparing the simulated, non disordered FEFF spectrum (blue) to the simulated disordered spectrum (orange).}
 	\label{fig:avg-experimental-vs-simulation}
 \end{figure}
 
@@ -211,7 +211,7 @@ To test if nanoparticle size information is also coded in our Gaussian-averaged 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.7\linewidth]{Chapters/Figures/Bulk_55atom_experimental_theory_comparison.png}
-	\caption[Simulation vs. Experimental 2]{Comparing the bulk foil (red) measurement to the 55 atom nanoparticle (green) measurement is an analog to comparing the 13 atom simulated spectrum (blue) to the 55 atom simulated spectrum (orange).}
+	\caption[Simulation vs. Experimental XANES: Size Comparison]{Comparing the bulk foil (red) measurement to the 55 atom nanoparticle (green) measurement is an analog to comparing the 13 atom simulated spectrum (blue) to the 55 atom simulated spectrum (orange).}
 	\label{fig:avg-experimental-vs-simulation2}
 \end{figure}
 
@@ -221,9 +221,9 @@ These preliminary indications suggest the statistical approach may provide usefu
 
 \section{Particle-Averaged FEFF vs. Skewnorm-Averaged Structures} \label{sec:pa-feff-vs-gaussian-feff}
 
-While it is important to see that the skew-norm-averaging methodology maintains the systematic changes in XANES spectra as disorder increases (as seen in section \ref{sec:end-disorder}), it is more important to compare this methodology to the widely-used particle-averaged methodology (seen in section \ref{sec:traditional-disorder}). Unfortunately, this is where the efficacy of the statisitcal methodology breaks down and the limitations of the method are revealed. As seen in figures \ref{fig:pa-vs-sknm-feff} and \ref{fig:pa-vs-sknm-feff-bigmsd}, the particle averaged FEFF spectra and the skew-norm averaged spectra are distinctly different. We showcase two examples using skew-norm averaged, one for a bulk-like nanoparticle with small disorder (figure \ref{fig:pa-vs-sknm-feff}) and one for bulk-like nanoparticle with large disorder (\ref{fig:pa-vs-sknm-feff-bigmsd}). Averaging with a Gaussian instead of the skew-nrom produced the same problematic results. This is likely a result of the false assumption that the atomic positions contribute linearly towards  
+While it is important to see that the skew-norm-averaging methodology maintains the systematic changes in XANES spectra as disorder increases (as seen in section \ref{sec:end-disorder}), it is more important to compare this methodology to the widely-used particle-averaged methodology (seen in section \ref{sec:traditional-disorder}). Unfortunately, this is where the efficacy of the statistical methodology breaks down and the limitations of the method are revealed. As seen in figures \ref{fig:pa-vs-sknm-feff} and \ref{fig:pa-vs-sknm-feff-bigmsd}, the particle averaged FEFF spectra and the skew-norm averaged spectra are distinctly different. We showcase two examples using skew-norm averaged, one for a bulk-like nanoparticle with low-disorder (figure \ref{fig:pa-vs-sknm-feff}) and one for bulk-like nanoparticle with high-disorder (\ref{fig:pa-vs-sknm-feff-bigmsd}). Averaging with a Gaussian instead of the skew-norm produced the same problematic results. This is likely a result of the false assumption that the atomic positions contribute linearly towards  
 
-Because of the discepancy in spectral shape between particle-averaged and skew-norm averaged FEFF simulations for structures with the same disorder, the statistical based metholody work was abandoned for this thesis. This does not mean, however, that the skew-norm approach is without merit. Prelimary work has shown it is possible to create identical spectra through selective weighting of the distorted (non-disordered) spectra. One current limitation, however, is that the shape of the weightings required to produce these identical spectra remains unpredictable. Sometimes the weightings resemble Gaussian distribution similar to the radial distribution function, however this is not always the case. Sometimes jagged, multimodal weightings can produce very similar spectra. While it is in theory possible in experimental data for wildly different RDFs to have the same MSD value, we expect these strangely shaped distributions to be exceedingly unlikely in nature (from an entropic, configurational perspective), and for disorder to be bond lengths to be generally Gaussian in shape. Further work to understand the relationship between different distorted spectral weightings, FEFF simulations, and mean squared disorder of the structure may provide insight into the contribution of atomic displacement in a XANES spectrum for disordered structures.
+Because of the discrepancy in spectral shape between particle-averaged and skew-norm averaged FEFF simulations for structures with the same disorder, the statistical-based methodology work was abandoned for this thesis. This does not mean, however, that the skew-norm approach is without merit. Preliminary work has shown it is possible to create identical spectra through selective weighting of the distorted (non-disordered) spectra. One current limitation, however, is that the shape of the weightings required to produce these identical spectra remains unpredictable. Sometimes the weightings resemble Gaussian distribution similar to the radial distribution function, however this is not always the case. Sometimes jagged, multimodal weightings can produce very similar spectra. While it is in theory possible in experimental data for wildly different RDFs to have the same MSD value, we expect these strangely shaped distributions to be exceedingly unlikely in nature (from an entropic, configurational perspective), and for disorder to be bond lengths to be generally Gaussian in shape. Further work to understand the relationship between different distorted spectral weightings, FEFF simulations, and mean squared disorder of the structure may provide insight into the contribution of atomic displacement in a XANES spectrum for disordered structures.
 
 Consequently, for the remainder of this thesis, particle-averaged FEFF spectra were used as the training data for the neural network.
 
@@ -239,7 +239,7 @@ Consequently, for the remainder of this thesis, particle-averaged FEFF spectra w
 	\centering
 	
 	\includegraphics[width=.75\linewidth]{Chapters/Figures/PA-vs-skewnorm-newvals-large-msd.png}
-	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF High-Disorder]{The particle Averaged FEFF (PA) and Skewnorm-Averaged FEFF (SN) for particles high-disorered bulk-like Au nanoparticles are plotted above. The systematic differences between the particle averaged feff and the statistical averaged methods are less significant for particles of high-disorder. The persistent differences, however, suggest a false assumption in the statistical averaging mothodology.}
+	\caption[Particle-Averaged vs. Skewnorm-Averaged FEFF High-Disorder]{The particle Averaged FEFF (PA) and Skewnorm-Averaged FEFF (SN) for particles high-disordered bulk-like Au nanoparticles are plotted above. The systematic differences between the particle averaged FEFF and the statistical averaged methods are less significant for particles of high-disorder. The persistent differences, however, suggest a false assumption in the statistical averaging methodology.}
 	\label{fig:pa-vs-sknm-feff-bigmsd}
 \end{figure}
 

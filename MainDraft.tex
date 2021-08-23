@@ -80,23 +80,23 @@
 % Here we set the page dimensions to match the standard thesis format.  These values should not be changed.
 %%% SET LENTGH AND WIDTH %%%
 \setlength{\textwidth}{6.5in}
-\setlength{\textheight}{8.5in}
+\setlength{\textheight}{9in} %originally 8.5
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
 \setlength{\topmargin}{0pt}
 \setlength{\marginparsep}{0pt}
 \setlength{\marginparwidth}{1in}
+\linespread{1.3} % added 
 
 %\begin{document} starts LaTeX looking for actual content.  Everything above this point is purely formatting.
 \begin{document}
 
 \begin{titlepage}
 \begin{center}
-
 % \vspace* creates some vertical white space on the page to make the title page look more pleasing.  \vspace would do much the same thing, but would not insert the white space if we were at the top of a fresh page.  As this is the start of the document we're obviously at the beginning of a page, so the asterisk is necessary to ensure we still put in two cm of white space.
-\vspace*{2cm}
+% \vspace*{1cm}
 
-{\huge Investigation of Bond Strain Effects\\on XANES Spectra by \\Supervised Machine Learning} % \huge sets the font size.  Other options include things like \large, \Large, \small, \tiny, etc.
+{\huge Investigation of Bond Strain Effects\\on XANES Spectra\\\vspace{.7em}via Artificial Neural Networks} % \huge sets the font size.  Other options include things like \large, \Large, \small, \tiny, etc.  Investigation of Bond Strain Effects\\on XANES Spectra by\\Supervised Machine Learning
 
 \vspace{2cm}
 
@@ -130,7 +130,14 @@
 	München, Germany
 \end{tabular}
 
-% \vfill creates an arbitrary amount of vertical white space as necessary to fill the page
+\vfill % creates an arbitrary amount of vertical white space as necessary to fill the page
+
+\begin{figure}[h]
+	% \vspace{.5cm}
+	\centering
+	\includegraphics[width=.25\textwidth]{Chapters/Figures/lmu-logo.png}
+\end{figure}  
+
 \vfill
 
 A Master thesis submitted to the Faculty
@@ -138,11 +145,9 @@ of Earth- and Environmental Sciences\\
 of Ludwig-Maximilians-Universität München
 in the framework of MaMaSELF
 
-\vspace*{3cm}
+\vspace*{1.5cm}
 
-% Brookhaven National Labs\\
-% Brookhaven, New York\\
-\today % you might choose to set a permanent date, but \today will put in today's date
+September 1, 2021 % you might choose to set a permanent date, but \today will put in today's date
 \end{center}
 \end{titlepage}
 

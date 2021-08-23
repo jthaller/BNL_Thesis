@@ -7,11 +7,11 @@ This thesis presents work toward developing an artificial neural network (ANN) c
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{Chapters/Figures/thesis-design.pdf}
-    \caption[Project Approach]{Thesis design}
+    \caption[Project Approach]{The above figure describes the general structure of the neural network described in this thesis. The model inputs the absorption values for a XANES spectrum and predicts the mean squared displacement (MSD) of the structure. For this thesis, we train the network exclusively on large, bulk-like gold nanoparticles.}
     \label{fig:thesis-design}
 \end{figure}
 
-In order to train a neural network, we rely on a large quantity of data obtained through FEFF9 \cite{feff-citation}, an $ ab initio $ absorption simulation software capable of simulating XANES spectra. We first present work on developing a new, statistical-based methodology for simulating disordered structures. This method, however, was ultimately abandoned for the remainder of this thesis due to systematic discrepancies between its results and those of the traditional simulation approach. 
+In order to train a neural network, we rely on a large quantity of data obtained through FEFF9 \cite{feff-citation}, an $ ab~initio $ x-ray absorption simulation software capable of simulating XANES spectra. We first present work on developing a new, statistical-based methodology for simulating disordered structures. The goal of this new approach was to reduce the number of required simulations for creating a dataset of FEFF-simulated structures. Instead of simulating the disorder structures themselves, different isotropically ``expanded'' or ``contracted'' configurations were created and simulated. A tunable, distributed weighted average of these resulted was then used to approximate the absorption spectrum of disordered structures. This method, however, was ultimately abandoned for the remainder of this thesis due to systematic discrepancies between its results and those of the traditional simulation approach. 
 
 Trained on the simulation data, the neural network shows great predictive accuracy and promise for predicting the mean squared displacement and mean location of nearest neighbor bond lengths in Au, bulk-like nanoparticles. In order for the neural network to make predictions from experimental data---as opposed to simulation data---we employ a technique in machine learning known as ``one-shot transfer learning.'' The process is the topic of current work, and we end the thesis with a discussion on the transfer-leaning plan and progress made towards this goal.
 

@@ -119,7 +119,7 @@ This script generates the FEFF input files (\texttt{feff.inp}) for the disordere
 
 \pagebreak
 \begin{lstlisting}[language=Python]
-# Inputs: -----
+# Inputs: ----
 # pandas dataframe df = the unshifted dataframe with spherical coordinates
 # float shift_sigma = the width of the np.random.normal distribution from which shift distances are chosen
 # Outpts: ----
@@ -185,7 +185,7 @@ def do_one_structure(folder):
 
 \section{create-g(r).ipynb}
 
-This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond-length is counted twice. We achieve this by utilizing python's set exclusivity and checking that the set contains the expected number of bonds when complete.
+This iPython notebook loops through all the disordered structures and creates a histogram of nearest neighbor distances for each structure. Because there are 13 absorbers, each of which has 13 nearest neighbors, there are a total of 169 bond lengths. Many of these bonds are shared with absorbers and would be counted twice if one were not careful. There are only 120 unique bonds for the nearest neighbors of each atom in the first shell. This script keeps track of all the unique bonds to ensure no bond length is counted twice. We achieve this by utilizing python's set exclusivity and checking that the set contains the expected number of bonds when complete.
 
 
 \begin{lstlisting}[language=Python]
@@ -219,7 +219,7 @@ def do_one_structure(folder, save_as=None):
 
 
 \section{nn.ipynb}
-The neural network, a Jupyter notebook.
+This Jupyter notebook contains the neural network, built with TensorFlow \cite{tensorflow2015-whitepaper} and Keras \cite{keras2015}.
 
 \section{nn-buddy.py}
 The sole purpose of this python script is to be imported by \texttt{nn.ipynb}. The script contains many useful helper functions that take care of data-loading, plotting, and linear interpolation of experimental data on the same energy mesh used for the training sample. This way, the 
