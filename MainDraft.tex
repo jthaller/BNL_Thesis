@@ -26,7 +26,6 @@
 %\usepackage{lipsum}			% gives access to \lipsum, which dumps some latin text into your document as filler if you want to check formatting
 
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
-
 \usepackage{hyperref}
 \hypersetup{
 	colorlinks=true, %set true if you want colored links
@@ -76,6 +75,7 @@
 }
 % Format macro used for every digit, adjust to your liking:
 \newcommand*{\boxeddigit}[1]{\fbox{#1}\hspace{-\fboxrule}}
+
 
 % Here we set the page dimensions to match the standard thesis format.  These values should not be changed.
 %%% SET LENTGH AND WIDTH %%%
@@ -170,6 +170,10 @@ September 1, 2021 % you might choose to set a permanent date, but \today will pu
 \tableofcontents
 
 \listoffigures
+
+\chapter*{List of Abbreviations}
+\input{Chapters/Abbreviations}
+
 
 % \mainmatter defines the main body of the thesis and marks where regular numbering will begin
 \mainmatter
