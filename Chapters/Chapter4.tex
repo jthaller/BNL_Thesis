@@ -1,9 +1,9 @@
 % Results
-The results of the training process are presented in this chapter. We begin by first outlining the training network architecture and training process on simulated XANES in section \ref{sec:nn-sim-data}. Then, we discuss the work on expanding the model to make solid predictions on experimental data.
+The results of the training process are presented in this chapter. We begin by first outlining the training network architecture and training process on simulated XANES in section \ref{sec:nn-sim-data}. Then, we discuss the plan and current status on expanding the model to make solid predictions on experimental data.
 
 \section{Training with Simulation Data} \label{sec:nn-sim-data}
 
-The 1000 simulated XANES spectra were first loaded into a Pandas dataframe \cite{pandas-1} \cite{pandas-2} of shape $ 1000\times82 $. Each of the 82 columns represents a discrete energy value, and each row represents the absorption for a given spectrum at those energies. The dataset was split into training and testing groups according to an 80-20 random split, respectively. All absorption columns were then scaled via the standard scalar (\ref{z-score}) and the training labels scaled via a min-max scaler (\ref{eqn:min-max-scaler}). First, the model was trained to predict four descriptors: the mean squared displacement (MSD), the mean bond length distance, the standard deviation of the bond length distributions, and the skew of the bond length distribution. Note that the standard deviation is equal to the square root of the MSD. This feature was only included preliminarily in order to better understand the correlation in the network's predictions. 
+The 1000 simulated XANES spectra were first loaded into a Pandas dataframe \cite{pandas-1} \cite{pandas-2} of shape $ 1000\times82 $. Each of the 82 columns represents a discrete energy value, and each row represents the absorption coefficient for a given spectrum at those energies. The dataset was split into training and testing groups according to an 80-20 random split, respectively. All absorption columns were then scaled via the standard scalar (\ref{z-score}), and the training labels were scaled via a min-max scaler (\ref{eqn:min-max-scaler}). First, the model was trained to predict four descriptors: the mean squared displacement (MSD), the mean bond length distance, the standard deviation of the bond length distributions, and the skew of the bond length distribution. Note that the standard deviation is equal to the square root of the MSD. This feature was only included preliminarily in order to better understand the correlation in the network's predictions. 
 
 \bgroup
 \def\arraystretch{1.5}%  1 is the default, change whatever you need
@@ -42,7 +42,7 @@ The 1000 simulated XANES spectra were first loaded into a Pandas dataframe \cite
 
 \section{Experimental Data} \label{ch:results}
 
-Training a neural network entirely on simulation data and then making predictions on experimental data is unlikely to provide quality results. Using the trained network from Table (\ref{tb:nn-arch-sims}) that predicted the test set values in Figure \ref{fig:train-test-split-all4}, we predicted the MSD values from two experimental spectra. On the unpublished IMASC data, the network predicted an MSD of $0.0003724~\text{\AA}^2$ instead of the EXAFS equation fitted value of ${\sigma^2=0.0102(8)~\text{\AA}^2}$. This poor prediction suggests the network considers the experimental spectrum to look most similar to the lowest disorder FEFF spectra; the model is not generalizing to understand the disorder encoded in the spectral shape.
+Due to the visible differences between simulation and experimental data discussed in chapter 2, training a neural network entirely on simulation data and then making predictions on experimental data is unlikely to provide quality results. Using the trained network from Table (\ref{tb:nn-arch-sims}) that predicted the test set values in Figure \ref{fig:train-test-split-all4}, we predicted the MSD values from two experimental spectra. On the unpublished IMASC data, the network predicted an MSD of $0.0003724~\text{\AA}^2$ instead of the EXAFS equation fitted value of ${\sigma^2=0.0102(8)~\text{\AA}^2}$. This poor prediction suggests the network considers the experimental spectrum to look most similar to the lowest disorder FEFF spectra; the model is not generalizing to understand the disorder encoded in the spectral shape. In order to rectify this, we turn to data augmentation and include various forms of augmented experimental spectra in the training process. This approach is the topic of the following sections.
 
 
 \begin{figure}
@@ -53,7 +53,7 @@ Training a neural network entirely on simulation data and then making prediction
 \end{figure}
 
 \subsection{Data Augmentation}
-While there is ample data for training and predicting on only simulation data, we only have two experimental spectra. In order to create more training and testing data for the neural network, two types of data augmentation were utilized: Gaussian noise inclusion and horizontal spectral shifting. While the motivation for utilizing data augmentation is to expand the size of the experimental training and testing set, the neural network must be trained to recognize the augmentation types prior to training or testing on the experimental data. As such, both the FEFF simulated dataset and experimental dataset are augmented.
+While there is ample data for training and predicting on exclusively simulation data, we only have two experimental spectra. In order to create more training and testing data for the neural network, two types of data augmentation were utilized: Gaussian noise inclusion and horizontal spectral shifting. While the motivation for utilizing data augmentation is to expand the size of the experimental training and testing set, the neural network must be trained to recognize the augmentation types prior to training or testing on the experimental data. As such, both the FEFF simulated dataset and experimental dataset are augmented.
 
 Noise is artificially injected into the spectra by randomly shifting each absorption coefficient vertically. The shifted value for each energy level is selected from a Gaussian distribution with standard deviation $ \sigma=0.01 $. An exaggerated example of the injected noise is shown in Figure \ref{fig:data-aug-gauss-noise}.
 
@@ -64,7 +64,7 @@ Noise is artificially injected into the spectra by randomly shifting each absorp
     \label{fig:data-aug-gauss-noise}
 \end{figure}
 
-The second form of data augmentation utilizes horizontal shifts. While this is common for signal processing and time series analysis, the inclusion here is more controversial. In XAFS, the edge location is dependent on the oxidation/reduction state of the species. Shifting the horizontal location is akin to shifting the species of the model; however, the neural network is not being tasked to determine the oxidation state of the sample. Instead, the model is merely tasked with predicting the mean squared displacement of the nanoparticle's bond lengths. The theory is that the disorder information is encoded throughout the entire XANES spectrum, not from just a simple feature such as the edge placement.  
+The second form of data augmentation utilizes horizontal shifts. While this is common for signal processing and time series analysis, the inclusion here is more controversial. In XAFS, the edge location is dependent on the oxidation/reduction state of the species. Shifting the horizontal location is akin to shifting the species of the model; however, the neural network is not being tasked to determine the oxidation state of the sample. Instead, the model is merely tasked with predicting the mean squared displacement of the nanoparticle's bond lengths. The hypothesis is that the disorder information is encoded throughout the entire XANES spectrum, not from just a simple feature such as the edge placement.  
 
 \begin{figure}[h!]
     \centering
@@ -109,34 +109,36 @@ In building the transfer learning model, we opted to begin with a new network ar
 \egroup
 
 
-Our approach for applying transfer learning involves two stages of fine-tuning. First, we primarily train the model on FEFF simulated spectra, selecting an architecture and hyperparameters which are likely to be compatible with fine-tuning. We achieve this by weighting the validation set heavily (around $ 10\% $) with augmented experimental spectra and choosing a model which predicts unseen data-augmented experimental spectra as well as it predicts unseen simulated FEFF spectra. The training loss curves and selection process can be found in Figure \ref{fig:meta-1-sweep-loss}. One concern with this approach is that we are injecting biases into our model selection; however, we take this into account through the utilization of a third, unseen test set and the fact that the model does not update its parameters based on its validation set predictions. When training a model in machine learning, the parameters are continuously updated until a minimum is reached in the loss function. While the loss landscape will have a global minimum, it also contains local minima, some of which will be more agnostic to the differences in experimental spectra and be better candidates for transfer learning. In this first stage of learning, the intention is to teach the model to find broad predictive features from the simulation set while selecting a model at a local minimum that is likely to be a successful transfer-learning candidate. 
+Our approach for applying transfer learning involves two stages of fine-tuning. First, we primarily train the model on FEFF-simulated spectra, selecting an architecture and hyperparameters which are likely to be compatible with fine-tuning. We achieve this by weighting the validation set heavily (around $ 10\% $) with augmented experimental spectra and choosing a model which predicts unseen data-augmented experimental spectra as well as it predicts unseen simulated FEFF spectra. The training loss curves and selection process can be found in Figure \ref{fig:meta-1-sweep-loss}. One concern with this approach is that we are injecting biases into our model selection; however, we take this into account through the utilization of a third, unseen test set and the fact that the model does not update its parameters based on its validation set predictions. When training a model in machine learning, the parameters are continuously updated until a minimum is reached in the loss function. While the loss landscape will have a global minimum, it also contains local minima, some of which will be more agnostic to the differences in experimental spectra and be better candidates for transfer learning. In this first stage of learning, the intention is to teach the model to find broad predictive features from the simulation set while selecting a model at a local minimum that is likely to be a successful transfer-learning candidate. 
 
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{Chapters/Figures/10-sweep.png}
-    \caption[Hyperparamater Sweep: Cost Curve]{The validation cost (mean-squared-error) for 10 out of the 50 hyperparameter combinations searched in this sweep are plotted above. Most hyperparameters result in a loss curve stabilizing around 0.08, which is significantly higher than the training cost (not shown) that stabilized around 0.01. A few of the validation loss curves, instead, stabilized around 0.01 (dulcet-sweep-41 and deep-sweep-40). Because the validation set is heavily weighted with augmented experimental spectra, these two spectra are likely to be good candidates for transfer learning onto experimental data.}
+    \caption[Hyperparamater Sweep: Cost Curve]{The validation cost (mean squared error) for 10 out of the 50 hyperparameter combinations searched in this sweep are plotted above. Most hyperparameters result in a loss curve stabilizing around 0.08, which is significantly higher than the training cost (not shown) that stabilized around 0.01. A few of the validation loss curves, instead, stabilized around 0.01 (dulcet-sweep-41 and deep-sweep-40). Because the validation set is heavily weighted with augmented experimental spectra, these two spectra are likely to be good candidates for transfer learning onto experimental data.}
     \label{fig:meta-1-sweep-loss}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Chapters/Figures/new-hyperparameter-sweep-meta-1.png}
+    \caption[Hyperpamater Sweep: Graphical Representation]{The hyperparameters are obtained through a ``sweep,'' where the entire training process (20 epochs) is repeated with different hyperparameters each time. The hyperparameter training process and figure generation was conducted with the aid of \cite{wandb}. Training cost was measured with mean squared error.}
+    \label{fig:meta-1-sweep-params}
+\end{figure}
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Chapters/Figures/best-params-meta1.png}
+    \label{fig:meta-1-best}
+    \caption[Learning Curve for the best hyperparameters]{Both iterations of the training process were run with identical network architectures and hyperparameters; however, these two runs have significantly different validation losses. The discrepancy is due to the random weights initialization process. We mitigate this problem by setting global random seeds throughout the training process to select consistent pseudo-random values. The slight difference in initial parameters causes one iteration to become ``stuck'' in a different local minimum, which performed similarly with the training set but made substantially worse predictions on the validation set. The goal of the first stage of the transfer learning process is to identify hyperparameters that will lead to the best transfer learning candidates.}
 \end{figure}
 
 The next stage of transfer learning seeks to teach the model to ignore noise and focus on the broader shape of the spectrum. We achieve this by freezing the early stages of the model and retraining the later parameters on a new dataset comprised primarily entirely of data-augmented spectra. Often, models are trained with the augmented dataset in the initial stage, which helps act as a form of regularization. In the case of transfer learning, however, applying this regularization so early on in the process may lead to undesirable local minima for which transfer learning onto the experimental dataset would be impossible. By applying an initial stage of fine-tuning to a well-tuned base model, we increase the likelihood of a successful second fine-tuning stage.
 
 The last stage of the fine-tuning process is to freeze even more layers and reduce the learning rate, then train the model using all of the data-augmented experimental spectra. If the process is successful, the model will have learned to predict the MSD and ignore horizontal and Gaussian noise in the spectra from the first stage. In this way, we have increased the number of possible training samples to use for the final fine-tuning stage from one to many, allowing us to withhold both of the un-altered experimental spectra from the training process and use them to evaluate the success of the transfer learning process. A visualization and specific breakdown of which data is allocated into each stage of the training process can be found in Figure \ref{fig:transfer-learning-databreakdown}.
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/new-hyperparameter-sweep-meta-1.png}
-    \caption[Hyperpamater Sweep: Graphical Representation]{The hyperparameters are obtained through a ``sweep,'' where the entire training process (20 epochs) is repeated with different hyperparameters each time. The hyperparameter training process and figure generation was conducted with the aid of \cite{wandb}.}
-    \label{fig:meta-1-sweep-params}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{Chapters/Figures/best-params-meta1.png}
-    \label{fig:meta-1-best}
-    \caption[Learning Curve for the best hyperparameters]{Both iterations of the training process were run with identical network architectures and hyperparameters; however, these two runs have significantly different validation losses. The discrepancy is due to the random weights initialization process. We mitigate this problem by setting global random seeds throughout the training process to select consistent pseudo-random values. The slight difference in initial parameters causes one iteration to become ``stuck'' in a different local minimum, which performed similarly with the training set but made substantially worse predictions on the validation set. The goal of the first stage of the transfer learning process is to identify hyperparameters that will lead to the best transfer learning candidates.}
-\end{figure}
+As of the completion of this thesis, the transfer learning process is still ongoing. The first stage of training (as depticted in Figure \ref{fig:transfer-learning-databreakdown}) is complete, whereas stage two and stage three are the subject on ongoing work and discussed in Chapter 5.
 
 
 
